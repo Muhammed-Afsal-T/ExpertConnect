@@ -1,0 +1,97 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2084&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Glass Effect Box */
+.formBox {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    text-align: center;
+}
+
+.title {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Toggle Switch Styles */
+.toggleContainer {
+    display: flex;
+    background: #e0e0e0;
+    border-radius: 25px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.toggleOption {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+    transition: 0.3s;
+}
+
+.active {
+    background: #0056b3; /* Primary Blue */
+    color: white;
+}
+
+/* Input Fields */
+.inputGroup {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.inputGroup label {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.inputGroup input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.registerBtn {
+    width: 100%;
+    padding: 12px;
+    background: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.registerBtn:hover {
+    background: #004494;
+}
+
+.footerText {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.link {
+    color: #0056b3;
+    text-decoration: none;
+    font-weight: bold;
+}
