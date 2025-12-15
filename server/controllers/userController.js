@@ -1,5 +1,7 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken'); // Token ഉണ്ടാക്കാൻ
+
 
 // Register User
 const registerController = async (req, res) => {
@@ -38,4 +40,46 @@ const registerController = async (req, res) => {
   }
 };
 
-module.exports = { registerController };
+
+// LOGIN USER
+const loginController = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // 1. Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).send({ message: 'User not found', success: false });
+    }
+
+    // 2. Check Password
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(200).send({ message: 'Invalid Email or Password', success: false });
+    }
+
+    // 3. Generate Token (യൂസറെ തിരിച്ചറിയാനുള്ള രഹസ്യ കോഡ്)
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "expertconnect123", {
+      expiresIn: '1d',
+    });
+
+    // 4. Send Response
+    res.status(200).send({
+      message: 'Login Successful',
+      success: true,
+      token,
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        image: user.image,
+      }
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: `Error in LoginController: ${error.message}`, success: false });
+  }
+};
+
+module.exports = { registerController, loginController };
