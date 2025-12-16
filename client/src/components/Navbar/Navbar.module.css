@@ -1,0 +1,108 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #0056b3;
+    cursor: pointer;
+}
+
+/* Search Bar (For Users) */
+.searchBar {
+    position: relative;
+    width: 40%;
+}
+
+.searchBar input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    outline: none;
+    background-color: #f9f9f9;
+}
+
+.searchIcon {
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    color: #777;
+}
+
+/* Right Side Icons */
+.navLinks {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logoutBtn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.iconItem {
+    cursor: pointer;
+    color: #555;
+    transition: 0.2s;
+}
+
+.iconItem:hover {
+    color: #0056b3;
+}
+
+/* Profile Dropdown Logic */
+.profileSection {
+    position: relative;
+    cursor: pointer;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 35px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 120px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    flex-direction: column;
+}
+
+.profileSection:hover .dropdown {
+    display: flex;
+}
+
+.dropdown span {
+    padding: 10px;
+    font-size: 14px;
+    color: #333;
+    transition: 0.2s;
+}
+
+.dropdown span:hover {
+    background-color: #f0f0f0;
+}
+
+.logoutText {
+    color: red !important;
+}
