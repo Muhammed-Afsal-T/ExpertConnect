@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); // Token ഉണ്ടാക്കാൻ
+const cloudinary = require('../config/cloudinary');
 
 
 // Register User
@@ -82,4 +83,53 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController };
+
+// Update User/Expert Profile
+const updateProfileController = async (req, res) => {
+  try {
+    const { userId, name, age, specialization, experience, fees, about } = req.body;
+    
+    // അപ്‌ഡേറ്റ് ചെയ്യേണ്ട ഡാറ്റ സൂക്ഷിക്കാൻ ഒരു ഒബ്ജക്റ്റ്
+    const updateData = { name, age, specialization, experience, fees, about };
+
+    // ഫയലുകൾ അപ്‌ലോഡ് ചെയ്യുന്നു (ഏതൊക്കെ ഫയലുകൾ വന്നോ അവ മാത്രം)
+    if (req.files) {
+      const uploadToCloudinary = async (fileBuffer) => {
+        return new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
+            if (error) reject(error);
+            else resolve(result.secure_url);
+          }).end(fileBuffer);
+        });
+      };
+
+      // 1. Profile Picture
+      if (req.files['image']) {
+        updateData.image = await uploadToCloudinary(req.files['image'][0].buffer);
+      }
+      // 2. ID Proof / Certificate
+      if (req.files['certificates']) {
+        updateData.certificates = await uploadToCloudinary(req.files['certificates'][0].buffer);
+      }
+    }
+
+    // ഡാറ്റാബേസിൽ അപ്‌ഡേറ്റ് ചെയ്യുന്നു
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+
+    res.status(200).send({
+      success: true,
+      message: 'Profile Updated Successfully',
+      data: updatedUser,
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: 'Error in updating profile',
+      error,
+    });
+  }
+};
+
+module.exports = { registerController, loginController, updateProfileController };
