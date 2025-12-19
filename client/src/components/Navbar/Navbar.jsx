@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { FaUserCircle, FaSignOutAlt, FaSearch, FaCommentDots } from 'react-icons/fa';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null); 
+
   const user = JSON.parse(localStorage.getItem('user'));
   const role = user?.role;
 
@@ -14,16 +17,21 @@ const Navbar = () => {
   };
 
   const handleLogoClick = () => {
-    if (role === 'admin') {
-      navigate('/admin');
-    } else if (role === 'expert') {
-      navigate('/expert-dashboard');
-    } else if (role === 'user') {
-      navigate('/user-dashboard'); 
-    } else {
-      navigate('/login');
-    }
+    if (role === 'admin') navigate('/admin');
+    else if (role === 'expert') navigate('/expert-dashboard');
+    else if (role === 'user') navigate('/user-dashboard'); 
+    else navigate('/login');
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <nav className={styles.navbar}>
@@ -48,12 +56,16 @@ const Navbar = () => {
             <div className={styles.iconItem} title="Chat">
               <FaCommentDots size={22} />
             </div>
-            <div className={styles.profileSection}>
+            
+            <div className={styles.profileSection} ref={dropdownRef} onClick={() => setShowDropdown(!showDropdown)}>
               <FaUserCircle size={28} className={styles.profileIcon} />
-              <div className={styles.dropdown}>
-                <span onClick={() => navigate('/profile')}>Profile</span>
-                <span onClick={handleLogout} className={styles.logoutText}>Logout</span>
-              </div>
+              
+              {showDropdown && (
+                <div className={styles.dropdown}>
+                  <span onClick={() => navigate('/expert/profile')}>Profile</span>
+                  <span onClick={handleLogout} className={styles.logoutText}>Logout</span>
+                </div>
+              )}
             </div>
           </>
         )}
