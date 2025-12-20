@@ -33,7 +33,7 @@ const AdminDashboard = () => {
       if (res.data.success) {
         alert(`Expert ${status} successfully`);
         getAllExperts();
-        setSelectedExpert(null); // മോഡൽ ക്ലോസ് ചെയ്യുന്നു
+        setSelectedExpert(null); 
       }
     } catch (error) {
       console.log(error);
@@ -100,46 +100,49 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* MODAL for Detailed View */}
-      {selectedExpert && (
-        <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
-                <button className={styles.closeBtn} onClick={() => setSelectedExpert(null)}>X</button>
-                <h3>Expert Details</h3>
-                
-                <div className={styles.modalGrid}>
-                    <img src={selectedExpert.image} alt="Profile" className={styles.profilePic} />
-                    
-                    <div className={styles.details}>
-                        <p><strong>Name:</strong> {selectedExpert.name}</p>
-                        <p><strong>Email:</strong> {selectedExpert.email}</p>
-                        <p><strong>Profession:</strong> {selectedExpert.specialization || 'N/A'}</p>
-                        <p><strong>Experience:</strong> {selectedExpert.experience || 0} Years</p>
-                        <p><strong>Age:</strong> {selectedExpert.age || 'N/A'}</p>
-                        <p><strong>Fees:</strong> ₹{selectedExpert.fees || 0} /hr</p>
-                    </div>
-                </div>
-
-                <div className={styles.proofSection}>
-                    <p><strong>ID Proof / Certificate:</strong></p>
-                    {selectedExpert.certificates ? (
-                        <img src={selectedExpert.certificates} alt="Certificate" className={styles.certImage} />
-                    ) : (
-                        <p className={styles.noCert}>No document uploaded</p>
-                    )}
-                </div>
-
-                <div className={styles.modalActions}>
-                    {!selectedExpert.isVerified && (
-                        <>
-                            <button className={styles.approveBtn} onClick={() => handleStatus(selectedExpert._id, 'approved')}>Approve</button>
-                            <button className={styles.rejectBtn} onClick={() => handleStatus(selectedExpert._id, 'rejected')}>Reject</button>
-                        </>
-                    )}
-                </div>
-            </div>
+{/* MODAL for Detailed View */}
+{selectedExpert && (
+  <div className={styles.modalOverlay}>
+    <div className={styles.modalContent}>
+      <button className={styles.closeBtn} onClick={() => setSelectedExpert(null)}>X</button>
+      <h3>Professional Details</h3>
+      
+      <div className={styles.modalGrid}>
+        <img src={selectedExpert.image} alt="Profile" className={styles.profilePic} />
+        <div className={styles.details}>
+          <p><strong>Name:</strong> {selectedExpert.name}</p>
+          <p><strong>Email:</strong> {selectedExpert.email}</p>
+          <p><strong>Profession:</strong> {selectedExpert.specialization || 'N/A'}</p>
+          <p><strong>Experience:</strong> {selectedExpert.experience} Years</p>
+          <p><strong>Fees:</strong> ₹{selectedExpert.fees} /hr</p>
         </div>
-      )}
+      </div>
+
+      <div className={styles.infoSection}>
+        <p><strong>About:</strong> {selectedExpert.about || 'No description provided'}</p>
+        <p><strong>Availability:</strong> {selectedExpert.availableDays?.join(', ') || 'N/A'}</p>
+        <p><strong>Time:</strong> {selectedExpert.startTime} - {selectedExpert.endTime}</p>
+      </div>
+
+      <div className={styles.documentGrid}>
+        <div>
+          <p><strong>Identity Proof:</strong></p>
+          <img src={selectedExpert.idProof} className={styles.docImage} alt="ID Proof" />
+        </div>
+        <div>
+          <p><strong>Certificate:</strong></p>
+          <img src={selectedExpert.certificates} className={styles.docImage} alt="Certificate" />
+        </div>
+      </div>
+
+      <div className={styles.modalActions}>
+        {!selectedExpert.isVerified && (
+          <button className={styles.approveBtn} onClick={() => handleStatus(selectedExpert._id, 'approved')}>Approve Expert</button>
+        )}
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 };

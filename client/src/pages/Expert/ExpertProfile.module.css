@@ -1,0 +1,18 @@
+.container { padding: 40px 10%; background: #f4f7f6; min-height: 100vh; }
+.backBtn { cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; color: #0056b3; font-weight: bold; }
+.formCard { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.header { text-align: center; margin-bottom: 30px; }
+.mainGrid { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
+.profilePicWrapper { position: relative; width: 150px; height: 150px; margin: 0 auto 20px; }
+.profilePicWrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #0056b3; }
+.cameraBtn { position: absolute; bottom: 5px; right: 5px; background: #0056b3; color: white; padding: 8px; border-radius: 50%; cursor: pointer; }
+.fileUploadBox { margin-bottom: 15px; }
+.previewSmall { width: 100%; height: 80px; object-fit: cover; margin-top: 5px; border-radius: 5px; }
+.readOnly { background: #f9f9f9; color: #777; cursor: not-allowed; }
+.inputGroup { margin-bottom: 15px; display: flex; flex-direction: column; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center; }
+.availabilitySection { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+.daysGrid { display: flex; gap: 10px; margin-bottom: 15px; }
+.dayBtn { padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px; background: white; cursor: pointer; }
+.dayActive { background: #0056b3; color: white; border: none; padding: 8px 12px; border-radius: 5px; }
+.submitBtn { width: 100%; padding: 15px; background: #0056b3; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
