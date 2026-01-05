@@ -34,7 +34,7 @@ const registerController = async (req, res) => {
   }
 };
 
-// --- LOGIN USER (Updated to send full data) ---
+// --- LOGIN USER ---
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -53,7 +53,6 @@ const loginController = async (req, res) => {
       expiresIn: '1d',
     });
 
-    // പാസ്‌വേഡ് ഒഴിവാക്കി ബാക്കി എല്ലാ വിവരങ്ങളും അയക്കുന്നു
     const userData = user.toObject();
     delete userData.password;
 
@@ -70,7 +69,7 @@ const loginController = async (req, res) => {
   }
 };
 
-// --- GET CURRENT USER DATA (പുതിയ ഡാറ്റ സിങ്ക് ചെയ്യാൻ) ---
+// --- GET CURRENT USER DATA ---
 const getUserDataController = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -78,7 +77,7 @@ const getUserDataController = async (req, res) => {
     if (!user) {
       return res.status(200).send({ message: "User not found", success: false });
     }
-    user.password = undefined; // പാസ്‌വേഡ് സുരക്ഷയ്ക്കായി ഒഴിവാക്കുന്നു
+    user.password = undefined;
     res.status(200).send({
       success: true,
       data: user,
@@ -89,15 +88,17 @@ const getUserDataController = async (req, res) => {
   }
 };
 
-// --- UPDATE PROFILE ---
+// --- UPDATE PROFILE (Updated with Gender) ---
 const updateProfileController = async (req, res) => {
   try {
-    const { userId, name, age, specialization, experience, fees, about, availableDays, startTime, endTime } = req.body;
+    const { 
+      userId, name, age, gender, specialization, 
+      experience, fees, about, availableDays, startTime, endTime 
+    } = req.body;
     
     const updateData = { 
-      name, age, specialization, experience, fees, about, 
+      name, age, gender, specialization, experience, fees, about, 
       startTime, endTime,
-      // days വരുന്നത് സ്ട്രിംഗ് ആണെങ്കിൽ അറേ ആക്കി മാറ്റുന്നു
       availableDays: typeof availableDays === 'string' ? availableDays.split(',') : availableDays 
     };
 

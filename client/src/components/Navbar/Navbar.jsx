@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { FaUserCircle, FaSignOutAlt, FaSearch, FaCommentDots } from 'react-icons/fa';
 
-const Navbar = () => {
+const Navbar = ({ onSearch }) => { 
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null); 
@@ -21,6 +21,15 @@ const Navbar = () => {
     else if (role === 'expert') navigate('/expert-dashboard');
     else if (role === 'user') navigate('/user-dashboard'); 
     else navigate('/login');
+  };
+
+  const handleProfileClick = () => {
+    if (role === 'expert') {
+      navigate('/expert/profile'); 
+    } else {
+      navigate('/profile'); 
+    }
+    setShowDropdown(false);
   };
 
   useEffect(() => {
@@ -41,7 +50,11 @@ const Navbar = () => {
 
       {role === 'user' && (
         <div className={styles.searchBar}>
-          <input type="text" placeholder="Search for experts..." />
+          <input 
+            type="text" 
+            placeholder="Search for experts..." 
+            onChange={(e) => onSearch && onSearch(e.target.value)} 
+          />
           <FaSearch className={styles.searchIcon} />
         </div>
       )}
@@ -62,7 +75,7 @@ const Navbar = () => {
               
               {showDropdown && (
                 <div className={styles.dropdown}>
-                  <span onClick={() => navigate('/expert/profile')}>Profile</span>
+                  <span onClick={handleProfileClick}>Profile</span>
                   <span onClick={handleLogout} className={styles.logoutText}>Logout</span>
                 </div>
               )}
