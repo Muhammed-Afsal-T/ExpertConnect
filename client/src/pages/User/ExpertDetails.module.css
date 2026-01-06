@@ -1,0 +1,224 @@
+.container {
+    padding: 40px 8%;
+    background: #f4f7f6;
+    min-height: 100vh;
+}
+
+.backBtn {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 25px;
+    color: #0056b3;
+    font-weight: bold;
+}
+
+/* Main Layout Grid */
+.mainGrid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* Desktop default */
+    gap: 30px;
+}
+
+/* Left Side Styles */
+.infoSection {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.profileHeader {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 25px;
+}
+
+.profilePic {
+    width: 120px;
+    height: 120px;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.verifyIcon {
+    color: #28a745;
+    font-size: 18px;
+    margin-left: 5px;
+}
+
+.spec {
+    color: #0056b3;
+    font-weight: 600;
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+.rating {
+    margin-top: 8px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.star {
+    color: #ffc107;
+}
+
+.detailsContent {
+    margin-top: 30px;
+}
+
+.detailRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #555;
+}
+
+.aboutBox {
+    margin: 30px 0;
+}
+
+.aboutBox p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.reviewBtn {
+    background: #eee;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Right Side Styles */
+.bookingSection {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.daysGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.dayBox {
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.activeDay {
+    background: #0056b3;
+    color: white;
+    border-color: #0056b3;
+}
+
+.timeInfo {
+    background: #eef6ff;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #0056b3;
+    margin-top: 20px;
+}
+
+.actionArea {
+    margin-top: 40px;
+}
+
+.confirmBtn {
+    width: 100%;
+    padding: 15px;
+    background: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.confirmBtn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.pendingBtn {
+    width: 100%;
+    padding: 15px;
+    background: #ffc107;
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.cancelBtn {
+    width: 100%;
+    background: none;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* --- Responsive Media Queries --- */
+
+@media (max-width: 992px) {
+    .container {
+        padding: 20px 4%;
+    }
+    .mainGrid {
+        grid-template-columns: 1fr; /* ഫോണിൽ ഒരു കോളം മാത്രം */
+        gap: 20px;
+    }
+    .bookingSection {
+        position: relative; /* ഫോണിൽ സ്റ്റിക്കി ഒഴിവാക്കുന്നു */
+        top: 0;
+    }
+    .profileHeader {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    .detailRow {
+        flex-direction: column;
+        gap: 5px;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .infoSection, .bookingSection {
+        padding: 20px;
+    }
+    .profilePic {
+        width: 100px;
+        height: 100px;
+    }
+}

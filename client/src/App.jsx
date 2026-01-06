@@ -6,6 +6,7 @@ import ExpertHome from './pages/Expert/ExpertHome';
 import ExpertProfile from './pages/Expert/ExpertProfile';
 import UserDashboard from './pages/User/UserDashboard';
 import UserProfile from './pages/User/UserProfile';
+import ExpertDetails from './pages/User/ExpertDetails';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/expert/profile" element={<ExpertProfile />} />
         <Route path="/user-dashboard" element={<UserDashboard />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/book-expert/:id" element={<ExpertDetails />} />
       </Routes>
     </BrowserRouter>
   );

@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db'); // Import DB connection
+const bookingRoutes = require('./routes/bookingRoutes');
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(cors());
 
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/booking', bookingRoutes);
 
 // Test Route
 app.get('/', (req, res) => {
