@@ -130,4 +130,25 @@ const updateProfileController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController, updateProfileController, getUserDataController };
+
+// --- GET ALL VERIFIED EXPERTS ---
+const getAllExpertsController = async (req, res) => {
+  try {
+    const experts = await User.find({ role: 'expert', isVerified: true });
+    
+    res.status(200).send({
+      success: true,
+      message: "Verified experts fetched successfully",
+      data: experts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error while fetching experts",
+      error,
+    });
+  }
+};
+
+module.exports = { registerController, loginController, updateProfileController, getUserDataController, getAllExpertsController};

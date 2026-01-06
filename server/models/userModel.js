@@ -13,10 +13,14 @@ const userSchema = new mongoose.Schema({
   fees: { type: Number },
   about: { type: String },
   isVerified: { type: Boolean, default: false },
-  certificates: { type: String }, // URL for Certificate
-  idProof: { type: String },      // URL for ID Proof (പുതിയത്)
+  certificates: { type: String }, 
+  idProof: { type: String },      
   
-  // Availability (പുതിയത്)
+  // Ratings Logic 
+  averageRating: { type: Number, default: 0 }, 
+  numReviews: { type: Number, default: 0 },    // എത്ര പേർ റേറ്റിംഗ് നൽകി
+
+  // Availability
   availableDays: { type: [String], default: [] }, 
   startTime: { type: String },
   endTime: { type: String },

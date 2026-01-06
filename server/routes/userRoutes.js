@@ -3,7 +3,8 @@ const {
     registerController, 
     loginController, 
     updateProfileController,
-    getUserDataController
+    getUserDataController,
+    getAllExpertsController
 } = require('../controllers/userController');
 const upload = require('../middlewares/multerMiddleware');
 
@@ -18,5 +19,5 @@ router.post('/updateProfile', upload.fields([
     { name: 'certificates', maxCount: 1 },
     { name: 'idProof', maxCount: 1 }
 ]), updateProfileController);
-
+router.get('/getAllExperts', getAllExpertsController);
 module.exports = router;

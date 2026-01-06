@@ -4,7 +4,6 @@
     min-height: 90vh;
 }
 
-/* Filter Toggle Button */
 .filterToggle {
     display: flex;
     align-items: center;
@@ -25,7 +24,6 @@
     position: relative;
 }
 
-/* Slide-in Sidebar Logic */
 .filterSidebar {
     width: 280px;
     background: white;
@@ -35,20 +33,19 @@
     height: fit-content;
     position: sticky;
     top: 100px;
-    transition: 0.3s ease-in-out;
 }
 
-/* ഫിൽട്ടർ ബട്ടൺ ഞെക്കുമ്പോൾ മൊബൈലിലും മറ്റും കാണിക്കാൻ */
 @media (max-width: 768px) {
     .filterSidebar {
         position: fixed;
-        left: -320px; /* ആദ്യം മറഞ്ഞു നിൽക്കും */
+        left: -320px;
         top: 0;
         height: 100vh;
         z-index: 1001;
+        transition: 0.3s ease;
     }
     .filterSidebar.show {
-        left: 0; /* ബട്ടൺ ഞെക്കുമ്പോൾ പുറത്തേക്ക് വരും */
+        left: 0;
     }
 }
 
@@ -75,6 +72,17 @@
     color: #444;
 }
 
+.clearBtn {
+    width: 100%;
+    background: none;
+    border: 1px solid #0056b3;
+    color: #0056b3;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
 .closeFilter {
     display: none;
     width: 100%;
@@ -83,14 +91,12 @@
     color: white;
     border: none;
     border-radius: 5px;
-    margin-top: 20px;
 }
 
 @media (max-width: 768px) {
     .closeFilter { display: block; }
 }
 
-/* Expert Cards Grid */
 .expertGrid {
     flex: 1;
     display: grid;
@@ -103,7 +109,7 @@
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    transition: transform 0.3s;
+    transition: transform 0.3s ease;
 }
 
 .expertCard:hover {
@@ -129,8 +135,8 @@
 .specialization {
     color: #0056b3;
     font-weight: 600;
-    font-size: 14px;
     margin: 5px 0;
+    font-size: 14px;
 }
 
 .rating {
@@ -138,12 +144,18 @@
     align-items: center;
     gap: 5px;
     font-size: 14px;
-    color: #555;
     margin-bottom: 10px;
+    height: 20px;
 }
 
-.starIcon {
-    color: #ffc107;
+.starIcon { color: #ffc107; }
+
+.noRating {
+    color: #999;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .fees {
@@ -162,16 +174,15 @@
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
-    transition: 0.2s;
 }
 
-.bookBtn:hover {
-    background-color: #004494;
+.noDataSection {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 100px 0;
 }
 
 .noData {
-    text-align: center;
-    grid-column: 1 / -1;
-    padding: 50px;
     color: #999;
+    font-size: 18px;
 }
