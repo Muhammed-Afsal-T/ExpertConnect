@@ -18,12 +18,20 @@ const userSchema = new mongoose.Schema({
   
   // Ratings Logic 
   averageRating: { type: Number, default: 0 }, 
-  numReviews: { type: Number, default: 0 },    // എത്ര പേർ റേറ്റിംഗ് നൽകി
+  numReviews: { type: Number, default: 0 },
 
-  // Availability
-  availableDays: { type: [String], default: [] }, 
-  startTime: { type: String },
-  endTime: { type: String },
+  // --- PRO SLOT SYSTEM ---
+  availability: [
+    {
+      date: { type: String }, // Format: "YYYY-MM-DD"
+      slots: [
+        {
+          startTime: { type: String }, // e.g., "10:00 AM"
+          endTime: { type: String }    // e.g., "11:00 AM"
+        }
+      ]
+    }
+  ],
 
   // User Specific Fields
   gender: { type: String },

@@ -5,9 +5,9 @@ import styles from './AdminDashboard.module.css';
 
 const AdminDashboard = () => {
   const [experts, setExperts] = useState([]);
-  const [selectedExpert, setSelectedExpert] = useState(null); // മോഡൽ കാണിക്കാൻ
+  const [selectedExpert, setSelectedExpert] = useState(null);
 
-  // Get Experts
+  // എക്സ്പെർട്ടുകളെ ഫെച്ച് ചെയ്യുന്നു
   const getAllExperts = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/v1/admin/getAllExperts', {
@@ -23,7 +23,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Approve/Reject Logic
   const handleStatus = async (expertId, status) => {
     try {
       const res = await axios.post('http://localhost:5000/api/v1/admin/changeStatus', {
@@ -67,7 +66,6 @@ const AdminDashboard = () => {
               {experts.length > 0 ? (
                 experts.map((expert) => (
                   <tr key={expert._id}>
-                    {/* പേരിൽ ക്ലിക്ക് ചെയ്താൽ ഡീറ്റെയിൽസ് കാണിക്കും */}
                     <td 
                         className={styles.clickableName} 
                         onClick={() => setSelectedExpert(expert)}
@@ -92,7 +90,7 @@ const AdminDashboard = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" style={{textAlign: 'center'}}>No Experts Found (Check API URL)</td>
+                  <td colSpan="5" style={{textAlign: 'center'}}>No Experts Found</td>
                 </tr>
               )}
             </tbody>
@@ -105,23 +103,45 @@ const AdminDashboard = () => {
   <div className={styles.modalOverlay}>
     <div className={styles.modalContent}>
       <button className={styles.closeBtn} onClick={() => setSelectedExpert(null)}>X</button>
-      <h3>Professional Details</h3>
+      <h3>Expert Details</h3>
       
       <div className={styles.modalGrid}>
         <img src={selectedExpert.image} alt="Profile" className={styles.profilePic} />
         <div className={styles.details}>
           <p><strong>Name:</strong> {selectedExpert.name}</p>
           <p><strong>Email:</strong> {selectedExpert.email}</p>
+          {/* --- ഇതാ ഇവിടെയാണ് Age ആഡ് ചെയ്തിരിക്കുന്നത് --- */}
+          <p><strong>Age:</strong> {selectedExpert.age} Years</p>
           <p><strong>Profession:</strong> {selectedExpert.specialization || 'N/A'}</p>
           <p><strong>Experience:</strong> {selectedExpert.experience} Years</p>
-          <p><strong>Fees:</strong> ₹{selectedExpert.fees} /hr</p>
+          <p><strong>Fees:</strong> ₹{selectedExpert.fees} / session</p>
         </div>
       </div>
 
       <div className={styles.infoSection}>
         <p><strong>About:</strong> {selectedExpert.about || 'No description provided'}</p>
-        <p><strong>Availability:</strong> {selectedExpert.availableDays?.join(', ') || 'N/A'}</p>
-        <p><strong>Time:</strong> {selectedExpert.startTime} - {selectedExpert.endTime}</p>
+        
+        <div className={styles.availabilityBox}>
+            <p><strong>Availability & Slots:</strong></p>
+            {selectedExpert.availability && selectedExpert.availability.length > 0 ? (
+                <div className={styles.availabilityList}>
+                    {selectedExpert.availability.map((item, index) => (
+                        <div key={index} className={styles.dateRow}>
+                            <span className={styles.dateLabel}>{item.date}:</span>
+                            <div className={styles.slotTags}>
+                                {item.slots.map((s, si) => (
+                                    <span key={si} className={styles.slotTag}>
+                                        {s.startTime} - {s.endTime}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p className={styles.noData}>No availability set yet.</p>
+            )}
+        </div>
       </div>
 
       <div className={styles.documentGrid}>

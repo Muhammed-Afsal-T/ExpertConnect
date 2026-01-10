@@ -176,3 +176,51 @@
     max-height: 85vh; 
     overflow-y: auto; 
 }
+
+.availabilityBox {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.availabilityList {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dateRow {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.dateLabel {
+    font-weight: bold;
+    color: #0056b3;
+    font-size: 14px;
+}
+
+.slotTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.slotTag {
+    background: #e7f1ff;
+    color: #000000;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #cce5ff;
+}
+
+.noData {
+    color: #999;
+    font-style: italic;
+    font-size: 13px;
+}

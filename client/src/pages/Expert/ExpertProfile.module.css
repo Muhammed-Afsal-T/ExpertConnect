@@ -2,17 +2,35 @@
 .backBtn { cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; color: #0056b3; font-weight: bold; }
 .formCard { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 .header { text-align: center; margin-bottom: 30px; }
-.mainGrid { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
-.profilePicWrapper { position: relative; width: 150px; height: 150px; margin: 0 auto 20px; }
+.mainGrid { display: grid; grid-template-columns: 1fr 2.5fr; gap: 40px; }
+.profilePicWrapper { position: relative; width: 140px; height: 140px; margin: 0 auto 20px; }
 .profilePicWrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid #0056b3; }
 .cameraBtn { position: absolute; bottom: 5px; right: 5px; background: #0056b3; color: white; padding: 8px; border-radius: 50%; cursor: pointer; }
-.fileUploadBox { margin-bottom: 15px; }
-.previewSmall { width: 100%; height: 80px; object-fit: cover; margin-top: 5px; border-radius: 5px; }
+.fileUploadBox { margin-bottom: 15px; font-size: 14px; }
+.previewSmall { width: 100%; height: 85px; object-fit: cover; margin-top: 5px; border-radius: 8px; border: 1px solid #ddd; }
 .readOnly { background: #f9f9f9; color: #777; cursor: not-allowed; }
 .inputGroup { margin-bottom: 15px; display: flex; flex-direction: column; }
+.inputGroup label { font-weight: 600; margin-bottom: 5px; font-size: 14px; }
+.inputGroup input, .inputGroup textarea { padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center; }
-.availabilitySection { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
-.daysGrid { display: flex; gap: 10px; margin-bottom: 15px; }
-.dayBtn { padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px; background: white; cursor: pointer; }
-.dayActive { background: #0056b3; color: white; border: none; padding: 8px 12px; border-radius: 5px; }
-.submitBtn { width: 100%; padding: 15px; background: #0056b3; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+
+/* Availability Pro Styles */
+.availabilitySection { margin-top: 40px; border-top: 2px solid #f0f0f0; padding-top: 30px; }
+.availabilitySection h3 { margin-bottom: 20px; color: #333; display: flex; align-items: center; gap: 10px; }
+.datePickerRow { display: flex; gap: 15px; margin-bottom: 25px; }
+.datePickerRow input { padding: 10px; border: 1px solid #ddd; border-radius: 5px; flex: 1; }
+.addDateBtn { background: #0056b3; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+
+.availabilityGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+.dateCard { background: #fff; border: 1px solid #e0e0e0; padding: 20px; border-radius: 12px; transition: 0.3s; }
+.dateCard:hover { border-color: #0056b3; }
+.dateHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+.dateHeader h4 { margin: 0; color: #0056b3; }
+.deleteIcon { color: #dc3545; cursor: pointer; }
+
+.slotRow { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.slotRow input { padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+.removeSlot { color: #999; cursor: pointer; font-size: 14px; }
+.addSlotBtn { background: #e7f1ff; color: #0056b3; border: 1px dashed #0056b3; width: 100%; padding: 8px; border-radius: 5px; margin-top: 10px; cursor: pointer; font-size: 13px; font-weight: 600; }
+
+.submitBtn { width: 100%; padding: 16px; background: #0056b3; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 30px; } 

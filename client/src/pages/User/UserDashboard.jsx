@@ -148,7 +148,7 @@ const UserDashboard = () => {
                       )}
                     </div>
 
-                    <p className={styles.fees}>₹{expert.fees} /hr</p>
+                    <p className={styles.fees}>₹{expert.fees} </p>
                     <button 
                       className={styles.bookBtn}
                       onClick={() => navigate(`/book-expert/${expert._id}`)}

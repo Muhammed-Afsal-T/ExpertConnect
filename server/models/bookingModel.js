@@ -3,17 +3,21 @@ const mongoose = require('mongoose');
 const bookingSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // ബുക്ക് ചെയ്യുന്ന യൂസർ
+    ref: 'User',
     required: true,
   },
   expertId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // ബുക്ക് ചെയ്യപ്പെടുന്ന എക്സ്പെർട്ട്
+    ref: 'User',
     required: true,
   },
   day: {
-    type: String,
+    type: String, // e.g., "2026-01-10"
     required: true,
+  },
+  slot: {
+    startTime: { type: String, required: true }, // തിരഞ്ഞെടുത്ത സ്ലോട്ടിന്റെ തുടക്കം
+    endTime: { type: String, required: true }    // തിരഞ്ഞെടുത്ത സ്ലോട്ടിന്റെ അവസാനം
   },
   status: {
     type: String,

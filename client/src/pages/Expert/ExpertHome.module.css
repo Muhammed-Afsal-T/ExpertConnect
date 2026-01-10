@@ -1,104 +1,90 @@
-.container {
-    padding: 30px 50px;
-    background-color: #f8f9fa;
-    min-height: 90vh;
-}
-
-.header h1 {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #333;
-}
+.container { padding: 30px 5%; background-color: #f8f9fa; min-height: 90vh; }
+.header h1 { font-size: 28px; margin-bottom: 20px; }
 
 /* Banners */
-.pendingBanner {
+.pendingBanner { display: flex; align-items: center; gap: 15px; background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-bottom: 30px; }
+.completeBtn { margin-left: auto; background: #856404; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+.verifiedBanner { background: #d4edda; color: #155724; padding: 10px 20px; border-radius: 8px; margin-bottom: 30px; font-weight: 600; }
+
+/* Stats Grid */
+.statsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+.statCard { background: white; padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.iconBox { background: #e7f1ff; color: #0056b3; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; border-radius: 10px; }
+
+/* Requests List */
+.requestsSection { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.requestCard { 
+    border-bottom: 1px solid #eee; 
+    padding: 20px 0; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.userInfo { display: flex; align-items: center; gap: 18px; }
+.userImg { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #0056b3; }
+.userText h4 { margin: 0; font-size: 18px; color: #333; }
+
+.dateTime { 
+    margin: 5px 0 0; 
+    font-size: 14px; 
+    color: #666; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+}
+
+/* Action Buttons */
+.actionBtns { display: flex; gap: 12px; }
+.acceptBtn, .rejectBtn { 
+    border: none; 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    font-weight: 600; 
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.acceptBtn { background: #28a745; color: white; }
+.acceptBtn:hover { background: #218838; }
+
+.rejectBtn { background: #dc3545; color: white; }
+.rejectBtn:hover { background: #c82333; }
+
+/* Status Text for non-pending */
+.statusText { font-weight: bold; font-size: 14px; padding: 5px 12px; border-radius: 20px; }
+.accepted { background: #d4edda; color: #155724; }
+.rejected { background: #f8d7da; color: #721c24; }
+
+.noDataText { text-align: center; color: #999; padding: 20px; }
+
+.blockedAction {
     display: flex;
     align-items: center;
     gap: 15px;
-    background-color: #fff3cd;
-    color: #856404;
-    padding: 15px 25px;
-    border-radius: 8px;
-    margin-bottom: 30px;
-    border: 1px solid #ffeeba;
 }
 
-.completeBtn {
-    margin-left: auto;
-    background-color: #856404;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.verifiedBanner {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 10px 20px;
-    border-radius: 8px;
-    display: inline-block;
-    margin-bottom: 30px;
-    font-weight: 600;
-}
-
-/* Stats Cards */
-.statsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
-    margin-bottom: 40px;
-}
-
-.statCard {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
+.slotWarning {
     display: flex;
     align-items: center;
-    gap: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    gap: 5px;
+    color: #fd7e14; 
+    font-size: 13px;
+    font-weight: bold;
+    background: #fff4e6;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #ffe8cc;
 }
 
-.iconBox {
-    background-color: #e7f1ff;
-    color: #0056b3;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    font-size: 22px;
-}
-
-.statInfo h3 {
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.statInfo p {
-    color: #777;
-    font-size: 14px;
-}
-
-/* Requests Section */
-.requestsSection {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-.requestsSection h2 {
-    font-size: 20px;
-    margin-bottom: 20px;
-}
-
-.noDataText {
-    text-align: center;
-    color: #999;
-    padding: 20px;
+/* Mobile Responsive */
+@media (max-width: 600px) {
+    .requestCard { flex-direction: column; align-items: flex-start; gap: 15px; }
+    .actionBtns { width: 100%; justify-content: space-between; }
+    .acceptBtn, .rejectBtn { flex: 1; justify-content: center; }
+    .blockedAction {width: 100%; justify-content: space-between; margin-top: 10px;}
 }
