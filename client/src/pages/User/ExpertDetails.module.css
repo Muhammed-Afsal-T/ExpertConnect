@@ -47,6 +47,99 @@
     .profileHeader { flex-direction: column; text-align: center; }
 }
 
+.statusView {
+    display: flex;
+    flex-direction: column;
+}
+
+.statusTitle {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.bookingList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.statusCard {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 5px solid #ccc;
+}
+
+.statusCard.accepted { border-left-color: #28a745; background: #f0fff4; }
+.statusCard.pending { border-left-color: #ffc107; background: #fffdf0; }
+
+.statusHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.dateLabel { font-weight: bold; font-size: 16px; }
+.statusBadge { font-size: 12px; font-weight: bold; color: #666; }
+
+.slotDetails { font-size: 14px; color: #555; display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+
+.successMsg { color: #155724; }
+.successMsg p { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+
+.chatLinkBtn {
+    width: 100%;
+    padding: 12px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pendingMsg p { font-size: 13px; color: #856404; margin-bottom: 10px; }
+.miniCancel { background: none; border: 1px solid #dc3545; color: #dc3545; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+
+.anotherRequestArea {
+    margin-top: 30px;
+    text-align: center;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.anotherRequestArea p { font-size: 14px; color: #666; margin-bottom: 5px; }
+.linkButton {
+    background: none;
+    border: none;
+    color: #0056b3;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.calendarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.viewStatusBtn {
+    background: #eee;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 .bookedSlot {
     background-color: #f1f1f1 !important;
     color: #999 !important;

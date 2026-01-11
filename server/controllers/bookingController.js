@@ -1,5 +1,9 @@
 const Booking = require('../models/bookingModel');
 
+const getTodayIST = () => {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+};
+
 // 1. റിക്വസ്റ്റ് അയക്കാൻ
 const bookExpertController = async (req, res) => {
   try {
@@ -18,10 +22,17 @@ const bookExpertController = async (req, res) => {
   }
 };
 
-// 2. എക്സ്‌പെർട്ടിന് വന്ന എല്ലാ ബുക്കിംഗുകളും എടുക്കാൻ
+// 2. എക്സ്‌പെർട്ടിന് വന്ന എല്ലാ ബുക്കിംഗുകളും എടുക്കാൻ (Auto-Complete ഉൾപ്പെടുത്തി)
 const getExpertBookingsController = async (req, res) => {
   try {
     const { expertId } = req.body;
+    const today = getTodayIST();
+
+    await Booking.updateMany(
+      { expertId, day: { $lt: today }, status: 'accepted' },
+      { $set: { status: 'completed' } }
+    );
+
     const bookings = await Booking.find({ expertId }).populate('userId', 'name image'); 
     res.status(200).send({ success: true, data: bookings });
   } catch (error) {
@@ -34,7 +45,6 @@ const updateStatusController = async (req, res) => {
   try {
     const { bookingId, status } = req.body;
     
-    // അക്സെപ്റ്റ് ചെയ്യാൻ ശ്രമിക്കുമ്പോൾ ആ സ്ലോട്ട് ഫ്രീയാണോ എന്ന് നോക്കുന്നു
     if (status === 'accepted') {
       const currentBooking = await Booking.findById(bookingId);
       const slotTaken = await Booking.findOne({
@@ -59,12 +69,27 @@ const updateStatusController = async (req, res) => {
   }
 };
 
-// 4. സ്റ്റാറ്റസ് ചെക്ക് ചെയ്യാൻ
+// 4. സ്റ്റാറ്റസ് ചെക്ക് ചെയ്യാൻ 
 const checkBookingStatusController = async (req, res) => {
   try {
     const { userId, expertId } = req.body;
-    const booking = await Booking.findOne({ userId, expertId, status: 'pending' });
-    res.status(200).send({ success: true, isPending: !!booking, data: booking });
+    const today = getTodayIST();
+
+    await Booking.updateMany(
+      { userId, expertId, day: { $lt: today }, status: 'accepted' },
+      { $set: { status: 'completed' } }
+    );
+
+    const activeBookings = await Booking.find({
+      userId,
+      expertId,
+      status: { $in: ['pending', 'accepted'] }
+    });
+
+    res.status(200).send({ 
+      success: true, 
+      bookings: activeBookings 
+    });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error checking status", error });
   }
