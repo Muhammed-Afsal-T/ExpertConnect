@@ -67,7 +67,7 @@ const Navbar = ({ onSearch }) => {
         ) : (
           <>
             <div className={styles.iconItem} title="Chat">
-              <FaCommentDots size={22} />
+              <FaCommentDots size={22} onClick={() => navigate('/chat')} style={{cursor: 'pointer'}}/>
             </div>
             
             <div className={styles.profileSection} ref={dropdownRef} onClick={() => setShowDropdown(!showDropdown)}>

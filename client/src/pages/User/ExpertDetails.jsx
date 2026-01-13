@@ -146,7 +146,7 @@ const ExpertDetails = () => {
                       </div>
                       <p className={styles.slotDetails}><FaRegClock /> {b.slot.startTime} - {b.slot.endTime}</p>
                       
-                      {b.status === 'accepted' ? (
+                      {(b.status === 'accepted' || b.status === 'paid') ? (
                         <div className={styles.successMsg}>
                           <p><FaCheck /> Your slot is ready for the next process.</p>
                           <button className={styles.chatLinkBtn} onClick={() => navigate('/chat')}>
@@ -199,7 +199,7 @@ const ExpertDetails = () => {
 
                 {selectedDateObj && (
                   <>
-                    <h3 style={{marginTop: '25px'}}><FaRegClock /> Available Slots</h3>
+                    <h3 style={{marginTop: '25px'}}><FaRegClock /> Available Slots <span style={{ fontWeight: '300', fontSize: '0.9em', opacity: 0.7 }}>(24 Hour Format)</span></h3>
                     <div className={styles.slotGrid}>
                       {selectedDateObj.slots.map((slot, index) => {
                         const booked = isSlotBooked(selectedDateObj.date, slot.startTime);

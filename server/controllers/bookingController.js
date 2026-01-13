@@ -4,6 +4,15 @@ const getTodayIST = () => {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 };
 
+const getCurrentTimeIST = () => {
+  return new Date().toLocaleTimeString('en-GB', { 
+    timeZone: 'Asia/Kolkata', 
+    hour12: false, 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+};
+
 // 1. റിക്വസ്റ്റ് അയക്കാൻ
 const bookExpertController = async (req, res) => {
   try {
@@ -22,17 +31,15 @@ const bookExpertController = async (req, res) => {
   }
 };
 
-// 2. എക്സ്‌പെർട്ടിന് വന്ന എല്ലാ ബുക്കിംഗുകളും എടുക്കാൻ (Auto-Complete ഉൾപ്പെടുത്തി)
+// 2. എക്സ്‌പെർട്ടിന് വന്ന ബുക്കിംഗുകൾ
 const getExpertBookingsController = async (req, res) => {
   try {
     const { expertId } = req.body;
     const today = getTodayIST();
-
     await Booking.updateMany(
-      { expertId, day: { $lt: today }, status: 'accepted' },
+      { expertId, day: { $lt: today }, status: { $in: ['accepted', 'paid'] } },
       { $set: { status: 'completed' } }
     );
-
     const bookings = await Booking.find({ expertId }).populate('userId', 'name image'); 
     res.status(200).send({ success: true, data: bookings });
   } catch (error) {
@@ -40,28 +47,55 @@ const getExpertBookingsController = async (req, res) => {
   }
 };
 
-// 3. സ്റ്റാറ്റസ് മാറ്റാൻ (Accept / Reject)
+// 3. യൂസറുടെ എല്ലാ ആക്ടീവ് ബുക്കിംഗുകളും എടുക്കാൻ (ചാറ്റ് ലിസ്റ്റിന് വേണ്ടി)
+const getUserActiveBookingsController = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const today = getTodayIST();
+    const now = getCurrentTimeIST();
+
+    // പഴയവ കംപ്ലീറ്റ് ആക്കുന്നു
+    await Booking.updateMany(
+      { userId, day: { $lt: today }, status: { $in: ['accepted', 'paid'] } },
+      { $set: { status: 'completed' } }
+    );
+
+    // യൂസറുടെ എല്ലാ പെൻഡിംഗ്, അക്സെപ്റ്റഡ്, പെയ്ഡ് ബുക്കിംഗുകൾ എടുക്കുന്നു
+    // expertId populate ചെയ്യുന്നത് വഴി പേരും ചിത്രവും പ്രൊഫഷനും ലഭിക്കും
+    const bookings = await Booking.find({
+      userId,
+      status: { $in: ['pending', 'accepted', 'paid'] }
+    }).populate('expertId', 'name image specialization');
+
+    const bookingsWithActiveStatus = bookings.map(b => {
+      const isToday = b.day === today;
+      const isWithinTime = now >= b.slot.startTime && now <= b.slot.endTime;
+      return {
+        ...b.toObject(),
+        isVideoActive: b.status === 'paid' && isToday && isWithinTime
+      };
+    });
+
+    res.status(200).send({ success: true, bookings: bookingsWithActiveStatus });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Error fetching active bookings", error });
+  }
+};
+
+// 4. സ്റ്റാറ്റസ് മാറ്റാൻ (Accept / Reject)
 const updateStatusController = async (req, res) => {
   try {
     const { bookingId, status } = req.body;
-    
     if (status === 'accepted') {
       const currentBooking = await Booking.findById(bookingId);
       const slotTaken = await Booking.findOne({
         expertId: currentBooking.expertId,
         day: currentBooking.day,
         "slot.startTime": currentBooking.slot.startTime,
-        status: 'accepted'
+        status: { $in: ['accepted', 'paid'] } 
       });
-      
-      if (slotTaken) {
-        return res.status(200).send({ 
-          success: false, 
-          message: "You have already accepted another request for this slot!" 
-        });
-      }
+      if (slotTaken) return res.status(200).send({ success: false, message: "Slot already taken!" });
     }
-
     const booking = await Booking.findByIdAndUpdate(bookingId, { status }, { new: true });
     res.status(200).send({ success: true, message: `Booking ${status}`, data: booking });
   } catch (error) {
@@ -69,33 +103,32 @@ const updateStatusController = async (req, res) => {
   }
 };
 
-// 4. സ്റ്റാറ്റസ് ചെക്ക് ചെയ്യാൻ 
+// 5. പെയ്‌മെന്റ് അപ്‌ഡേറ്റ് ചെയ്യാൻ
+const updatePaymentStatusController = async (req, res) => {
+  try {
+    const { bookingId } = req.body;
+    const booking = await Booking.findByIdAndUpdate(bookingId, { status: 'paid' }, { new: true });
+    res.status(200).send({ success: true, message: "Payment Successful!", data: booking });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Payment update failed", error });
+  }
+};
+
+// 6. സിംഗിൾ ബുക്കിംഗ് സ്റ്റാറ്റസ് ചെക്ക് (ExpertDetails പേജിന് വേണ്ടി)
 const checkBookingStatusController = async (req, res) => {
   try {
     const { userId, expertId } = req.body;
     const today = getTodayIST();
-
-    await Booking.updateMany(
-      { userId, expertId, day: { $lt: today }, status: 'accepted' },
-      { $set: { status: 'completed' } }
-    );
-
     const activeBookings = await Booking.find({
-      userId,
-      expertId,
-      status: { $in: ['pending', 'accepted'] }
+      userId, expertId,
+      status: { $in: ['pending', 'accepted', 'paid'] }
     });
-
-    res.status(200).send({ 
-      success: true, 
-      bookings: activeBookings 
-    });
+    res.status(200).send({ success: true, bookings: activeBookings });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error checking status", error });
   }
 };
 
-// 5. ക്യാൻസൽ ചെയ്യാൻ
 const cancelBookingController = async (req, res) => {
   try {
     const { userId, expertId } = req.body;
@@ -107,6 +140,7 @@ const cancelBookingController = async (req, res) => {
 };
 
 module.exports = { 
-  bookExpertController, getExpertBookingsController, 
-  updateStatusController, checkBookingStatusController, cancelBookingController 
+  bookExpertController, getExpertBookingsController, updateStatusController, 
+  updatePaymentStatusController, checkBookingStatusController, 
+  cancelBookingController, getUserActiveBookingsController 
 };

@@ -1,10 +1,8 @@
 const express = require('express');
 const { 
-    bookExpertController, 
-    checkBookingStatusController, 
-    cancelBookingController,
-    getExpertBookingsController,
-    updateStatusController
+    bookExpertController, checkBookingStatusController, cancelBookingController,
+    getExpertBookingsController, updateStatusController, 
+    updatePaymentStatusController, getUserActiveBookingsController 
 } = require('../controllers/bookingController');
 
 const router = express.Router();
@@ -14,5 +12,7 @@ router.post('/check-status', checkBookingStatusController);
 router.post('/cancel-booking', cancelBookingController);
 router.post('/get-expert-bookings', getExpertBookingsController);
 router.post('/update-status', updateStatusController);
+router.post('/update-payment-status', updatePaymentStatusController);
+router.post('/get-user-active-bookings', getUserActiveBookingsController);
 
 module.exports = router;

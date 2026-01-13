@@ -73,7 +73,7 @@
 
 .statusCard.accepted { border-left-color: #28a745; background: #f0fff4; }
 .statusCard.pending { border-left-color: #ffc107; background: #fffdf0; }
-
+.statusCard.paid { border-left-color: #28a745; background: #f0fff4; }
 .statusHeader {
     display: flex;
     justify-content: space-between;

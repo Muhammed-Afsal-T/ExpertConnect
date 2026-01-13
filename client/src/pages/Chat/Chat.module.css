@@ -1,0 +1,61 @@
+.chatContainer { display: flex; height: calc(100vh - 70px); background: #f0f2f5; overflow: hidden; }
+
+/* Sidebar */
+.sidebar { width: 320px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
+.sidebarHeader { padding: 20px; border-bottom: 1px solid #eee; }
+.backAction { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #0056b3; font-weight: bold; margin-bottom: 10px; }
+.expertList { flex: 1; overflow-y: auto; }
+.expertCard { display: flex; align-items: center; gap: 15px; padding: 15px; cursor: pointer; border-bottom: 1px solid #f9f9f9; transition: 0.2s; }
+.expertCard:hover { background: #f5f6f7; }
+.activeCard { background: #e7f1ff; }
+
+/* Profile Pic with Blue Border */
+.expertCard img, .headerProfilePic { 
+    width: 50px; 
+    height: 50px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 2px solid #0056b3; /* Blue Border */
+}
+
+.expertInfo h4 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 5px; }
+.verified { color: #28a745; font-size: 12px; }
+.expertInfo p { margin: 3px 0 0; font-size: 13px; color: #777; }
+
+/* Main Chat */
+.mainChat { flex: 1; display: flex; flex-direction: column; position: relative; }
+.chatHeader { background: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
+.headerLeft { display: flex; align-items: center; gap: 15px; }
+.active { color: #28a745; font-size: 12px; font-weight: bold; }
+.notActive { color: #999; font-size: 12px; font-weight: 500; }
+
+.headerRight { display: flex; align-items: center; gap: 20px; }
+.slotBtn { background: #0056b3; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; }
+.videoIcon { font-size: 22px; color: #0056b3; cursor: pointer; transition: 0.3s; }
+.videoIcon:hover { color: #28a745; }
+.disabled { color: #ccc; cursor: help; }
+
+/* Payment Prompt */
+.paymentPrompt { flex: 1; display: flex; justify-content: center; align-items: center; background: #fafafa; }
+.promptBox { text-align: center; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.payBtn { background: #28a745; color: white; border: none; padding: 12px 30px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
+
+/* Messages */
+.messageArea { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9; }
+.emptyChat { text-align: center; color: #bbb; margin-top: 20px; font-style: italic; }
+.messageRow { display: flex; width: 100%; }
+.received { background: #fff; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 60%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.sent { background: #0056b3; color: white; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 60%; margin-left: auto; }
+
+.inputArea { background: white; padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-top: 1px solid #eee; }
+.inputArea input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
+.inputArea button { background: #0056b3; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
+
+/* Modal Styles */
+.modalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.modalContent { background: white; padding: 30px; border-radius: 15px; width: 400px; text-align: center; }
+.amountText { font-size: 20px; font-weight: bold; color: #28a745; margin: 10px 0; }
+.finalPayBtn { width: 100%; padding: 12px; background: #0056b3; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+.closeBtn { margin-top: 15px; background: none; border: none; color: #777; cursor: pointer; text-decoration: underline; }
+
+.emptyState { flex: 1; display: flex; justify-content: center; align-items: center; color: #999; font-size: 18px; }
