@@ -59,3 +59,63 @@
 .closeBtn { margin-top: 15px; background: none; border: none; color: #777; cursor: pointer; text-decoration: underline; }
 
 .emptyState { flex: 1; display: flex; justify-content: center; align-items: center; color: #999; font-size: 18px; }
+.successView {
+    padding: 20px 10px;
+    text-align: center;
+}
+
+.checkIcon {
+    width: 60px;
+    height: 60px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    margin: 0 auto 15px;
+}
+
+.successView h2 { color: #28a745; margin-bottom: 10px; }
+.successView p { color: #666; font-size: 14px; }
+
+.reminderBox {
+    background: #f0f7ff;
+    padding: 20px;
+    border-radius: 12px;
+    margin: 25px 0;
+    border: 1px dashed #0056b3;
+}
+
+.calendarLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #fff;
+    color: #0056b3;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    border: 1px solid #0056b3;
+    transition: 0.2s;
+}
+
+.calendarLink:hover {
+    background: #0056b3;
+    color: white;
+}
+
+.doneBtn {
+    width: 100%;
+    padding: 12px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}

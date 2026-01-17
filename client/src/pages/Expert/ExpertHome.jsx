@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar/Navbar';
 import axios from 'axios';
 import styles from './ExpertHome.module.css';
-import { FaCalendarCheck, FaWallet, FaClock, FaExclamationTriangle, FaCheck, FaTimes, FaRegCalendarAlt, FaBan } from 'react-icons/fa';
+import { FaCalendarCheck, FaWallet, FaClock, FaExclamationTriangle, FaCheck, FaTimes, FaRegCalendarAlt, FaBan, FaUserAlt, FaEnvelope, FaBriefcase, FaVenusMars, FaInfoCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const ExpertHome = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
@@ -20,11 +21,10 @@ const ExpertHome = () => {
     try {
       const res = await axios.post('http://localhost:5000/api/v1/booking/get-expert-bookings', { expertId });
       if (res.data.success) {
-        // --- റിക്വസ്റ്റുകളെ സോർട്ട് ചെയ്യുന്ന ലോജിക് ---
         const sortedData = res.data.data.sort((a, b) => {
-          if (a.status === 'pending' && b.status !== 'pending') return -1; // a (pending) മുകളിലേക്ക് വരുന്നു
-          if (a.status !== 'pending' && b.status === 'pending') return 1;  // b (pending) മുകളിലേക്ക് വരുന്നു
-          return 0; // മറ്റുള്ളവയുടെ ക്രമം മാറ്റുന്നില്ല
+          if (a.status === 'pending' && b.status !== 'pending') return -1;
+          if (a.status !== 'pending' && b.status === 'pending') return 1;
+          return 0;
         });
         setBookings(sortedData);
       }
@@ -38,7 +38,7 @@ const ExpertHome = () => {
       const res = await axios.post('http://localhost:5000/api/v1/booking/update-status', { bookingId, status });
       if (res.data.success) {
         alert(`Booking ${status}`);
-        fetchBookings(user._id); // സ്റ്റാറ്റസ് മാറ്റിയ ശേഷം ലിസ്റ്റ് വീണ്ടും സോർട്ട് ചെയ്ത് വരും
+        fetchBookings(user._id);
       } else {
         alert(res.data.message);
       }
@@ -98,10 +98,10 @@ const ExpertHome = () => {
                 
                 return (
                   <div key={booking._id} className={styles.requestCard}>
-                    <div className={styles.userInfo}>
+                    <div className={styles.userInfo} onClick={() => setSelectedUser(booking.userId)} style={{cursor: 'pointer'}}>
                       <img src={booking.userId?.image} alt="User" className={styles.userImg} />
                       <div className={styles.userText}>
-                        <h4>{booking.userId?.name}</h4>
+                        <h4>{booking.userId?.name} <span className={styles.viewLink}>(View Details)</span></h4>
                         <p className={styles.dateTime}>
                           <FaRegCalendarAlt /> {booking.day} | <FaClock /> {booking.slot?.startTime} - {booking.slot?.endTime}
                         </p>
@@ -136,6 +136,27 @@ const ExpertHome = () => {
           </div>
         </div>
       </div>
+
+      {/* --- User Details Modal --- */}
+      {selectedUser && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <button className={styles.closeBtn} onClick={() => setSelectedUser(null)}>×</button>
+            <div className={styles.modalHeader}>
+               <img src={selectedUser.image} alt="User" className={styles.modalImg} />
+               <h3>User Details</h3>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.detailRow}><FaUserAlt /> <span><strong>Name:</strong> {selectedUser.name}</span></div>
+              <div className={styles.detailRow}><FaEnvelope /> <span><strong>Email:</strong> {selectedUser.email}</span></div>
+              <div className={styles.detailRow}><FaInfoCircle /> <span><strong>Age:</strong> {selectedUser.age || 'N/A'}</span></div>
+              <div className={styles.detailRow}><FaVenusMars /> <span><strong>Gender:</strong> {selectedUser.gender || 'N/A'}</span></div>
+              <div className={styles.detailRow}><FaBriefcase /> <span><strong>Profession/Interest:</strong> {selectedUser.specialization || 'N/A'}</span></div>
+            </div>
+            <button className={styles.doneBtn} onClick={() => setSelectedUser(null)}>Done</button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

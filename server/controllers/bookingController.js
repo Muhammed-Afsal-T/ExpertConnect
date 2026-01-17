@@ -36,35 +36,37 @@ const getExpertBookingsController = async (req, res) => {
   try {
     const { expertId } = req.body;
     const today = getTodayIST();
+
     await Booking.updateMany(
       { expertId, day: { $lt: today }, status: { $in: ['accepted', 'paid'] } },
       { $set: { status: 'completed' } }
     );
-    const bookings = await Booking.find({ expertId }).populate('userId', 'name image'); 
+
+    const bookings = await Booking.find({ expertId })
+      .populate('userId', 'name email image age gender specialization'); 
+      
     res.status(200).send({ success: true, data: bookings });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error fetching bookings", error });
   }
 };
 
-// 3. യൂസറുടെ എല്ലാ ആക്ടീവ് ബുക്കിംഗുകളും എടുക്കാൻ (ചാറ്റ് ലിസ്റ്റിന് വേണ്ടി)
+// 3. യൂസറുടെ ആക്ടീവ് ബുക്കിംഗുകൾ (ചാറ്റ് ലിസ്റ്റിന് വേണ്ടി)
 const getUserActiveBookingsController = async (req, res) => {
   try {
     const { userId } = req.body;
     const today = getTodayIST();
     const now = getCurrentTimeIST();
 
-    // പഴയവ കംപ്ലീറ്റ് ആക്കുന്നു
     await Booking.updateMany(
       { userId, day: { $lt: today }, status: { $in: ['accepted', 'paid'] } },
       { $set: { status: 'completed' } }
     );
 
-    // യൂസറുടെ എല്ലാ പെൻഡിംഗ്, അക്സെപ്റ്റഡ്, പെയ്ഡ് ബുക്കിംഗുകൾ എടുക്കുന്നു
-    // expertId populate ചെയ്യുന്നത് വഴി പേരും ചിത്രവും പ്രൊഫഷനും ലഭിക്കും
+    
     const bookings = await Booking.find({
       userId,
-      status: { $in: ['pending', 'accepted', 'paid'] }
+      status: { $in: ['accepted', 'paid'] } 
     }).populate('expertId', 'name image specialization');
 
     const bookingsWithActiveStatus = bookings.map(b => {
@@ -114,7 +116,7 @@ const updatePaymentStatusController = async (req, res) => {
   }
 };
 
-// 6. സിംഗിൾ ബുക്കിംഗ് സ്റ്റാറ്റസ് ചെക്ക് (ExpertDetails പേജിന് വേണ്ടി)
+// 6. സിംഗിൾ ബുക്കിംഗ് സ്റ്റാറ്റസ് ചെക്ക് 
 const checkBookingStatusController = async (req, res) => {
   try {
     const { userId, expertId } = req.body;
