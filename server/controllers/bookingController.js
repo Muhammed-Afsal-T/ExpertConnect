@@ -141,8 +141,34 @@ const cancelBookingController = async (req, res) => {
   }
 };
 
+const getExpertChatUsersController = async (req, res) => {
+  try {
+    const { expertId } = req.body;
+    const today = getTodayIST();
+    const now = getCurrentTimeIST();
+
+    const bookings = await Booking.find({
+      expertId,
+      status: 'paid'
+    }).populate('userId', 'name image specialization'); 
+
+    const bookingsWithActiveStatus = bookings.map(b => {
+      const isToday = b.day === today;
+      const isWithinTime = now >= b.slot.startTime && now <= b.slot.endTime;
+      return {
+        ...b.toObject(),
+        isVideoActive: isToday && isWithinTime
+      };
+    });
+
+    res.status(200).send({ success: true, bookings: bookingsWithActiveStatus });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Error fetching chat users", error });
+  }
+};
+
 module.exports = { 
   bookExpertController, getExpertBookingsController, updateStatusController, 
   updatePaymentStatusController, checkBookingStatusController, 
-  cancelBookingController, getUserActiveBookingsController 
+  cancelBookingController, getUserActiveBookingsController, getExpertChatUsersController
 };

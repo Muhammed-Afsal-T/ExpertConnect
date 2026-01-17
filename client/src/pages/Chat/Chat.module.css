@@ -119,3 +119,39 @@
     font-weight: bold;
     cursor: pointer;
 }
+
+.modalImg {
+    width: 90px !important;
+    height: 90px !important;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #0056b3;
+    margin: 0 auto 15px;
+    display: block;
+}
+
+.modalHeader {
+    text-align: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.modalBody {
+    text-align: left; 
+    padding: 0 15px;
+}
+
+.detailRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 15px;
+}
+
+.detailRow svg {
+    color: #0056b3;
+    width: 18px;
+}

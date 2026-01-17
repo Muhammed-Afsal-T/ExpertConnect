@@ -32,6 +32,14 @@ const Navbar = ({ onSearch }) => {
     setShowDropdown(false);
   };
 
+  const handleChatClick = () => {
+    if (role === 'expert') {
+      navigate('/expert/chat');
+    } else {
+      navigate('/chat');
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -67,7 +75,7 @@ const Navbar = ({ onSearch }) => {
         ) : (
           <>
             <div className={styles.iconItem} title="Chat">
-              <FaCommentDots size={22} onClick={() => navigate('/chat')} style={{cursor: 'pointer'}}/>
+              <FaCommentDots size={22} onClick={handleChatClick} style={{cursor: 'pointer'}}/>
             </div>
             
             <div className={styles.profileSection} ref={dropdownRef} onClick={() => setShowDropdown(!showDropdown)}>

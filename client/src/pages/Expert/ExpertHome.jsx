@@ -52,7 +52,7 @@ const ExpertHome = () => {
   };
 
   const stats = {
-    totalBookings: bookings.filter(b => b.status === 'accepted').length,
+    totalBookings: bookings.filter(b => b.status === 'accepted' || b.status === 'paid').length,
     totalEarnings: bookings.filter(b => b.status === 'completed').reduce((acc, curr) => acc + curr.amount, 0),
     pendingRequests: bookings.filter(b => b.status === 'pending').length
   };
