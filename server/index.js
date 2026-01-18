@@ -8,7 +8,7 @@ dotenv.config();
 
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-
+const messageRoutes = require('./routes/messageRoutes');
 // Configuration
 const app = express();
 
@@ -22,6 +22,7 @@ app.use(cors());
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/booking', bookingRoutes);
+app.use('/api/v1/message', messageRoutes);
 
 // Test Route
 app.get('/', (req, res) => {
