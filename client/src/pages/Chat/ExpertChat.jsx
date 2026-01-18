@@ -1,22 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
-import styles from './Chat.module.css'; 
+import styles from './Chat.module.css';
 import { FaVideo, FaPaperPlane, FaArrowLeft, FaRegCalendarAlt, FaClock, FaUserAlt, FaBriefcase } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import io from 'socket.io-client';
+
+const socket = io.connect("http://localhost:5000");
 
 const ExpertChat = () => {
   const navigate = useNavigate();
+  const scrollRef = useRef(); 
   const [expert] = useState(JSON.parse(localStorage.getItem('user')));
   const [paidUsers, setPaidUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
-  const [showSlotModal, setShowSlotModal] = useState(false); 
+  const [showSlotModal, setShowSlotModal] = useState(false);
 
   useEffect(() => {
     fetchPaidUsers();
   }, []);
+
+  // --- Socket.io Logic Start ---
+
+  useEffect(() => {
+    if (selectedUser) {
+      socket.emit("join_chat", selectedUser._id);
+      fetchMessages();
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      if (selectedUser && data.bookingId === selectedUser._id) {
+        setMessages((prev) => [...prev, data]);
+      }
+    });
+
+    return () => socket.off("receive_message");
+  }, [selectedUser]);
+
+  // --- Socket.io Logic End ---
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const fetchPaidUsers = async () => {
     try {
@@ -29,6 +58,17 @@ const ExpertChat = () => {
     }
   };
 
+  const fetchMessages = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/v1/message/get-messages/${selectedUser._id}`);
+      if (res.data.success) {
+        setMessages(res.data.messages);
+      }
+    } catch (error) {
+      console.log("Error fetching messages", error);
+    }
+  };
+
   const handleVideoClick = () => {
     if (selectedUser.isVideoActive) {
       window.open(`https://meet.jit.si/ExpertConnect_${selectedUser._id}`, '_blank');
@@ -37,11 +77,29 @@ const ExpertChat = () => {
     }
   };
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputText.trim()) return;
-    setMessages([...messages, { text: inputText, sender: 'expert' }]);
-    setInputText("");
+
+    try {
+      const messageData = {
+        bookingId: selectedUser._id,
+        sender: expert._id,
+        receiver: selectedUser.userId._id,
+        message: inputText
+      };
+
+      const res = await axios.post('http://localhost:5000/api/v1/message/send-message', messageData);
+      
+      if (res.data.success) {
+        socket.emit("send_message", res.data.newMessage);
+
+        setMessages([...messages, res.data.newMessage]);
+        setInputText("");
+      }
+    } catch (error) {
+      console.log("Error sending message", error);
+    }
   };
 
   return (
@@ -103,8 +161,10 @@ const ExpertChat = () => {
               <div className={styles.messageArea}>
                 {messages.length === 0 && <p className={styles.emptyChat}>Start conversation with {selectedUser.userId?.name}</p>}
                 {messages.map((m, i) => (
-                  <div key={i} className={styles.messageRow}>
-                    <p className={m.sender === 'expert' ? styles.sent : styles.received}>{m.text}</p>
+                  <div key={i} ref={scrollRef} className={styles.messageRow}>
+                    <p className={m.sender === expert._id ? styles.sent : styles.received}>
+                      {m.message}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -121,21 +181,20 @@ const ExpertChat = () => {
         </div>
       </div>
 
-      {/* --- Slot Details Modal --- */}
       {showSlotModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-            <div className={styles.modalHeader}>
-               <img src={selectedUser.userId?.image} alt="User" className={styles.modalImg} />
-               <h3>Appointment Slot</h3>
-            </div>
-            <div className={styles.modalBody}>
-              <div className={styles.detailRow}><FaUserAlt /> <span><strong>Name:</strong> {selectedUser.userId?.name}</span></div>
-              <div className={styles.detailRow}><FaBriefcase /> <span><strong>Specialization:</strong> {selectedUser.userId?.specialization || 'N/A'}</span></div>
-              <div className={styles.detailRow}><FaRegCalendarAlt /> <span><strong>Date:</strong> {selectedUser.day}</span></div>
-              <div className={styles.detailRow}><FaClock /> <span><strong>Time:</strong> {selectedUser.slot.startTime} - {selectedUser.slot.endTime}</span></div>
-            </div>
-            <button className={styles.doneBtn} onClick={() => setShowSlotModal(false)}>Done</button>
+             <div className={styles.modalHeader}>
+                <img src={selectedUser.userId?.image} alt="User" className={styles.modalImg} />
+                <h3>Appointment Slot</h3>
+             </div>
+             <div className={styles.modalBody}>
+               <div className={styles.detailRow}><FaUserAlt /> <span><strong>Name:</strong> {selectedUser.userId?.name}</span></div>
+               <div className={styles.detailRow}><FaBriefcase /> <span><strong>Specialization:</strong> {selectedUser.userId?.specialization || 'N/A'}</span></div>
+               <div className={styles.detailRow}><FaRegCalendarAlt /> <span><strong>Date:</strong> {selectedUser.day}</span></div>
+               <div className={styles.detailRow}><FaClock /> <span><strong>Time:</strong> {selectedUser.slot.startTime} - {selectedUser.slot.endTime}</span></div>
+             </div>
+             <button className={styles.doneBtn} onClick={() => setShowSlotModal(false)}>Done</button>
           </div>
         </div>
       )}

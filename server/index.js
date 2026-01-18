@@ -1,16 +1,20 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config/db'); // Import DB connection
-const bookingRoutes = require('./routes/bookingRoutes');
+const connectDB = require('./config/db'); 
+const http = require('http');
+const { Server } = require('socket.io');
 
 dotenv.config();
 
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const messageRoutes = require('./routes/messageRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');
+
 // Configuration
 const app = express();
+const server = http.createServer(app);
 
 // Connect to Database
 connectDB();
@@ -28,9 +32,33 @@ app.use('/api/v1/message', messageRoutes);
 app.get('/', (req, res) => {
   res.send('ExpertConnect Server is Running Successfully!');
 });
+ 
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+
+  socket.on("join_chat", (bookingId) => {
+    socket.join(bookingId);
+    console.log(`User joined room: ${bookingId}`);
+  });
+
+  socket.on("send_message", (data) => {
+    socket.to(data.bookingId).emit("receive_message", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User Disconnected", socket.id);
+  });
+});
 
 // Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-}); 
+});
