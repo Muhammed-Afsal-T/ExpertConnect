@@ -2,6 +2,12 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cloudinary = require('../config/cloudinary');
+const transporter = require('../config/emailConfig');
+
+const hashPassword = async (password) => {
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password, salt);
+};
 
 // --- REGISTER USER ---
 const registerController = async (req, res) => {
@@ -119,4 +125,47 @@ const getAllExpertsController = async (req, res) => {
   }
 };
 
-module.exports = { registerController, loginController, updateProfileController, getUserDataController, getAllExpertsController };
+const forgotPasswordController = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email }); // userModel എന്നതിന് പകരം User എന്ന് മാറ്റി
+    if (!user) return res.status(200).send({ success: false, message: "User not found" });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "expertconnect123", { expiresIn: '15m' });
+    const resetLink = `${process.env.CLIENT_URL}/reset-password/${user._id}/${token}`;
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Password Reset - ExpertConnect',
+      html: `<p>You requested a password reset. Click the link below to set a new password. This link expires in 15 minutes.</p>
+             <a href="${resetLink}">${resetLink}</a>`
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.status(200).send({ success: true, message: "Reset link sent to your email" });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Error in forgot password", error });
+  }
+};
+
+// 2. Reset Password - പുതിയ പാസ്‌വേഡ് സേവ് ചെയ്യാൻ
+const resetPasswordController = async (req, res) => {
+  try {
+    const { id, token } = req.params;
+    const { password } = req.body;
+
+    jwt.verify(token, process.env.JWT_SECRET || "expertconnect123", async (err, decode) => {
+      if (err) return res.status(401).send({ success: false, message: "Invalid or expired token" });
+      
+      const hashedPassword = await hashPassword(password);
+      await User.findByIdAndUpdate(id, { password: hashedPassword }); // userModel എന്നതിന് പകരം User എന്ന് മാറ്റി
+      
+      res.status(200).send({ success: true, message: "Password updated successfully" });
+    });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Reset password failed", error });
+  }
+};
+
+module.exports = { registerController, loginController, updateProfileController, getUserDataController, getAllExpertsController, forgotPasswordController, resetPasswordController};

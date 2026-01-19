@@ -74,3 +74,39 @@
     text-decoration: none;
     font-weight: bold;
 }
+
+.passwordWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.passwordWrapper input {
+    width: 100%;
+    padding-right: 40px; /* ഐക്കണിന് സ്ഥലം നൽകുന്നു */
+}
+
+.eyeIcon {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+    color: #666;
+    display: flex;
+    align-items: center;
+}
+
+.forgotLinkContainer {
+    text-align: right;
+    margin-top: 5px;
+}
+
+.forgotLink {
+    color: #0056b3;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.forgotLink:hover {
+    text-decoration: underline;
+}

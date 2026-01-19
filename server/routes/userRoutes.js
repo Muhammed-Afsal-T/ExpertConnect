@@ -4,7 +4,8 @@ const {
     loginController, 
     updateProfileController,
     getUserDataController,
-    getAllExpertsController
+    getAllExpertsController,forgotPasswordController,
+    resetPasswordController
 } = require('../controllers/userController');
 const upload = require('../middlewares/multerMiddleware');
 
@@ -20,4 +21,7 @@ router.post('/updateProfile', upload.fields([
     { name: 'idProof', maxCount: 1 }
 ]), updateProfileController);
 router.get('/getAllExperts', getAllExpertsController);
+router.post('/forgot-password', forgotPasswordController);
+router.post('/reset-password/:id/:token', resetPasswordController);
+
 module.exports = router;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Login.module.css';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -9,6 +10,8 @@ const Login = () => {
     email: '',
     password: '',
   });
+
+  const [showPass, setShowPass] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,16 +23,14 @@ const Login = () => {
       const res = await axios.post('http://localhost:5000/api/v1/user/login', formData);
       
       if (res.data.success) {
-        // Token ബ്രൗസറിൽ സേവ് ചെയ്യുന്നു
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         
         alert("Login Successful!");
         
-        // റോൾ അനുസരിച്ച് അതാത് പേജിലേക്ക് വിടുന്നു
         if(res.data.user.role === 'admin') navigate('/admin');
         else if(res.data.user.role === 'expert') navigate('/expert-dashboard');
-        else navigate('/user-dashboard'); // സാധാരണ യൂസർ
+        else navigate('/user-dashboard'); 
         
       } else {
         alert(res.data.message);
@@ -60,13 +61,21 @@ const Login = () => {
 
           <div className={styles.inputGroup}>
             <label>Password</label>
-            <input 
-              type="password" 
-              name="password" 
-              placeholder="Enter your password" 
-              onChange={handleChange} 
-              required 
-            />
+            <div className={styles.passwordWrapper}>
+              <input 
+                type={showPass ? "text" : "password"} 
+                name="password" 
+                placeholder="Enter your password" 
+                onChange={handleChange} 
+                required 
+              />
+              <span className={styles.eyeIcon} onClick={() => setShowPass(!showPass)}>
+                {showPass ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+            <div className={styles.forgotLinkContainer}>
+              <Link to="/forgot-password" className={styles.forgotLink}>Forgot Password?</Link>
+            </div>
           </div>
 
           <button type="submit" className={styles.loginBtn}>LOGIN</button>
