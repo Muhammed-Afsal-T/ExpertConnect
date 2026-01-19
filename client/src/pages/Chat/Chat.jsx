@@ -175,9 +175,11 @@ const Chat = () => {
                   <img src={selectedExpert.expertId?.image} alt="Profile" className={styles.headerProfilePic} />
                   <div>
                     <h4>{selectedExpert.expertId?.name}</h4>
+                    {selectedExpert.status === 'paid' && (
                     <span className={selectedExpert.isVideoActive ? styles.active : styles.notActive}>
-                      {selectedExpert.isVideoActive ? '● Active' : '● Session Not Active'}
+                     {selectedExpert.isVideoActive ? '● Active' : '● Session Not Active'}
                     </span>
+                    )}
                   </div>
                 </div>
                 <div className={styles.headerRight}>
