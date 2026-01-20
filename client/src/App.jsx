@@ -9,6 +9,8 @@ import UserProfile from './pages/User/UserProfile';
 import ExpertDetails from './pages/User/ExpertDetails';
 import Chat from './pages/Chat/Chat';
 import ExpertChat from './pages/Chat/ExpertChat';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import ResetPassword from './pages/Auth/ResetPassword';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/book-expert/:id" element={<ExpertDetails />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/expert/chat" element={<ExpertChat />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
       </Routes>
     </BrowserRouter>
   );

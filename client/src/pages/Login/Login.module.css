@@ -83,7 +83,7 @@
 
 .passwordWrapper input {
     width: 100%;
-    padding-right: 40px; /* ഐക്കണിന് സ്ഥലം നൽകുന്നു */
+    padding-right: 40px;
 }
 
 .eyeIcon {
@@ -109,4 +109,18 @@
 
 .forgotLink:hover {
     text-decoration: underline;
+}
+
+.successText {
+    color: #28a745;
+    font-size: 13px;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+.errorText {
+    color: orange;
+    font-size: 13px;
+    margin-bottom: 15px;
+    font-weight: 500;
 }
