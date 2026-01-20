@@ -9,6 +9,11 @@ const hashPassword = async (password) => {
     return await bcrypt.hash(password, salt);
 };
 
+const getTodayIST = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+const getCurrentTimeIST = () => new Date().toLocaleTimeString('en-GB', { 
+    timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' 
+});
+
 // --- REGISTER USER ---
 const registerController = async (req, res) => {
   try {
@@ -17,8 +22,7 @@ const registerController = async (req, res) => {
     if (existingUser) {
       return res.status(200).send({ message: 'User already exists', success: false });
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await hashPassword(password);
     const newUser = new User({
       name, email, password: hashedPassword, role, gender, age,
     });
@@ -50,15 +54,21 @@ const loginController = async (req, res) => {
 const updateProfileController = async (req, res) => {
   try {
     const { userId, name, age, gender, specialization, experience, fees, about, availability } = req.body;
-    
     const updateData = { name, age, gender, specialization, experience, fees, about };
 
     if (availability) {
       const parsedAvailability = typeof availability === 'string' ? JSON.parse(availability) : availability;
-      
-      // ലോജിക്: പ്രൊഫൈൽ അപ്ഡേറ്റ് ചെയ്യുമ്പോൾ കഴിഞ്ഞുപോയ തിയതികൾ ആഡ് ചെയ്യാൻ സമ്മതിക്കില്ല
-      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-      updateData.availability = parsedAvailability.filter(a => a.date >= today);
+      const today = getTodayIST();
+      const now = getCurrentTimeIST();
+
+      updateData.availability = parsedAvailability.filter(dayObj => {
+        if (dayObj.date > today) return true;
+        if (dayObj.date === today) {
+          dayObj.slots = dayObj.slots.filter(slot => slot.endTime > now);
+          return dayObj.slots.length > 0;
+        }
+        return false;
+      });
     }
 
     if (req.files) {
@@ -87,14 +97,22 @@ const getUserDataController = async (req, res) => {
     const user = await User.findById(userId);
     if (!user) return res.status(200).send({ message: "User not found", success: false });
 
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const today = getTodayIST();
+    const now = getCurrentTimeIST();
 
     if (user.role === 'expert' && user.availability && user.availability.length > 0) {
       const initialLength = user.availability.length;
       
-      user.availability = user.availability.filter(a => a.date >= today);
+      user.availability = user.availability.filter(dayObj => {
+        if (dayObj.date > today) return true;
+        if (dayObj.date === today) {
+          dayObj.slots = dayObj.slots.filter(slot => slot.endTime > now);
+          return dayObj.slots.length > 0;
+        }
+        return false;
+      });
 
-      if (user.availability.length !== initialLength) {
+      if (JSON.stringify(user.availability).length !== JSON.stringify(user.toObject().availability).length) {
         await user.save();
       }
     }
@@ -106,15 +124,24 @@ const getUserDataController = async (req, res) => {
   }
 };
 
-// --- GET ALL VERIFIED EXPERTS (With Auto Cleanup) ---
+// --- GET ALL VERIFIED EXPERTS ---
 const getAllExpertsController = async (req, res) => {
   try {
     const experts = await User.find({ role: 'expert', isVerified: true });
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const today = getTodayIST();
+    const now = getCurrentTimeIST();
 
     const filteredExperts = experts.map(expert => {
       if (expert.availability) {
-        expert.availability = expert.availability.filter(a => a.date >= today);
+        expert.availability = expert.availability.filter(dayObj => {
+          if (dayObj.date > today) return true;
+          if (dayObj.date === today) {
+            const validSlots = dayObj.slots.filter(slot => slot.endTime > now);
+            dayObj.slots = validSlots;
+            return validSlots.length > 0;
+          }
+          return false;
+        });
       }
       return expert;
     });
@@ -128,7 +155,7 @@ const getAllExpertsController = async (req, res) => {
 const forgotPasswordController = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email }); // userModel എന്നതിന് പകരം User എന്ന് മാറ്റി
+    const user = await User.findOne({ email });
     if (!user) return res.status(200).send({ success: false, message: "User not found" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "expertconnect123", { expiresIn: '15m' });
@@ -149,7 +176,6 @@ const forgotPasswordController = async (req, res) => {
   }
 };
 
-// 2. Reset Password - പുതിയ പാസ്‌വേഡ് സേവ് ചെയ്യാൻ
 const resetPasswordController = async (req, res) => {
   try {
     const { id, token } = req.params;
@@ -157,10 +183,8 @@ const resetPasswordController = async (req, res) => {
 
     jwt.verify(token, process.env.JWT_SECRET || "expertconnect123", async (err, decode) => {
       if (err) return res.status(401).send({ success: false, message: "Invalid or expired token" });
-      
       const hashedPassword = await hashPassword(password);
-      await User.findByIdAndUpdate(id, { password: hashedPassword }); // userModel എന്നതിന് പകരം User എന്ന് മാറ്റി
-      
+      await User.findByIdAndUpdate(id, { password: hashedPassword });
       res.status(200).send({ success: true, message: "Password updated successfully" });
     });
   } catch (error) {

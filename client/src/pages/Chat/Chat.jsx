@@ -24,6 +24,32 @@ const Chat = () => {
     fetchAcceptedExperts();
   }, []);
 
+  useEffect(() => {
+  const checkExpiry = () => {
+    if (!selectedExpert || selectedExpert.status !== 'paid') return;
+
+    const now = new Date().toLocaleTimeString('en-GB', { 
+      timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' 
+    });
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+
+    if (selectedExpert.day === today) {
+      if (now >= selectedExpert.slot.startTime && now < selectedExpert.slot.endTime && !selectedExpert.isVideoActive) {
+        window.location.reload();
+      }
+
+      if (now >= selectedExpert.slot.endTime) {
+        alert("Session time expired! The consultation is now closed.");
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      }
+    }
+  };
+
+  const interval = setInterval(checkExpiry, 60000);
+  return () => clearInterval(interval);
+}, [selectedExpert]);
   // --- Socket.io Logic Start ---
 
   useEffect(() => {

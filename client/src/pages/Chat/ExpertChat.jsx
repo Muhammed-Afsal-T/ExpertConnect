@@ -22,6 +22,33 @@ const ExpertChat = () => {
     fetchPaidUsers();
   }, []);
 
+  useEffect(() => {
+  const checkSessionStatus = () => {
+    if (!selectedUser) return;
+
+    const now = new Date().toLocaleTimeString('en-GB', { 
+      timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' 
+    });
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+
+    if (selectedUser.day === today) {
+      if (now >= selectedUser.slot.startTime && now < selectedUser.slot.endTime && !selectedUser.isVideoActive) {
+        window.location.reload();
+      }
+
+      if (now >= selectedUser.slot.endTime) {
+        alert("Session time expired! The consultation is now closed.");        setTimeout(() => {
+          window.location.reload();
+        }, 2000); 
+      }
+    }
+  };
+
+  const interval = setInterval(checkSessionStatus, 60000); 
+
+  return () => clearInterval(interval);
+}, [selectedUser]);
+
   // --- Socket.io Logic Start ---
 
   useEffect(() => {

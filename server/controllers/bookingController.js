@@ -13,6 +13,29 @@ const getCurrentTimeIST = () => {
   });
 };
 
+const autoCleanupBookings = async (filter) => {
+  const today = getTodayIST();
+  const now = getCurrentTimeIST();
+
+  await Booking.updateMany(
+    { ...filter, day: { $lt: today }, status: 'paid' },
+    { $set: { status: 'completed' } }
+  );
+  await Booking.updateMany(
+    { ...filter, day: { $lt: today }, status: { $in: ['accepted', 'pending'] } },
+    { $set: { status: 'incomplete' } }
+  );
+
+  await Booking.updateMany(
+    { ...filter, day: today, "slot.endTime": { $lt: now }, status: 'paid' },
+    { $set: { status: 'completed' } }
+  );
+  await Booking.updateMany(
+    { ...filter, day: today, "slot.endTime": { $lt: now }, status: { $in: ['accepted', 'pending'] } },
+    { $set: { status: 'incomplete' } }
+  );
+};
+
 // 1. റിക്വസ്റ്റ് അയക്കാൻ
 const bookExpertController = async (req, res) => {
   try {
@@ -35,12 +58,8 @@ const bookExpertController = async (req, res) => {
 const getExpertBookingsController = async (req, res) => {
   try {
     const { expertId } = req.body;
-    const today = getTodayIST();
-
-    await Booking.updateMany(
-      { expertId, day: { $lt: today }, status: { $in: ['accepted', 'paid'] } },
-      { $set: { status: 'completed' } }
-    );
+    
+    await autoCleanupBookings({ expertId });
 
     const bookings = await Booking.find({ expertId })
       .populate('userId', 'name email image age gender specialization'); 
@@ -58,11 +77,7 @@ const getUserActiveBookingsController = async (req, res) => {
     const today = getTodayIST();
     const now = getCurrentTimeIST();
 
-    await Booking.updateMany(
-      { userId, day: { $lt: today }, status: { $in: ['accepted', 'paid'] } },
-      { $set: { status: 'completed' } }
-    );
-
+    await autoCleanupBookings({ userId });
     
     const bookings = await Booking.find({
       userId,
@@ -146,6 +161,8 @@ const getExpertChatUsersController = async (req, res) => {
     const { expertId } = req.body;
     const today = getTodayIST();
     const now = getCurrentTimeIST();
+
+    await autoCleanupBookings({ expertId });
 
     const bookings = await Booking.find({
       expertId,

@@ -20,14 +20,13 @@ const userSchema = new mongoose.Schema({
   averageRating: { type: Number, default: 0 }, 
   numReviews: { type: Number, default: 0 },
 
-  // --- PRO SLOT SYSTEM ---
   availability: [
     {
       date: { type: String }, // Format: "YYYY-MM-DD"
       slots: [
         {
-          startTime: { type: String }, // e.g., "10:00 AM"
-          endTime: { type: String }    // e.g., "11:00 AM"
+          startTime: { type: String }, 
+          endTime: { type: String }    
         }
       ]
     }
