@@ -10,7 +10,7 @@ const socket = io.connect("http://localhost:5000");
 
 const ExpertChat = () => {
   const navigate = useNavigate();
-  const scrollRef = useRef(); 
+  const scrollRef = useRef();
   const [expert] = useState(JSON.parse(localStorage.getItem('user')));
   const [paidUsers, setPaidUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -23,31 +23,31 @@ const ExpertChat = () => {
   }, []);
 
   useEffect(() => {
-  const checkSessionStatus = () => {
-    if (!selectedUser) return;
+    const checkSessionStatus = () => {
+      if (!selectedUser) return;
 
-    const now = new Date().toLocaleTimeString('en-GB', { 
-      timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' 
-    });
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      const now = new Date().toLocaleTimeString('en-GB', {
+        timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit'
+      });
+      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
-    if (selectedUser.day === today) {
-      if (now >= selectedUser.slot.startTime && now < selectedUser.slot.endTime && !selectedUser.isVideoActive) {
-        window.location.reload();
-      }
-
-      if (now >= selectedUser.slot.endTime) {
-        alert("Session time expired! The consultation is now closed.");        setTimeout(() => {
+      if (selectedUser.day === today) {
+        if (now >= selectedUser.slot.startTime && now < selectedUser.slot.endTime && !selectedUser.isVideoActive) {
           window.location.reload();
-        }, 2000); 
+        }
+
+        if (now >= selectedUser.slot.endTime) {
+          alert("Session time expired! The consultation is now closed."); setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }
       }
-    }
-  };
+    };
 
-  const interval = setInterval(checkSessionStatus, 60000); 
+    const interval = setInterval(checkSessionStatus, 60000);
 
-  return () => clearInterval(interval);
-}, [selectedUser]);
+    return () => clearInterval(interval);
+  }, [selectedUser]);
 
   // --- Socket.io Logic Start ---
 
@@ -98,7 +98,7 @@ const ExpertChat = () => {
 
   const handleVideoClick = () => {
     if (selectedUser.isVideoActive) {
-      window.open(`https://meet.jit.si/ExpertConnect_${selectedUser._id}`, '_blank');
+      navigate(`/video-call/${selectedUser._id}`);
     } else {
       alert(`Session Not Active!\nYour video session will be active on ${selectedUser.day} from ${selectedUser.slot.startTime} to ${selectedUser.slot.endTime}`);
     }
@@ -117,7 +117,7 @@ const ExpertChat = () => {
       };
 
       const res = await axios.post('http://localhost:5000/api/v1/message/send-message', messageData);
-      
+
       if (res.data.success) {
         socket.emit("send_message", res.data.newMessage);
 
@@ -135,7 +135,7 @@ const ExpertChat = () => {
       <div className={styles.chatContainer}>
         <div className={styles.sidebar}>
           <div className={styles.sidebarHeader}>
-            <div className={styles.backAction} onClick={() => navigate(-1)}>
+            <div className={styles.backAction} onClick={() => navigate('/expert-dashboard')}>
               <FaArrowLeft /> <span>Back</span>
             </div>
             <h3>Consultations</h3>
@@ -143,8 +143,8 @@ const ExpertChat = () => {
           <div className={styles.expertList}>
             {paidUsers.length > 0 ? (
               paidUsers.map((item, index) => (
-                <div 
-                  key={index} 
+                <div
+                  key={index}
                   className={`${styles.expertCard} ${selectedUser?._id === item._id ? styles.activeCard : ''}`}
                   onClick={() => setSelectedUser(item)}
                 >
@@ -178,8 +178,8 @@ const ExpertChat = () => {
                   <button className={styles.slotBtn} onClick={() => setShowSlotModal(true)}>
                     Slot Details
                   </button>
-                  <FaVideo 
-                    className={`${styles.videoIcon} ${!selectedUser.isVideoActive ? styles.disabled : ''}`} 
+                  <FaVideo
+                    className={`${styles.videoIcon} ${!selectedUser.isVideoActive ? styles.disabled : ''}`}
                     onClick={handleVideoClick}
                   />
                 </div>
@@ -211,17 +211,17 @@ const ExpertChat = () => {
       {showSlotModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
-             <div className={styles.modalHeader}>
-                <img src={selectedUser.userId?.image} alt="User" className={styles.modalImg} />
-                <h3>Appointment Slot</h3>
-             </div>
-             <div className={styles.modalBody}>
-               <div className={styles.detailRow}><FaUserAlt /> <span><strong>Name:</strong> {selectedUser.userId?.name}</span></div>
-               <div className={styles.detailRow}><FaBriefcase /> <span><strong>Specialization:</strong> {selectedUser.userId?.specialization || 'N/A'}</span></div>
-               <div className={styles.detailRow}><FaRegCalendarAlt /> <span><strong>Date:</strong> {selectedUser.day}</span></div>
-               <div className={styles.detailRow}><FaClock /> <span><strong>Time:</strong> {selectedUser.slot.startTime} - {selectedUser.slot.endTime}</span></div>
-             </div>
-             <button className={styles.doneBtn} onClick={() => setShowSlotModal(false)}>Done</button>
+            <div className={styles.modalHeader}>
+              <img src={selectedUser.userId?.image} alt="User" className={styles.modalImg} />
+              <h3>Appointment Slot</h3>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.detailRow}><FaUserAlt /> <span><strong>Name:</strong> {selectedUser.userId?.name}</span></div>
+              <div className={styles.detailRow}><FaBriefcase /> <span><strong>Specialization:</strong> {selectedUser.userId?.specialization || 'N/A'}</span></div>
+              <div className={styles.detailRow}><FaRegCalendarAlt /> <span><strong>Date:</strong> {selectedUser.day}</span></div>
+              <div className={styles.detailRow}><FaClock /> <span><strong>Time:</strong> {selectedUser.slot.startTime} - {selectedUser.slot.endTime}</span></div>
+            </div>
+            <button className={styles.doneBtn} onClick={() => setShowSlotModal(false)}>Done</button>
           </div>
         </div>
       )}

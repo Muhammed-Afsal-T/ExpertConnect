@@ -155,3 +155,46 @@
     color: #0056b3;
     width: 18px;
 }
+
+/* Video Call Styles */
+.videoPageContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: #000;
+}
+
+.videoHeader {
+    height: 60px;
+    background: #1f1f1f;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    color: white;
+}
+
+.videoHeader h4 {
+    margin: 0;
+    font-weight: 500;
+}
+
+.leaveBtn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.leaveBtn:hover {
+    background: #cc0000;
+}
+
+.jitsiEmbed {
+    flex: 1;
+    width: 100%;
+    height: calc(100vh - 60px);
+}

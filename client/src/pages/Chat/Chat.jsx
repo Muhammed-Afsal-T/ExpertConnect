@@ -4,13 +4,13 @@ import Navbar from '../../components/Navbar/Navbar';
 import styles from './Chat.module.css';
 import { FaVideo, FaPaperPlane, FaCheckCircle, FaArrowLeft, FaCalendarPlus, FaCheck } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import io from 'socket.io-client'; 
+import io from 'socket.io-client';
 
 const socket = io.connect("http://localhost:5000");
 
 const Chat = () => {
   const navigate = useNavigate();
-  const scrollRef = useRef(); 
+  const scrollRef = useRef();
   const [user] = useState(JSON.parse(localStorage.getItem('user')));
   const [experts, setExperts] = useState([]);
   const [selectedExpert, setSelectedExpert] = useState(null);
@@ -25,36 +25,36 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-  const checkExpiry = () => {
-    if (!selectedExpert || selectedExpert.status !== 'paid') return;
+    const checkExpiry = () => {
+      if (!selectedExpert || selectedExpert.status !== 'paid') return;
 
-    const now = new Date().toLocaleTimeString('en-GB', { 
-      timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' 
-    });
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+      const now = new Date().toLocaleTimeString('en-GB', {
+        timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit'
+      });
+      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
-    if (selectedExpert.day === today) {
-      if (now >= selectedExpert.slot.startTime && now < selectedExpert.slot.endTime && !selectedExpert.isVideoActive) {
-        window.location.reload();
-      }
-
-      if (now >= selectedExpert.slot.endTime) {
-        alert("Session time expired! The consultation is now closed.");
-        setTimeout(() => {
+      if (selectedExpert.day === today) {
+        if (now >= selectedExpert.slot.startTime && now < selectedExpert.slot.endTime && !selectedExpert.isVideoActive) {
           window.location.reload();
-        }, 2000);
-      }
-    }
-  };
+        }
 
-  const interval = setInterval(checkExpiry, 60000);
-  return () => clearInterval(interval);
-}, [selectedExpert]);
+        if (now >= selectedExpert.slot.endTime) {
+          alert("Session time expired! The consultation is now closed.");
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        }
+      }
+    };
+
+    const interval = setInterval(checkExpiry, 60000);
+    return () => clearInterval(interval);
+  }, [selectedExpert]);
   // --- Socket.io Logic Start ---
 
   useEffect(() => {
     if (selectedExpert && selectedExpert.status === 'paid') {
-      socket.emit("join_chat", selectedExpert._id); 
+      socket.emit("join_chat", selectedExpert._id);
       fetchMessages();
     }
   }, [selectedExpert]);
@@ -77,12 +77,12 @@ const Chat = () => {
 
   const fetchAcceptedExperts = async () => {
     try {
-        const res = await axios.post('http://localhost:5000/api/v1/booking/get-user-active-bookings', { userId: user._id });
-        if (res.data.success) {
-            setExperts(res.data.bookings);
-        }
+      const res = await axios.post('http://localhost:5000/api/v1/booking/get-user-active-bookings', { userId: user._id });
+      if (res.data.success) {
+        setExperts(res.data.bookings);
+      }
     } catch (error) {
-        console.log("Chat fetch error:", error);
+      console.log("Chat fetch error:", error);
     }
   };
 
@@ -103,10 +103,10 @@ const Chat = () => {
       const res = await axios.post('http://localhost:5000/api/v1/booking/update-payment-status', {
         bookingId: selectedExpert._id
       });
-     
+
       if (res.data.success) {
-        setPaymentSuccess(true); 
-        fetchAcceptedExperts(); 
+        setPaymentSuccess(true);
+        fetchAcceptedExperts();
         setSelectedExpert({ ...selectedExpert, status: 'paid' });
       }
     } catch (error) {
@@ -127,7 +127,7 @@ const Chat = () => {
 
   const handleVideoClick = () => {
     if (selectedExpert.isVideoActive) {
-      window.open(`https://meet.jit.si/ExpertConnect_${selectedExpert._id}`, '_blank');
+      navigate(`/video-call/${selectedExpert._id}`);
     } else {
       alert(`Session Not Active!\nYour video session will be active on ${selectedExpert.day} from ${selectedExpert.slot.startTime} to ${selectedExpert.slot.endTime}`);
     }
@@ -146,7 +146,7 @@ const Chat = () => {
       };
 
       const res = await axios.post('http://localhost:5000/api/v1/message/send-message', messageData);
-      
+
       if (res.data.success) {
         socket.emit("send_message", res.data.newMessage);
 
@@ -164,7 +164,7 @@ const Chat = () => {
       <div className={styles.chatContainer}>
         <div className={styles.sidebar}>
           <div className={styles.sidebarHeader}>
-            <div className={styles.backAction} onClick={() => navigate(-1)}>
+            <div className={styles.backAction} onClick={() => navigate('/user-dashboard')}>
               <FaArrowLeft /> <span>Back</span>
             </div>
             <h3>Messages</h3>
@@ -177,7 +177,7 @@ const Chat = () => {
                   className={`${styles.expertCard} ${selectedExpert?._id === item._id ? styles.activeCard : ''}`}
                   onClick={() => {
                     setSelectedExpert(item);
-                    setPaymentSuccess(false); 
+                    setPaymentSuccess(false);
                   }}
                 >
                   <img src={item.expertId?.image || 'https://via.placeholder.com/50'} alt="Expert" className={styles.sidebarProfilePic} />
@@ -202,9 +202,9 @@ const Chat = () => {
                   <div>
                     <h4>{selectedExpert.expertId?.name}</h4>
                     {selectedExpert.status === 'paid' && (
-                    <span className={selectedExpert.isVideoActive ? styles.active : styles.notActive}>
-                     {selectedExpert.isVideoActive ? '● Active' : '● Session Not Active'}
-                    </span>
+                      <span className={selectedExpert.isVideoActive ? styles.active : styles.notActive}>
+                        {selectedExpert.isVideoActive ? '● Active' : '● Session Not Active'}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -212,7 +212,7 @@ const Chat = () => {
                   <button className={styles.slotBtn} onClick={() => navigate(`/book-expert/${selectedExpert.expertId?._id}`)}>
                     Your Slot
                   </button>
-                 
+
                   {selectedExpert.status === 'paid' && (
                     <FaVideo
                       className={`${styles.videoIcon} ${!selectedExpert.isVideoActive ? styles.disabled : ''}`}
@@ -260,45 +260,45 @@ const Chat = () => {
 
       {showPaymentModal && (
         <div className={styles.modalOverlay}>
-           <div className={styles.modalContent}>
-              {!paymentSuccess ? (
-                <>
-                  <div className={styles.modalHeader}>
-                    <h3>Complete Your Payment</h3>
-                  </div>
-                  <div className={styles.modalBody}>
-                    <p>Expert: <strong>{selectedExpert?.expertId?.name}</strong></p>
-                    <p className={styles.amountText}>Amount: ₹{selectedExpert?.amount}</p>
-                  </div>
-                  <button className={styles.finalPayBtn} disabled={loading} onClick={handleMockPayment}>
-                    {loading ? "Processing..." : "Pay Now"}
-                  </button>
-                  <button className={styles.closeBtn} onClick={() => setShowPaymentModal(false)}>Cancel</button>
-                </>
-              ) : (
-                <div className={styles.successView}>
-                  <div className={styles.checkIcon}><FaCheck /></div>
-                  <h2>Payment Successful!</h2>
-                  <p>Your session with {selectedExpert?.expertId?.name} is unlocked.</p>
-                 
-                  <div className={styles.reminderBox}>
-                     <p>Don't miss your session! Add it to your calendar.</p>
-                     <a
-                        href={getGoogleCalendarLink(selectedExpert)}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={styles.calendarLink}
-                      >
-                        <FaCalendarPlus /> Add to Google Calendar
-                     </a>
-                  </div>
-
-                  <button className={styles.doneBtn} onClick={() => setShowPaymentModal(false)}>
-                    Go to Chat
-                  </button>
+          <div className={styles.modalContent}>
+            {!paymentSuccess ? (
+              <>
+                <div className={styles.modalHeader}>
+                  <h3>Complete Your Payment</h3>
                 </div>
-              )}
-           </div>
+                <div className={styles.modalBody}>
+                  <p>Expert: <strong>{selectedExpert?.expertId?.name}</strong></p>
+                  <p className={styles.amountText}>Amount: ₹{selectedExpert?.amount}</p>
+                </div>
+                <button className={styles.finalPayBtn} disabled={loading} onClick={handleMockPayment}>
+                  {loading ? "Processing..." : "Pay Now"}
+                </button>
+                <button className={styles.closeBtn} onClick={() => setShowPaymentModal(false)}>Cancel</button>
+              </>
+            ) : (
+              <div className={styles.successView}>
+                <div className={styles.checkIcon}><FaCheck /></div>
+                <h2>Payment Successful!</h2>
+                <p>Your session with {selectedExpert?.expertId?.name} is unlocked.</p>
+
+                <div className={styles.reminderBox}>
+                  <p>Don't miss your session! Add it to your calendar.</p>
+                  <a
+                    href={getGoogleCalendarLink(selectedExpert)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={styles.calendarLink}
+                  >
+                    <FaCalendarPlus /> Add to Google Calendar
+                  </a>
+                </div>
+
+                <button className={styles.doneBtn} onClick={() => setShowPaymentModal(false)}>
+                  Go to Chat
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </>

@@ -184,8 +184,21 @@ const getExpertChatUsersController = async (req, res) => {
   }
 };
 
+const getBookingByIdController = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const booking = await Booking.findById(bookingId).populate('expertId userId');
+    if (!booking) {
+      return res.status(200).send({ success: false, message: "Booking not found" });
+    }
+    res.status(200).send({ success: true, booking });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Error fetching booking", error });
+  }
+};
+
 module.exports = { 
   bookExpertController, getExpertBookingsController, updateStatusController, 
   updatePaymentStatusController, checkBookingStatusController, 
-  cancelBookingController, getUserActiveBookingsController, getExpertChatUsersController
+  cancelBookingController, getUserActiveBookingsController, getExpertChatUsersController, getBookingByIdController
 };
