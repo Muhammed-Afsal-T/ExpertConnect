@@ -19,7 +19,7 @@ const Navbar = ({ onSearch }) => {
   const handleLogoClick = () => {
     if (role === 'admin') navigate('/admin');
     else if (role === 'expert') navigate('/expert-dashboard');
-    else if (role === 'user') navigate('/user-dashboard'); 
+    else if (role === 'user') navigate('/user-dashboard');
     else navigate('/login');
   };
 
@@ -69,9 +69,13 @@ const Navbar = ({ onSearch }) => {
 
       <div className={styles.navLinks}>
         {role === 'admin' ? (
-          <button className={styles.logoutBtn} onClick={handleLogout}>
-            Logout <FaSignOutAlt />
-          </button>
+          <div className={styles.adminNavActions}>
+            <button className={styles.navBtn} onClick={() => navigate('/admin-reports')}>Reports</button>
+            
+            <button className={styles.logoutBtn} onClick={handleLogout}>
+              Logout <FaSignOutAlt />
+            </button>
+          </div>
         ) : (
           <>
             <div className={styles.iconItem} title="Chat">

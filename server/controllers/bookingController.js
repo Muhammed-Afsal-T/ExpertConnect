@@ -36,7 +36,6 @@ const autoCleanupBookings = async (filter) => {
   );
 };
 
-// 1. റിക്വസ്റ്റ് അയക്കാൻ
 const bookExpertController = async (req, res) => {
   try {
     const { userId, expertId, day, slot, amount } = req.body;
@@ -54,7 +53,6 @@ const bookExpertController = async (req, res) => {
   }
 };
 
-// 2. എക്സ്‌പെർട്ടിന് വന്ന ബുക്കിംഗുകൾ
 const getExpertBookingsController = async (req, res) => {
   try {
     const { expertId } = req.body;
@@ -70,7 +68,6 @@ const getExpertBookingsController = async (req, res) => {
   }
 };
 
-// 3. യൂസറുടെ ആക്ടീവ് ബുക്കിംഗുകൾ (ചാറ്റ് ലിസ്റ്റിന് വേണ്ടി)
 const getUserActiveBookingsController = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -99,7 +96,6 @@ const getUserActiveBookingsController = async (req, res) => {
   }
 };
 
-// 4. സ്റ്റാറ്റസ് മാറ്റാൻ (Accept / Reject)
 const updateStatusController = async (req, res) => {
   try {
     const { bookingId, status } = req.body;
@@ -120,7 +116,6 @@ const updateStatusController = async (req, res) => {
   }
 };
 
-// 5. പെയ്‌മെന്റ് അപ്‌ഡേറ്റ് ചെയ്യാൻ
 const updatePaymentStatusController = async (req, res) => {
   try {
     const { bookingId } = req.body;
@@ -131,7 +126,6 @@ const updatePaymentStatusController = async (req, res) => {
   }
 };
 
-// 6. സിംഗിൾ ബുക്കിംഗ് സ്റ്റാറ്റസ് ചെക്ക് 
 const checkBookingStatusController = async (req, res) => {
   try {
     const { userId, expertId } = req.body;
@@ -197,8 +191,46 @@ const getBookingByIdController = async (req, res) => {
   }
 };
 
+const getUserBookingHistoryController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const history = await Booking.find({ 
+      userId, 
+      status: 'completed' 
+    }).populate('expertId', 'name image specialization');
+    
+    res.status(200).send({ success: true, data: history });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Error fetching history", error });
+  }
+};
+
+const reportExpertController = async (req, res) => {
+  try {
+    const { bookingId, userId, expertId, reason } = req.body;
+    const booking = await Booking.findByIdAndUpdate(bookingId, { 
+      report: { reason, reportedAt: new Date() } 
+    }, { new: true });
+    
+    res.status(200).send({ success: true, message: "Report submitted successfully!" });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Report failed", error });
+  }
+};
+
+const getAllReportsController = async (req, res) => {
+  try {
+    const reports = await Booking.find({ "report.reason": { $exists: true, $ne: "" } })
+      .populate('userId', 'name email')
+      .populate('expertId', 'name specialization');
+    
+    res.status(200).send({ success: true, data: reports });
+  } catch (error) {
+    res.status(500).send({ success: false, message: "Error fetching reports", error });
+  }
+};
+
 module.exports = { 
   bookExpertController, getExpertBookingsController, updateStatusController, 
   updatePaymentStatusController, checkBookingStatusController, 
-  cancelBookingController, getUserActiveBookingsController, getExpertChatUsersController, getBookingByIdController
-};
+  cancelBookingController, getUserActiveBookingsController, getExpertChatUsersController, getBookingByIdController, getUserBookingHistoryController, reportExpertController, getAllReportsController };

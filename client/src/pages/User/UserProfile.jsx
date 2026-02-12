@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './UserProfile.module.css';
-import { FaArrowLeft, FaCamera } from 'react-icons/fa';
-
+import { FaArrowLeft, FaCamera, FaHistory } from 'react-icons/fa';
 const UserProfile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
@@ -111,6 +110,14 @@ const UserProfile = () => {
                 placeholder="e.g. Student, Developer, Designer"
               />
             </div>
+
+            <button 
+            type="button" 
+            className={styles.historyBtn} 
+            onClick={() => navigate('/booking-history')}>
+            <FaHistory /> View My Booking History
+          </button>
+          
           </div>
 
           <button type="submit" className={styles.submitBtn} disabled={loading}>

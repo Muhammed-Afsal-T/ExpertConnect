@@ -16,8 +16,8 @@ const bookingSchema = new mongoose.Schema({
     required: true,
   },
   slot: {
-    startTime: { type: String, required: true }, // തിരഞ്ഞെടുത്ത സ്ലോട്ടിന്റെ തുടക്കം
-    endTime: { type: String, required: true }    // തിരഞ്ഞെടുത്ത സ്ലോട്ടിന്റെ അവസാനം
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true }
   },
   status: {
     type: String,
@@ -36,6 +36,10 @@ const bookingSchema = new mongoose.Schema({
   bookedAt: {
     type: Date,
     default: Date.now,
+  },
+  report: {
+    reason: { type: String },
+    reportedAt: { type: Date }
   }
 }, { timestamps: true });
 

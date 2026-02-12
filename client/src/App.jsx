@@ -13,7 +13,8 @@ import VideoCall from './pages/Chat/VideoCall';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import ResetPassword from './pages/Auth/ResetPassword';
 import LandingPage from './pages/LandingPage/LandingPage';
-
+import BookingHistory from './pages/User/BookingHistory';
+import AdminReports from './pages/Admin/AdminReports';
 function App() {
   return (
     <BrowserRouter>
@@ -32,6 +33,8 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
         <Route path="/video-call/:bookingId" element={<VideoCall />} />
+        <Route path="/booking-history" element={<BookingHistory />} />
+        <Route path="/admin-reports" element={<AdminReports />} />
       </Routes>
     </BrowserRouter>
   );

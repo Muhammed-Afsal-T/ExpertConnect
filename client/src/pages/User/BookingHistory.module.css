@@ -1,0 +1,16 @@
+.historyContainer { padding: 40px 8%; background: #f4f7f6; min-height: 90vh; }
+.historyGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
+.historyCard { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.expertInfo { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+.expertInfo img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+.sessionDetails p { font-size: 14px; margin: 5px 0; color: #555; }
+.actions { display: flex; gap: 10px; margin-top: 15px; }
+.profileBtn { flex: 1; background: #3498db; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+.reportBtn { background: #d31e0a; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
+
+/* Modal Styles */
+.modalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000; }
+.modalContent { background: white; padding: 30px; border-radius: 10px; width: 400px; text-align: center; }
+.modalContent textarea { width: 100%; height: 100px; margin: 15px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+.submitBtn { background: #d31e0a; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+.cancelBtn { background: #627172; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 5px; cursor: pointer; }

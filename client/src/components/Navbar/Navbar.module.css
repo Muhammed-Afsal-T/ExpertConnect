@@ -114,6 +114,42 @@
     border-top: 1px solid #eee;
 }
 
+.adminNavActions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.navBtn {
+    background-color: transparent;
+    border: 1px solid #0056b3;
+    color: #0056b3;
+    padding: 7px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.navBtn:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+.logoutBtn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
 /* Mobile responsive padding */
 @media (max-width: 768px) {
     .navbar {

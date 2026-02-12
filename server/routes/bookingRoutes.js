@@ -3,7 +3,7 @@ const {
     bookExpertController, checkBookingStatusController, cancelBookingController,
     getExpertBookingsController, updateStatusController, 
     updatePaymentStatusController, getUserActiveBookingsController, getExpertChatUsersController,
-    getBookingByIdController
+    getBookingByIdController, getUserBookingHistoryController, reportExpertController, getAllReportsController
 } = require('../controllers/bookingController');
 
 const router = express.Router();
@@ -17,5 +17,8 @@ router.post('/update-payment-status', updatePaymentStatusController);
 router.post('/get-user-active-bookings', getUserActiveBookingsController);
 router.post('/get-expert-chat-users', getExpertChatUsersController);
 router.get('/get-booking-by-id/:bookingId', getBookingByIdController);
+router.get('/user-history/:userId', getUserBookingHistoryController);
+router.post('/report-expert', reportExpertController);
+router.get('/get-all-reports', getAllReportsController);
 
 module.exports = router;

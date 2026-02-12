@@ -1,0 +1,15 @@
+.container { padding: 30px; background-color: #f4f7f6; min-height: 90vh; }
+.heading { margin-bottom: 20px; color: #333; }
+.tableContainer { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+.table th { background-color: #0056b3; color: white; }
+.subText { font-size: 12px; color: #777; }
+.timeLabel { font-size: 13px; color: #3498db; font-weight: bold; }
+.reportCell { max-width: 300px; }
+.reasonBox { background: #fff5f5; border: 1px solid #feb2b2; padding: 10px; border-radius: 5px; color: #c53030; font-size: 14px; margin-bottom: 5px; }
+.dateLabel { font-size: 11px; color: #999; }
+.backBtn {cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; color: #0056b3; font-weight: 600; width: fit-content; }
+.reportCell { max-width: 300px; }
+.reasonBox { background: #fff5f5; border: 1px solid #feb2b2; padding: 10px; border-radius: 5px; color: #c53030; font-size: 14px; margin-bottom: 5px; white-space: normal; overflow-wrap: break-word; word-break: break-word; }
+.dateLabel { font-size: 11px; color: #999; }
