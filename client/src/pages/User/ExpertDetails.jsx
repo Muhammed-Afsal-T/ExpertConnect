@@ -108,8 +108,7 @@ const ExpertDetails = () => {
     }
   };
 
-  if (loading && !expert) return <div className={styles.loader}>Loading...</div>;
-  if (!expert) return <div className={styles.error}>Expert not found.</div>;
+  if (!loading && !expert) return <div className={styles.error}>Expert not found.</div>;
 
   const hasActiveBookings = userBookings.length > 0;
 
@@ -121,158 +120,166 @@ const ExpertDetails = () => {
           <FaArrowLeft /> Back
         </div>
 
-        <div className={styles.mainGrid}>
-          <div className={styles.infoSection}>
-            <div className={styles.profileHeader}>
-              <img src={expert.image} alt={expert.name} className={styles.profilePic} />
-              <div className={styles.nameSection}>
-                <h2>{expert.name} <FaCheckCircle className={styles.verifyIcon} /></h2>
-                <p className={styles.spec}>{expert.specialization}</p>
-                <div className={styles.rating}>
-                  <FaStar className={styles.star} /> 
-                  {expert.numReviews > 0 ? expert.averageRating.toFixed(1) : "No Ratings"}
-                  {expert.numReviews > 0 && <span className={styles.reviewCount}>({expert.numReviews})</span>}
+        {/* --- Skeleton Logic --- */}
+        {loading ? (
+          <div className={styles.mainGrid}>
+            <div className={styles.infoSection}>
+              <div className={styles.skeletonHeader}>
+                <div className={`${styles.skeleton} ${styles.skeletonPic}`}></div>
+                <div className={styles.skeletonNameSection}>
+                  <div className={`${styles.skeleton} ${styles.skeletonTitle}`}></div>
+                  <div className={`${styles.skeleton} ${styles.skeletonSub}`}></div>
                 </div>
+              </div>
+              <div className={styles.skeletonContent}>
+                <div className={`${styles.skeleton} ${styles.skeletonRow}`}></div>
+                <div className={`${styles.skeleton} ${styles.skeletonRow}`}></div>
+                <div className={`${styles.skeleton} ${styles.skeletonAbout}`}></div>
+              </div>
+            </div>
+            <div className={styles.bookingSection}>
+              <div className={`${styles.skeleton} ${styles.skeletonBookingTitle}`}></div>
+              <div className={`${styles.skeleton} ${styles.skeletonCalendar}`}></div>
+            </div>
+          </div>
+        ) : (
+          <div className={styles.mainGrid}>
+            <div className={styles.infoSection}>
+              <div className={styles.profileHeader}>
+                <img src={expert.image} alt={expert.name} className={styles.profilePic} />
+                <div className={styles.nameSection}>
+                  <h2>{expert.name} <FaCheckCircle className={styles.verifyIcon} /></h2>
+                  <p className={styles.spec}>{expert.specialization}</p>
+                  <div className={styles.rating}>
+                    <FaStar className={styles.star} /> 
+                    {expert.numReviews > 0 ? expert.averageRating.toFixed(1) : "No Ratings"}
+                    {expert.numReviews > 0 && <span className={styles.reviewCount}>({expert.numReviews})</span>}
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.detailsContent}>
+                <div className={styles.detailRow}>
+                  <span><strong>Email:</strong> {expert.email}</span>
+                  <span><strong>Age:</strong> {expert.age} Years</span>
+                </div>
+                <div className={styles.detailRow}>
+                  <span><strong>Experience:</strong> {expert.experience} Years</span>
+                  <span><strong>Fees:</strong> ₹{expert.fees} / session</span>
+                </div>
+                <div className={styles.aboutBox}>
+                  <h3>About</h3>
+                  <p>{expert.about || "Professional expert in " + expert.specialization}</p>
+                </div>
+
+                <button className={styles.reviewBtn} onClick={handleToggleReviews}>
+                  {showReviews ? "Hide Reviews" : "Read Reviews"}
+                </button>
+
+                {showReviews && (
+                  <div className={styles.reviewsList}>
+                    {reviews.length > 0 ? (
+                      reviews.map((r, index) => (
+                        <div key={index} className={styles.reviewCard}>
+                          <div className={styles.reviewHeader}>
+                            <strong>{r.userName}</strong>
+                            <div className={styles.reviewStars}>
+                              {[...Array(5)].map((_, i) => (
+                                <FaStar key={i} color={i < r.rating ? "#ffc107" : "#e4e5e9"} size={14}/>
+                              ))}
+                            </div>
+                          </div>
+                          <p className={styles.reviewMessage}>{r.message}</p>
+                          <span className={styles.reviewDate}>{new Date(r.createdAt).toLocaleDateString()}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className={styles.noReviews}>No reviews yet for this expert.</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
-            <div className={styles.detailsContent}>
-              <div className={styles.detailRow}>
-                <span><strong>Email:</strong> {expert.email}</span>
-                <span><strong>Age:</strong> {expert.age} Years</span>
-              </div>
-              <div className={styles.detailRow}>
-                <span><strong>Experience:</strong> {expert.experience} Years</span>
-                <span><strong>Fees:</strong> ₹{expert.fees} / session</span>
-              </div>
-              <div className={styles.aboutBox}>
-                <h3>About</h3>
-                <p>{expert.about || "Professional expert in " + expert.specialization}</p>
-              </div>
-
-              <button className={styles.reviewBtn} onClick={handleToggleReviews}>
-                {showReviews ? "Hide Reviews" : "Read Reviews"}
-              </button>
-
-              {showReviews && (
-                <div className={styles.reviewsList}>
-                  {reviews.length > 0 ? (
-                    reviews.map((r, index) => (
-                      <div key={index} className={styles.reviewCard}>
-                        <div className={styles.reviewHeader}>
-                          <strong>{r.userName}</strong>
-                          <div className={styles.reviewStars}>
-                            {[...Array(5)].map((_, i) => (
-                              <FaStar key={i} color={i < r.rating ? "#ffc107" : "#e4e5e9"} size={14}/>
-                            ))}
-                          </div>
+            <div className={styles.bookingSection}>
+              {hasActiveBookings && !showCalendarOverride ? (
+                <div className={styles.statusView}>
+                  <h3 className={styles.statusTitle}>Your Appointment Status</h3>
+                  <div className={styles.bookingList}>
+                    {userBookings.map((b, index) => (
+                      <div key={index} className={`${styles.statusCard} ${styles[b.status]}`}>
+                        <div className={styles.statusHeader}>
+                           <span className={styles.dateLabel}>{b.day}</span>
+                           <span className={styles.statusBadge}>{b.status.toUpperCase()}</span>
                         </div>
-                        <p className={styles.reviewMessage}>{r.message}</p>
-                        <span className={styles.reviewDate}>{new Date(r.createdAt).toLocaleDateString()}</span>
+                        <p className={styles.slotDetails}><FaRegClock /> {b.slot.startTime} - {b.slot.endTime}</p>
+                        {(b.status === 'accepted' || b.status === 'paid') ? (
+                          <div className={styles.successMsg}>
+                            <p><FaCheck /> Your slot is ready for the next process.</p>
+                            <button className={styles.chatLinkBtn} onClick={() => navigate('/chat')}>
+                               <FaComments /> Navigate to Chat
+                            </button>
+                          </div>
+                        ) : (
+                          <div className={styles.pendingMsg}>
+                            <p>Waiting for expert's approval...</p>
+                            <button className={styles.miniCancel} onClick={() => handleCancel(b._id)}>Cancel Request</button>
+                          </div>
+                        )}
                       </div>
-                    ))
-                  ) : (
-                    <p className={styles.noReviews}>No reviews yet for this expert.</p>
+                    ))}
+                  </div>
+                  <div className={styles.anotherRequestArea}>
+                     <p>Do you want another request?</p>
+                     <button className={styles.linkButton} onClick={() => setShowCalendarOverride(true)}>
+                        Click here to select another slot
+                     </button>
+                  </div>
+                </div>
+              ) : (
+                <div className={styles.calendarView}>
+                  <div className={styles.calendarHeader}>
+                    <h3><FaCalendarAlt /> Select Date</h3>
+                    {hasActiveBookings && (
+                      <button className={styles.viewStatusBtn} onClick={() => setShowCalendarOverride(false)}>
+                        View Status
+                      </button>
+                    )}
+                  </div>
+                  <div className={styles.daysGrid}>
+                    {expert.availability?.length > 0 ? (
+                      expert.availability.map((item, index) => (
+                        <div key={index} className={`${styles.dayBox} ${selectedDateObj?.date === item.date ? styles.activeDay : ''}`} onClick={() => setSelectedDateObj(item)}>{item.date}</div>
+                      ))
+                    ) : (
+                      <p className={styles.noDataText}>No upcoming dates available.</p>
+                    )}
+                  </div>
+                  {selectedDateObj && (
+                    <>
+                      <h3 style={{marginTop: '25px'}}><FaRegClock /> Available Slots</h3>
+                      <div className={styles.slotGrid}>
+                        {selectedDateObj.slots.map((slot, index) => {
+                          const booked = isSlotBooked(selectedDateObj.date, slot.startTime);
+                          return (
+                            <div key={index} className={`${styles.slotBox} ${selectedSlot?.startTime === slot.startTime ? styles.activeSlot : ''} ${booked ? styles.bookedSlot : ''}`} onClick={() => !booked && setSelectedSlot(slot)}>
+                              {booked ? "Already Booked" : `${slot.startTime} - ${slot.endTime}`}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
                   )}
+                  <div className={styles.actionArea}>
+                    <button className={styles.confirmBtn} disabled={!selectedSlot || loading} onClick={handleBooking}>
+                      {loading ? "Processing..." : "Confirm Booking"}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           </div>
-
-          <div className={styles.bookingSection}>
-            {hasActiveBookings && !showCalendarOverride ? (
-              <div className={styles.statusView}>
-                <h3 className={styles.statusTitle}>Your Appointment Status</h3>
-                
-                <div className={styles.bookingList}>
-                  {userBookings.map((b, index) => (
-                    <div key={index} className={`${styles.statusCard} ${styles[b.status]}`}>
-                      <div className={styles.statusHeader}>
-                         <span className={styles.dateLabel}>{b.day}</span>
-                         <span className={styles.statusBadge}>{b.status.toUpperCase()}</span>
-                      </div>
-                      <p className={styles.slotDetails}><FaRegClock /> {b.slot.startTime} - {b.slot.endTime}</p>
-                      
-                      {(b.status === 'accepted' || b.status === 'paid') ? (
-                        <div className={styles.successMsg}>
-                          <p><FaCheck /> Your slot is ready for the next process.</p>
-                          <button className={styles.chatLinkBtn} onClick={() => navigate('/chat')}>
-                             <FaComments /> Navigate to Chat
-                          </button>
-                        </div>
-                      ) : (
-                        <div className={styles.pendingMsg}>
-                          <p>Waiting for expert's approval...</p>
-                          <button className={styles.miniCancel} onClick={() => handleCancel(b._id)}>Cancel Request</button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                <div className={styles.anotherRequestArea}>
-                   <p>Do you want another request?</p>
-                   <button className={styles.linkButton} onClick={() => setShowCalendarOverride(true)}>
-                      Click here to select another slot
-                   </button>
-                </div>
-              </div>
-            ) : (
-              <div className={styles.calendarView}>
-                <div className={styles.calendarHeader}>
-                  <h3><FaCalendarAlt /> Select Date</h3>
-                  {hasActiveBookings && (
-                    <button className={styles.viewStatusBtn} onClick={() => setShowCalendarOverride(false)}>
-                      View Status
-                    </button>
-                  )}
-                </div>
-
-                <div className={styles.daysGrid}>
-                  {expert.availability?.length > 0 ? (
-                    expert.availability.map((item, index) => (
-                      <div 
-                        key={index} 
-                        className={`${styles.dayBox} ${selectedDateObj?.date === item.date ? styles.activeDay : ''}`}
-                        onClick={() => setSelectedDateObj(item)}
-                      >
-                        {item.date}
-                      </div>
-                    ))
-                  ) : (
-                    <p className={styles.noDataText}>No upcoming dates available.</p>
-                  )}
-                </div>
-
-                {selectedDateObj && (
-                  <>
-                    <h3 style={{marginTop: '25px'}}><FaRegClock /> Available Slots <span style={{ fontWeight: '300', fontSize: '0.9em', opacity: 0.7 }}>(24 Hour Format)</span></h3>
-                    <div className={styles.slotGrid}>
-                      {selectedDateObj.slots.map((slot, index) => {
-                        const booked = isSlotBooked(selectedDateObj.date, slot.startTime);
-                        return (
-                          <div 
-                            key={index} 
-                            className={`${styles.slotBox} ${selectedSlot?.startTime === slot.startTime ? styles.activeSlot : ''} ${booked ? styles.bookedSlot : ''}`}
-                            onClick={() => !booked && setSelectedSlot(slot)}
-                          >
-                            {booked ? "Already Booked" : `${slot.startTime} - ${slot.endTime}`}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </>
-                )}
-
-                <div className={styles.actionArea}>
-                  <button className={styles.confirmBtn} disabled={!selectedSlot || loading} onClick={handleBooking}>
-                    {loading ? "Processing..." : "Confirm Booking"}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        )}
       </div>
     </>
   );

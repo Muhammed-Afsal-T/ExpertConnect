@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { FaUserCircle, FaSignOutAlt, FaSearch, FaCommentDots } from 'react-icons/fa';
 
@@ -7,7 +7,7 @@ const Navbar = ({ onSearch }) => {
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null); 
-
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem('user'));
   const role = user?.role;
 
@@ -56,7 +56,7 @@ const Navbar = ({ onSearch }) => {
         ExpertConnect
       </div>
 
-      {role === 'user' && (
+      {role === 'user' && location.pathname === '/user-dashboard' && (
         <div className={styles.searchBar}>
           <input 
             type="text" 

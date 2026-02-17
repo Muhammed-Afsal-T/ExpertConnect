@@ -216,3 +216,27 @@
   background: #ddd;
   border-radius: 10px;
 }
+
+/* --- Skeleton Base Styles --- */
+.skeleton {
+  background: #eee;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  border-radius: 8px;
+  background-size: 200% 100%;
+  animation: shine 1.5s linear infinite;
+}
+
+@keyframes shine {
+  to { background-position-x: -200%; }
+}
+
+.skeletonHeader { display: flex; gap: 25px; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 25px; }
+.skeletonPic { width: 120px; height: 120px; border-radius: 15px; }
+.skeletonNameSection { flex: 1; }
+.skeletonTitle { width: 60%; height: 28px; margin-bottom: 12px; }
+.skeletonSub { width: 40%; height: 20px; }
+.skeletonContent { margin-top: 30px; }
+.skeletonRow { width: 100%; height: 20px; margin-bottom: 15px; }
+.skeletonAbout { width: 100%; height: 80px; margin-top: 20px; }
+.skeletonBookingTitle { width: 50%; height: 24px; margin-bottom: 20px; }
+.skeletonCalendar { width: 100%; height: 150px; }
