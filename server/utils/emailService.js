@@ -22,7 +22,7 @@ const sendEndEmail = async (userEmail, userName, expertName) => {
     html: `<h3>Hello ${userName},</h3>
            <p>Your session with <b>${expertName}</b> has concluded. We hope it was helpful!</p>
            <p>Please take a moment to rate and review the expert on the platform.</p>
-           <a href="${process.env.CLIENT_URL}/user-dashboard">Leave a Review</a>`
+           <a href="${process.env.CLIENT_URL}/booking-history">Leave a Review</a>`
   };
   await transporter.sendMail(mailOptions);
 };

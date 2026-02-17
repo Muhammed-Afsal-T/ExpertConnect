@@ -154,3 +154,65 @@
     margin-top: 10px;
     line-height: 1.4;
 }
+
+.reviewCount {
+  font-size: 14px;
+  color: #777;
+  font-weight: normal;
+  margin-left: 5px;
+}
+
+.reviewsList {
+  margin-top: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.reviewCard {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border-left: 4px solid #f39c12;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.reviewStars {
+  display: flex;
+  gap: 2px;
+}
+
+.reviewMessage {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.reviewDate {
+  font-size: 11px;
+  color: #999;
+}
+
+.noReviews {
+  font-size: 14px;
+  color: #888;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.reviewsList::-webkit-scrollbar {
+  width: 5px;
+}
+
+.reviewsList::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}

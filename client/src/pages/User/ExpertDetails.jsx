@@ -19,6 +19,9 @@ const ExpertDetails = () => {
   const [showCalendarOverride, setShowCalendarOverride] = useState(false); 
   const [bookedSlots, setBookedSlots] = useState([]); 
 
+  const [reviews, setReviews] = useState([]);
+  const [showReviews, setShowReviews] = useState(false);
+
   useEffect(() => {
     fetchExpertAndBookings();
   }, [id, user._id]);
@@ -30,14 +33,12 @@ const ExpertDetails = () => {
         setExpert(expertRes.data.data);
       }
 
-      // എക്സ്പെർട്ടിന്റെ മൊത്തം ബുക്കിംഗുകൾ (Slot Protection നുവേണ്ടി)
       const bookingsRes = await axios.post('http://localhost:5000/api/v1/booking/get-expert-bookings', { expertId: id });
       if (bookingsRes.data.success) {
         const accepted = bookingsRes.data.data.filter(b => b.status === 'accepted');
         setBookedSlots(accepted);
       }
 
-      // ഈ യൂസറുടെ ബുക്കിംഗ് സ്റ്റാറ്റസ് ചെക്ക് ചെയ്യുന്നു
       const statusRes = await axios.post('http://localhost:5000/api/v1/booking/check-status', {
         userId: user._id, expertId: id
       });
@@ -49,6 +50,24 @@ const ExpertDetails = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/api/v1/review/get-reviews/${id}`);
+      if (res.data.success) {
+        setReviews(res.data.data);
+      }
+    } catch (error) {
+      console.log("Error fetching reviews:", error);
+    }
+  };
+
+  const handleToggleReviews = () => {
+    if (!showReviews) {
+      fetchReviews();
+    }
+    setShowReviews(!showReviews);
   };
 
   const isSlotBooked = (date, startTime) => {
@@ -110,7 +129,9 @@ const ExpertDetails = () => {
                 <h2>{expert.name} <FaCheckCircle className={styles.verifyIcon} /></h2>
                 <p className={styles.spec}>{expert.specialization}</p>
                 <div className={styles.rating}>
-                  <FaStar className={styles.star} /> {expert.numReviews > 0 ? expert.averageRating.toFixed(1) : "No Ratings"}
+                  <FaStar className={styles.star} /> 
+                  {expert.numReviews > 0 ? expert.averageRating.toFixed(1) : "No Ratings"}
+                  {expert.numReviews > 0 && <span className={styles.reviewCount}>({expert.numReviews})</span>}
                 </div>
               </div>
             </div>
@@ -128,7 +149,33 @@ const ExpertDetails = () => {
                 <h3>About</h3>
                 <p>{expert.about || "Professional expert in " + expert.specialization}</p>
               </div>
-              <button className={styles.reviewBtn}>Read Reviews</button>
+
+              <button className={styles.reviewBtn} onClick={handleToggleReviews}>
+                {showReviews ? "Hide Reviews" : "Read Reviews"}
+              </button>
+
+              {showReviews && (
+                <div className={styles.reviewsList}>
+                  {reviews.length > 0 ? (
+                    reviews.map((r, index) => (
+                      <div key={index} className={styles.reviewCard}>
+                        <div className={styles.reviewHeader}>
+                          <strong>{r.userName}</strong>
+                          <div className={styles.reviewStars}>
+                            {[...Array(5)].map((_, i) => (
+                              <FaStar key={i} color={i < r.rating ? "#ffc107" : "#e4e5e9"} size={14}/>
+                            ))}
+                          </div>
+                        </div>
+                        <p className={styles.reviewMessage}>{r.message}</p>
+                        <span className={styles.reviewDate}>{new Date(r.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className={styles.noReviews}>No reviews yet for this expert.</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

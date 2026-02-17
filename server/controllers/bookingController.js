@@ -209,7 +209,8 @@ const reportExpertController = async (req, res) => {
   try {
     const { bookingId, userId, expertId, reason } = req.body;
     const booking = await Booking.findByIdAndUpdate(bookingId, { 
-      report: { reason, reportedAt: new Date() } 
+      report: { reason, reportedAt: new Date() },
+      isReported: true
     }, { new: true });
     
     res.status(200).send({ success: true, message: "Report submitted successfully!" });
