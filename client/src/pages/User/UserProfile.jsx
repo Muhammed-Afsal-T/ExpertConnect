@@ -87,7 +87,7 @@ const UserProfile = () => {
             <div className={styles.row}>
               <div className={styles.inputGroup}>
                 <label>Age</label>
-                <input type="number" name="age" value={formData.age} onChange={handleChange} required />
+                <input type="number" name="age" value={formData.age} onChange={handleChange} min="13" max="100" required />
               </div>
               <div className={styles.inputGroup}>
                 <label>Gender</label>

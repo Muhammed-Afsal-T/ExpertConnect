@@ -10,7 +10,7 @@ const ExpertProfile = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user'))); 
   const [loading, setLoading] = useState(false); 
 
-  // ഇന്നത്തെ തിയതി IST-യിൽ എടുക്കുന്നു (കഴിഞ്ഞുപോയവ ഫിൽട്ടർ ചെയ്യാൻ)
+  // Gets today's date in IST (to filter out past dates)
   const todayIST = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
   const [formData, setFormData] = useState({ 
@@ -24,7 +24,7 @@ const ExpertProfile = () => {
     about: user?.about || '', 
   }); 
 
-  // ലോഡ് ചെയ്യുമ്പോൾ തന്നെ കഴിഞ്ഞുപോയ തിയതികൾ ഫിൽട്ടർ ചെയ്യുന്നു
+  // Filtering out past dates while loading
   const [availability, setAvailability] = useState(
     (user?.availability || []).filter(a => a.date >= todayIST)
   ); 
@@ -93,7 +93,7 @@ const ExpertProfile = () => {
 
     Object.keys(formData).forEach(key => data.append(key, formData[key])); 
      
-    // അയക്കുന്നതിന് മുൻപ് ഒരിക്കൽ കൂടി ഫിൽട്ടർ ചെയ്യുന്നു
+    // Filtering once more before sending
     const cleanAvailability = availability.filter(a => a.date >= todayIST);
     data.append('availability', JSON.stringify(cleanAvailability)); 
 
@@ -168,7 +168,7 @@ const ExpertProfile = () => {
               <div className={styles.row}> 
                 <div className={styles.inputGroup}> 
                   <label>Age</label> 
-                  <input type="number" name="age" value={formData.age} onChange={handleChange} required /> 
+                  <input type="number" name="age" value={formData.age} onChange={handleChange} min="13" max="100" required /> 
                 </div> 
                 <div className={styles.inputGroup}> 
                   <label>Profession</label> 
