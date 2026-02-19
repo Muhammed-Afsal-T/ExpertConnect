@@ -98,7 +98,7 @@ const getUserActiveBookingsController = async (req, res) => {
 
 const updateStatusController = async (req, res) => {
   try {
-    const { bookingId, status } = req.body;
+    const { bookingId, status, rejectionReason } = req.body;
     if (status === 'accepted') {
       const currentBooking = await Booking.findById(bookingId);
       const slotTaken = await Booking.findOne({
@@ -109,7 +109,7 @@ const updateStatusController = async (req, res) => {
       });
       if (slotTaken) return res.status(200).send({ success: false, message: "Slot already taken!" });
     }
-    const booking = await Booking.findByIdAndUpdate(bookingId, { status }, { new: true });
+    const booking = await Booking.findByIdAndUpdate(bookingId, { status, rejectionReason: rejectionReason || "" }, { new: true });
     res.status(200).send({ success: true, message: `Booking ${status}`, data: booking });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error updating status", error });
@@ -196,7 +196,7 @@ const getUserBookingHistoryController = async (req, res) => {
     const { userId } = req.params;
     const history = await Booking.find({ 
       userId, 
-      status: 'completed' 
+      status: { $in: ['completed', 'rejected', 'incomplete'] }
     }).populate('expertId', 'name image specialization');
     
     res.status(200).send({ success: true, data: history });

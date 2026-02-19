@@ -51,3 +51,42 @@
   margin-bottom: 15px;
   font-family: inherit;
 }
+
+.statusHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.statusBadge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+/* Status Colors */
+.completed .statusBadge { background: #d4edda; color: #155724; }
+.rejected .statusBadge { background: #f8d7da; color: #721c24; }
+.incomplete .statusBadge { background: #e2e3e5; color: #383d41; }
+
+.paidBadge { color: #28a745; font-size: 12px; font-weight: bold; }
+.unpaidBadge { color: #dc3545; font-size: 12px; font-weight: bold; }
+
+.rejectionBox {
+  background: #fff5f5;
+  border: 1px solid #feb2b2;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: #c53030;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Card highlight for status */
+.historyCard.rejected { border-top: 4px solid #dc3545; }
+.historyCard.completed { border-top: 4px solid #28a745; }
+.historyCard.incomplete { border-top: 4px solid #6c757d; }

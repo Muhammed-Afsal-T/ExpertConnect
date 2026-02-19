@@ -42,7 +42,10 @@ const bookingSchema = new mongoose.Schema({
     reportedAt: { type: Date }
   },
   isReviewed: { type: Boolean, default: false },
-  isReported: { type: Boolean, default: false }
+  isReported: { type: Boolean, default: false },
+  rejectionReason: {
+  type: String,
+  default: ""}
 }, { timestamps: true });
 
 module.exports = mongoose.model('Booking', bookingSchema);

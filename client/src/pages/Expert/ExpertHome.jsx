@@ -11,6 +11,10 @@ const ExpertHome = () => {
   const [bookings, setBookings] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
+  const [showRejectModal, setShowRejectModal] = useState(false);
+  const [rejectBookingId, setRejectBookingId] = useState(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
     setUser(userData);
@@ -56,6 +60,32 @@ const ExpertHome = () => {
     totalEarnings: bookings.filter(b => b.status === 'completed').reduce((acc, curr) => acc + curr.amount, 0),
     pendingRequests: bookings.filter(b => b.status === 'pending').length
   };
+
+ const openRejectModal = (bookingId) => {
+  setRejectBookingId(bookingId);
+  setShowRejectModal(true);
+};
+
+const submitRejection = async () => {
+  if (!rejectionReason.trim()) return alert("Please provide a reason.");
+
+  try {
+    const res = await axios.post('http://localhost:5000/api/v1/booking/update-status', {
+      bookingId: rejectBookingId,
+      status: 'rejected',
+      rejectionReason: rejectionReason
+    });
+    
+    if (res.data.success) {
+      alert("Booking Rejected.");
+      setShowRejectModal(false);
+      setRejectionReason("");
+      fetchBookings(user._id);
+    }
+  } catch (error) {
+    alert("Action failed.");
+  }
+};
 
   return (
     <>
@@ -113,12 +143,12 @@ const ExpertHome = () => {
                         alreadyBooked ? (
                           <div className={styles.blockedAction}>
                             <span className={styles.slotWarning}><FaBan /> Slot already booked</span>
-                            <button onClick={() => handleStatus(booking._id, 'rejected')} className={styles.rejectBtn} title="Reject"><FaTimes /> Reject</button>
+                            <button onClick={() => openRejectModal(booking._id)} className={styles.rejectBtn} title="Reject"><FaTimes /> Reject</button>
                           </div>
                         ) : (
                           <div className={styles.actionBtns}>
                             <button onClick={() => handleStatus(booking._id, 'accepted')} className={styles.acceptBtn} title="Accept"><FaCheck /> Accept</button>
-                            <button onClick={() => handleStatus(booking._id, 'rejected')} className={styles.rejectBtn} title="Reject"><FaTimes /> Reject</button>
+                            <button onClick={() => openRejectModal(booking._id)} className={styles.rejectBtn} title="Reject"><FaTimes /> Reject</button>
                           </div>
                         )
                       ) : (
@@ -157,6 +187,34 @@ const ExpertHome = () => {
           </div>
         </div>
       )}
+
+      {showRejectModal && (
+  <div className={styles.modalOverlay}>
+    <div className={styles.modalContent}>
+      <button className={styles.closeBtn} onClick={() => setShowRejectModal(false)}>×</button>
+      <h3>Rejection Reason</h3>
+      <p className={styles.modalSubText}>Please tell the user why you are rejecting this request.</p>
+      
+      <textarea 
+        className={styles.reasonInput}
+        placeholder="Type your reason here (e.g., Not available at this time, Slot already booked elsewhere...)"
+        value={rejectionReason}
+        onChange={(e) => setRejectionReason(e.target.value)}
+      />
+
+      <div className={styles.modalActions}>
+        <button 
+          className={styles.confirmRejectBtn} 
+          onClick={submitRejection}
+          disabled={!rejectionReason.trim()}
+        >
+          Confirm Reject
+        </button>
+        <button className={styles.cancelBtn} onClick={() => setShowRejectModal(false)}>Cancel</button>
+      </div>
+    </div>
+  </div>
+)}
     </>
   );
 };

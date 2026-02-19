@@ -3,7 +3,7 @@ import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './BookingHistory.module.css';
 import { useNavigate } from 'react-router-dom';
-import { FaStar } from 'react-icons/fa';
+import { FaStar, FaInfoCircle } from 'react-icons/fa';
 
 const BookingHistory = () => {
   const [history, setHistory] = useState([]);
@@ -32,7 +32,6 @@ const BookingHistory = () => {
     }
   };
 
-  // Logic to Submit Report
   const handleReportSubmit = async () => {
     if (!reportData.reason.trim()) return;
     try {
@@ -51,7 +50,6 @@ const BookingHistory = () => {
     }
   };
 
-  // Logic to Submit Review
   const handleReviewSubmit = async () => {
     try {
       const res = await axios.post('http://localhost:5000/api/v1/review/post-review', {
@@ -81,7 +79,16 @@ const BookingHistory = () => {
         ) : (
           <div className={styles.historyGrid}>
             {history.map((item) => (
-              <div key={item._id} className={styles.historyCard}>
+              <div key={item._id} className={`${styles.historyCard} ${styles[item.status]}`}>
+                <div className={styles.statusHeader}>
+                  <span className={`${styles.statusBadge} ${styles[item.status]}`}>
+                    {item.status.toUpperCase()}
+                  </span>
+                  <span className={item.status === 'completed' ? styles.paidBadge : styles.unpaidBadge}>
+                    {item.status === 'completed' ? 'PAID' : 'UNPAID'}
+                  </span>
+                </div>
+
                 <div className={styles.expertInfo}>
                   <img 
                     src={item.expertId?.image || 'https://via.placeholder.com/50'} 
@@ -98,6 +105,14 @@ const BookingHistory = () => {
                   <p><strong>Time:</strong> {item.slot.startTime} - {item.slot.endTime}</p>
                   <p><strong>Price:</strong> ₹{item.amount}</p>
                 </div>
+
+                {/* Showing rejection message */}
+                {item.status === 'rejected' && item.rejectionReason && (
+                  <div className={styles.rejectionBox}>
+                    <FaInfoCircle /> <strong>Reason:</strong> {item.rejectionReason}
+                  </div>
+                )}
+
                 <div className={styles.actions}>
                   <button 
                     onClick={() => navigate(`/book-expert/${item.expertId._id}`)} 
@@ -106,30 +121,33 @@ const BookingHistory = () => {
                     View Profile
                   </button>
 
-                  {/* Show Rate button only if not reviewed */}
-                  {!item.isReviewed && (
-                    <button 
-                      onClick={() => {
-                        setReviewData({ ...reviewData, bookingId: item._id, expertId: item.expertId._id });
-                        setShowReviewModal(true);
-                      }} 
-                      className={styles.rateBtn}
-                    >
-                      Rate
-                    </button>
-                  )}
+                  {/* Only shown if completed. */}
+                  {item.status === 'completed' && (
+                    <>
+                      {!item.isReviewed && (
+                        <button 
+                          onClick={() => {
+                            setReviewData({ ...reviewData, bookingId: item._id, expertId: item.expertId._id });
+                            setShowReviewModal(true);
+                          }} 
+                          className={styles.rateBtn}
+                        >
+                          Rate
+                        </button>
+                      )}
 
-                  {/* Show Report button only if not reported */}
-                  {!item.isReported && (
-                    <button 
-                      onClick={() => {
-                        setReportData({ bookingId: item._id, expertId: item.expertId._id, reason: '' });
-                        setShowReportModal(true);
-                      }} 
-                      className={styles.reportBtn}
-                    >
-                      Report
-                    </button>
+                      {!item.isReported && (
+                        <button 
+                          onClick={() => {
+                            setReportData({ bookingId: item._id, expertId: item.expertId._id, reason: '' });
+                            setShowReportModal(true);
+                          }} 
+                          className={styles.reportBtn}
+                        >
+                          Report
+                        </button>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
