@@ -12,9 +12,18 @@ const UserDashboard = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   
+  const [showProfilePrompt, setShowProfilePrompt] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user'));
+  
   // new filter stores
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState("");
+
+  useEffect(() => {
+    if (user && (!user.age || !user.gender || !user.specialization)) {
+      setShowProfilePrompt(true);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchExperts = async () => {
@@ -166,6 +175,29 @@ const UserDashboard = () => {
           </div>
         </div>
       </div>
+      {/* Profile Completion Modal */}
+      {showProfilePrompt && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Complete Your Profile</h3>
+            <p>Please provide your Age, Gender, and Profession before booking a consultation.</p>
+            <div className={styles.modalActions}>
+              <button 
+                className={styles.completeBtn} 
+                onClick={() => navigate('/profile')}
+              >
+                Go to Profile
+              </button>
+              <button 
+                className={styles.maybeLater} 
+                onClick={() => setShowProfilePrompt(false)}
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

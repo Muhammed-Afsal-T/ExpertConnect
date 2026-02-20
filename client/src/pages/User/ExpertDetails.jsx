@@ -76,6 +76,13 @@ const ExpertDetails = () => {
 
   const handleBooking = async () => {
     if (!selectedDateObj || !selectedSlot) return alert("Select Date and Slot!");
+   
+    if (!user?.age || !user?.gender || !user?.specialization) {
+    alert("Please complete your profile details (Age, Gender, Profession) before sending a request.");
+    navigate('/profile');
+    return;
+    }
+    
     try {
       setLoading(true);
       const res = await axios.post('http://localhost:5000/api/v1/booking/book-expert', {
