@@ -15,26 +15,58 @@ import ResetPassword from './pages/Auth/ResetPassword';
 import LandingPage from './pages/LandingPage/LandingPage';
 import BookingHistory from './pages/User/BookingHistory';
 import AdminReports from './pages/Admin/AdminReports';
+import ProtectedRoute from './components/Routes/ProtectedRoute';
+import PublicRoute from './components/Routes/PublicRoute';
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/expert-dashboard" element={<ExpertHome />} />
-        <Route path="/expert/profile" element={<ExpertProfile />} />
-        <Route path="/user-dashboard" element={<UserDashboard />} />
-        <Route path="/profile" element={<UserProfile />} />
-        <Route path="/book-expert/:id" element={<ExpertDetails />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/expert/chat" element={<ExpertChat />} />
+        <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
-        <Route path="/video-call/:bookingId" element={<VideoCall />} />
-        <Route path="/booking-history" element={<BookingHistory />} />
-        <Route path="/admin-reports" element={<AdminReports />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>
+        } />
+        <Route path="/admin-reports" element={
+          <ProtectedRoute allowedRoles={['admin']}><AdminReports /></ProtectedRoute>
+        } />
+
+        {/* Expert Routes */}
+        <Route path="/expert-dashboard" element={
+          <ProtectedRoute allowedRoles={['expert']}><ExpertHome /></ProtectedRoute>
+        } />
+        <Route path="/expert/profile" element={
+          <ProtectedRoute allowedRoles={['expert']}><ExpertProfile /></ProtectedRoute>
+        } />
+        <Route path="/expert/chat" element={
+          <ProtectedRoute allowedRoles={['expert']}><ExpertChat /></ProtectedRoute>
+        } />
+
+        {/* User Routes */}
+        <Route path="/user-dashboard" element={
+          <ProtectedRoute allowedRoles={['user']}><UserDashboard /></ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute allowedRoles={['user']}><UserProfile /></ProtectedRoute>
+        } />
+        <Route path="/book-expert/:id" element={
+          <ProtectedRoute allowedRoles={['user']}><ExpertDetails /></ProtectedRoute>
+        } />
+        <Route path="/chat" element={
+          <ProtectedRoute allowedRoles={['user']}><Chat /></ProtectedRoute>
+        } />
+        <Route path="/booking-history" element={
+          <ProtectedRoute allowedRoles={['user']}><BookingHistory /></ProtectedRoute>
+        } />
+        <Route path="/video-call/:bookingId" element={
+          <ProtectedRoute allowedRoles={['user', 'expert']}><VideoCall /></ProtectedRoute>
+        } />
+
       </Routes>
     </BrowserRouter>
   );
