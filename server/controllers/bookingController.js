@@ -1,4 +1,5 @@
 const Booking = require('../models/bookingModel');
+const { sendAcceptEmail, sendRejectEmail } = require('../utils/emailService');
 
 const getTodayIST = () => {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
@@ -99,6 +100,7 @@ const getUserActiveBookingsController = async (req, res) => {
 const updateStatusController = async (req, res) => {
   try {
     const { bookingId, status, rejectionReason } = req.body;
+    
     if (status === 'accepted') {
       const currentBooking = await Booking.findById(bookingId);
       const slotTaken = await Booking.findOne({
@@ -109,7 +111,39 @@ const updateStatusController = async (req, res) => {
       });
       if (slotTaken) return res.status(200).send({ success: false, message: "Slot already taken!" });
     }
-    const booking = await Booking.findByIdAndUpdate(bookingId, { status, rejectionReason: rejectionReason || "" }, { new: true });
+
+    // Update and populate to get user/expert details for email notification
+    const booking = await Booking.findByIdAndUpdate(
+      bookingId, 
+      { status, rejectionReason: rejectionReason || "" }, 
+      { new: true }
+    ).populate('userId expertId');
+
+    // Trigger email if booking update is successful
+    if (booking) {
+      const slotString = `${booking.slot.startTime} - ${booking.slot.endTime}`;
+      
+      if (status === 'accepted') {
+        sendAcceptEmail(
+          booking.userId.email, 
+          booking.userId.name, 
+          booking.expertId.name, 
+          booking.day, 
+          slotString
+        ).catch(err => console.log("Email Error:", err));
+      } 
+      else if (status === 'rejected') {
+        sendRejectEmail(
+          booking.userId.email, 
+          booking.userId.name, 
+          booking.expertId.name, 
+          booking.day, 
+          slotString, 
+          rejectionReason
+        ).catch(err => console.log("Email Error:", err));
+      }
+    }
+
     res.status(200).send({ success: true, message: `Booking ${status}`, data: booking });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error updating status", error });
