@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './Chat.module.css';
-import { FaVideo, FaPaperPlane, FaCheckCircle, FaArrowLeft, FaCalendarPlus, FaCheck } from 'react-icons/fa';
+import { FaVideo, FaPaperPlane, FaCheckCircle, FaArrowLeft, FaCalendarPlus, FaCheck, FaBars } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
@@ -19,6 +19,9 @@ const Chat = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  // Mobile View Sidebar toggle state
+  const [showSidebar, setShowSidebar] = useState(true);
 
   useEffect(() => {
     fetchAcceptedExperts();
@@ -50,7 +53,6 @@ const Chat = () => {
     const interval = setInterval(checkExpiry, 60000);
     return () => clearInterval(interval);
   }, [selectedExpert]);
-  // --- Socket.io Logic Start ---
 
   useEffect(() => {
     if (selectedExpert && selectedExpert.status === 'paid') {
@@ -68,8 +70,6 @@ const Chat = () => {
 
     return () => socket.off("receive_message");
   }, [selectedExpert]);
-
-  // --- Socket.io Logic End ---
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -149,7 +149,6 @@ const Chat = () => {
 
       if (res.data.success) {
         socket.emit("send_message", res.data.newMessage);
-
         setMessages([...messages, res.data.newMessage]);
         setInputText("");
       }
@@ -162,7 +161,8 @@ const Chat = () => {
     <>
       <Navbar />
       <div className={styles.chatContainer}>
-        <div className={styles.sidebar}>
+        {/* Sidebar - Visible on Desktop, Toggleable on Mobile */}
+        <div className={`${styles.sidebar} ${!showSidebar ? styles.hideSidebar : ''}`}>
           <div className={styles.sidebarHeader}>
             <div className={styles.backAction} onClick={() => navigate('/user-dashboard')}>
               <FaArrowLeft /> <span>Back</span>
@@ -178,6 +178,7 @@ const Chat = () => {
                   onClick={() => {
                     setSelectedExpert(item);
                     setPaymentSuccess(false);
+                    setShowSidebar(false); // Hide sidebar after selecting on mobile
                   }}
                 >
                   <img src={item.expertId?.image || 'https://via.placeholder.com/50'} alt="Expert" className={styles.sidebarProfilePic} />
@@ -193,11 +194,14 @@ const Chat = () => {
           </div>
         </div>
 
-        <div className={styles.mainChat}>
+        {/* Main Chat Area */}
+        <div className={`${styles.mainChat} ${showSidebar ? styles.hideMainChat : ''}`}>
           {selectedExpert ? (
             <>
               <div className={styles.chatHeader}>
                 <div className={styles.headerLeft}>
+                  {/* Show back button on mobile to return to sidebar */}
+                  <FaArrowLeft className={styles.mobileBack} onClick={() => setShowSidebar(true)} />
                   <img src={selectedExpert.expertId?.image} alt="Profile" className={styles.headerProfilePic} />
                   <div>
                     <h4>{selectedExpert.expertId?.name}</h4>
@@ -252,6 +256,7 @@ const Chat = () => {
             </>
           ) : (
             <div className={styles.emptyState}>
+              <FaBars className={styles.mobileMenuIcon} onClick={() => setShowSidebar(true)} />
               <p>Select an Expert to start consultation</p>
             </div>
           )}
@@ -280,22 +285,13 @@ const Chat = () => {
                 <div className={styles.checkIcon}><FaCheck /></div>
                 <h2>Payment Successful!</h2>
                 <p>Your session with {selectedExpert?.expertId?.name} is unlocked.</p>
-
                 <div className={styles.reminderBox}>
                   <p>Don't miss your session! Add it to your calendar.</p>
-                  <a
-                    href={getGoogleCalendarLink(selectedExpert)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.calendarLink}
-                  >
+                  <a href={getGoogleCalendarLink(selectedExpert)} target="_blank" rel="noreferrer" className={styles.calendarLink}>
                     <FaCalendarPlus /> Add to Google Calendar
                   </a>
                 </div>
-
-                <button className={styles.doneBtn} onClick={() => setShowPaymentModal(false)}>
-                  Go to Chat
-                </button>
+                <button className={styles.doneBtn} onClick={() => setShowPaymentModal(false)}>Go to Chat</button>
               </div>
             )}
           </div>

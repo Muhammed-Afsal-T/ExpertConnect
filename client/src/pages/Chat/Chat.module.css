@@ -1,200 +1,59 @@
-.chatContainer { display: flex; height: calc(100vh - 70px); background: #f0f2f5; overflow: hidden; }
-
-/* Sidebar */
-.sidebar { width: 320px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
-.sidebarHeader { padding: 20px; border-bottom: 1px solid #eee; }
-.backAction { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #0056b3; font-weight: bold; margin-bottom: 10px; }
-.expertList { flex: 1; overflow-y: auto; }
-.expertCard { display: flex; align-items: center; gap: 15px; padding: 15px; cursor: pointer; border-bottom: 1px solid #f9f9f9; transition: 0.2s; }
-.expertCard:hover { background: #f5f6f7; }
-.activeCard { background: #e7f1ff; }
-
-/* Profile Pic with Blue Border */
-.expertCard img, .headerProfilePic { 
-    width: 50px; 
-    height: 50px; 
-    border-radius: 50%; 
-    object-fit: cover; 
-    border: 2px solid #0056b3; /* Blue Border */
-}
-
-.expertInfo h4 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 5px; }
-.verified { color: #28a745; font-size: 12px; }
-.expertInfo p { margin: 3px 0 0; font-size: 13px; color: #777; }
-
-/* Main Chat */
-.mainChat { flex: 1; display: flex; flex-direction: column; position: relative; }
-.chatHeader { background: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
-.headerLeft { display: flex; align-items: center; gap: 15px; }
-.active { color: #28a745; font-size: 12px; font-weight: bold; }
-.notActive { color: #999; font-size: 12px; font-weight: 500; }
-
-.headerRight { display: flex; align-items: center; gap: 20px; }
-.slotBtn { background: #0056b3; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; }
-.videoIcon { font-size: 22px; color: #0056b3; cursor: pointer; transition: 0.3s; }
-.videoIcon:hover { color: #28a745; }
-.disabled { color: #ccc; cursor: help; }
-
-/* Payment Prompt */
-.paymentPrompt { flex: 1; display: flex; justify-content: center; align-items: center; background: #fafafa; }
-.promptBox { text-align: center; padding: 40px; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.payBtn { background: #28a745; color: white; border: none; padding: 12px 30px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-
-/* Messages */
-.messageArea { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9; }
-.emptyChat { text-align: center; color: #bbb; margin-top: 20px; font-style: italic; }
-.messageRow { display: flex; width: 100%; }
-.received { background: #fff; padding: 10px 15px; border-radius: 15px 15px 15px 0; max-width: 60%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-.sent { background: #0056b3; color: white; padding: 10px 15px; border-radius: 15px 15px 0 15px; max-width: 60%; margin-left: auto; }
-
-.inputArea { background: white; padding: 15px 25px; display: flex; gap: 15px; align-items: center; border-top: 1px solid #eee; }
-.inputArea input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
-.inputArea button { background: #0056b3; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
-
-/* Modal Styles */
-.modalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
-.modalContent { background: white; padding: 30px; border-radius: 15px; width: 400px; text-align: center; }
-.amountText { font-size: 20px; font-weight: bold; color: #28a745; margin: 10px 0; }
-.finalPayBtn { width: 100%; padding: 12px; background: #0056b3; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-.closeBtn { margin-top: 15px; background: none; border: none; color: #777; cursor: pointer; text-decoration: underline; }
-
-.emptyState { flex: 1; display: flex; justify-content: center; align-items: center; color: #999; font-size: 18px; }
-.successView {
-    padding: 20px 10px;
-    text-align: center;
-}
-
-.checkIcon {
-    width: 60px;
-    height: 60px;
-    background: #28a745;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 30px;
-    margin: 0 auto 15px;
-}
-
-.successView h2 { color: #28a745; margin-bottom: 10px; }
-.successView p { color: #666; font-size: 14px; }
-
-.reminderBox {
-    background: #f0f7ff;
-    padding: 20px;
-    border-radius: 12px;
-    margin: 25px 0;
-    border: 1px dashed #0056b3;
-}
-
-.calendarLink {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: #fff;
-    color: #0056b3;
-    padding: 12px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    margin-top: 10px;
-    border: 1px solid #0056b3;
-    transition: 0.2s;
-}
-
-.calendarLink:hover {
-    background: #0056b3;
-    color: white;
-}
-
-.doneBtn {
-    width: 100%;
-    padding: 12px;
-    background: #333;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.modalImg {
-    width: 90px !important;
-    height: 90px !important;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #0056b3;
-    margin: 0 auto 15px;
-    display: block;
-}
-
-.modalHeader {
-    text-align: center;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
-}
-
-.modalBody {
-    text-align: left; 
-    padding: 0 15px;
-}
-
-.detailRow {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 15px;
-    color: #333;
-    font-size: 15px;
-}
-
-.detailRow svg {
-    color: #0056b3;
-    width: 18px;
-}
-
-/* Video Call Styles */
-.videoPageContainer {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    background: #000;
-}
-
-.videoHeader {
-    height: 60px;
-    background: #1f1f1f;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    color: white;
-}
-
-.videoHeader h4 {
-    margin: 0;
-    font-weight: 500;
-}
-
-.leaveBtn {
-    background: #ff4d4d;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.leaveBtn:hover {
-    background: #cc0000;
-}
-
-.jitsiEmbed {
-    flex: 1;
-    width: 100%;
-    height: calc(100vh - 60px);
-}
+.chatContainer{display:flex;height:calc(100vh - 70px);background:#f0f2f5;overflow:hidden;position:relative}
+.sidebar{width:320px;background:white;border-right:1px solid #ddd;display:flex;flex-direction:column;transition:all .3s ease}
+.sidebarHeader{padding:20px;border-bottom:1px solid #eee}
+.backAction{display:flex;align-items:center;gap:8px;cursor:pointer;color:#0056b3;font-weight:bold;margin-bottom:10px}
+.expertList{flex:1;overflow-y:auto}
+.expertCard{display:flex;align-items:center;gap:15px;padding:15px;cursor:pointer;border-bottom:1px solid #f9f9f9;transition:.2s}
+.expertCard:hover{background:#f5f6f7}
+.activeCard{background:#e7f1ff}
+.expertCard img,.headerProfilePic{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid #0056b3}
+.expertInfo h4{margin:0;font-size:16px;display:flex;align-items:center;gap:5px}
+.verified{color:#28a745;font-size:12px}
+.expertInfo p{margin:3px 0 0;font-size:13px;color:#777}
+.mainChat{flex:1;display:flex;flex-direction:column;position:relative;background:white;transition:all .3s ease}
+.chatHeader{background:white;padding:15px 25px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee}
+.headerLeft{display:flex;align-items:center;gap:15px}
+.active{color:#28a745;font-size:12px;font-weight:bold}
+.notActive{color:#999;font-size:12px;font-weight:500}
+.headerRight{display:flex;align-items:center;gap:20px}
+.slotBtn{background:#0056b3;color:white;border:none;padding:8px 15px;border-radius:5px;cursor:pointer;font-size:13px;font-weight:bold}
+.videoIcon{font-size:22px;color:#0056b3;cursor:pointer;transition:.3s}
+.videoIcon:hover{color:#28a745}
+.disabled{color:#ccc;cursor:help}
+.mobileBack{display:none;cursor:pointer;font-size:18px;color:#0056b3}
+.mobileMenuIcon{display:none;font-size:24px;color:#0056b3;margin-bottom:15px;cursor:pointer}
+.paymentPrompt{flex:1;display:flex;justify-content:center;align-items:center;background:#fafafa}
+.promptBox{text-align:center;padding:40px;background:white;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,0.05)}
+.payBtn{background:#28a745;color:white;border:none;padding:12px 30px;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:15px}
+.messageArea{flex:1;padding:25px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#f9f9f9}
+.emptyChat{text-align:center;color:#bbb;margin-top:20px;font-style:italic}
+.messageRow{display:flex;width:100%}
+.received{background:#fff;padding:10px 15px;border-radius:15px 15px 15px 0;max-width:70%;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
+.sent{background:#0056b3;color:white;padding:10px 15px;border-radius:15px 15px 0 15px;max-width:70%;margin-left:auto}
+.inputArea{background:white;padding:15px 25px;display:flex;gap:15px;align-items:center;border-top:1px solid #eee}
+.inputArea input{flex:1;padding:12px;border:1px solid #ddd;border-radius:25px;outline:none}
+.inputArea button{background:#0056b3;color:white;border:none;width:45px;height:45px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modalOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:1000}
+.modalContent{background:white;padding:30px;border-radius:15px;width:90%;max-width:400px;text-align:center}
+@media (max-width:768px){.sidebar{width:100%;position:absolute;z-index:10;height:100%}.hideSidebar{transform:translateX(-100%)}.mainChat{width:100%;position:absolute;height:100%;z-index:5}.hideMainChat{display:none}.mobileBack{display:block}.mobileMenuIcon{display:block}.chatHeader{padding:10px 15px}.slotBtn{padding:6px 10px;font-size:11px}.messageArea{padding:15px}.received,.sent{max-width:85%}}
+.emptyState{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;color:#999;font-size:18px;text-align:center;padding:20px}
+.successView{padding:20px 10px;text-align:center}
+.checkIcon{width:60px;height:60px;background:#28a745;color:white;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:30px;margin:0 auto 15px}
+.successView h2{color:#28a745;margin-bottom:10px}
+.reminderBox{background:#f0f7ff;padding:20px;border-radius:12px;margin:25px 0;border:1px dashed #0056b3}
+.calendarLink{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#0056b3;padding:12px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:10px;border:1px solid #0056b3}
+.doneBtn{width:100%;padding:12px;background:#333;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+.modalImg{width:90px!important;height:90px!important;border-radius:50%;object-fit:cover;border:3px solid #0056b3;margin:0 auto 15px;display:block}
+.modalHeader{text-align:center;padding-bottom:15px;border-bottom:1px solid #eee;margin-bottom:20px}
+.modalBody{text-align:left;padding:0 15px}
+.detailRow{display:flex;align-items:center;gap:12px;margin-bottom:15px;color:#333;font-size:15px}
+.detailRow svg{color:#0056b3;width:18px}
+.videoPageContainer{display:flex;flex-direction:column;height:100vh;background:#000}
+.videoHeader{height:60px;background:#1f1f1f;display:flex;justify-content:space-between;align-items:center;padding:0 20px;color:white}
+.videoHeader h4{margin:0;font-weight:500}
+.leaveBtn{background:#ff4d4d;color:white;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:bold}
+.leaveBtn:hover{background:#cc0000}
+.jitsiEmbed{flex:1;width:100%;height:calc(100vh - 60px)}
+.amountText{font-size:20px;font-weight:bold;color:#28a745;margin:10px 0}
+.finalPayBtn{width:100%;padding:12px;background:#0056b3;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:20px}
+.closeBtn{margin-top:15px;background:none;border:none;color:#777;cursor:pointer;text-decoration:underline}

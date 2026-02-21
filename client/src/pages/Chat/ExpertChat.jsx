@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './Chat.module.css';
-import { FaVideo, FaPaperPlane, FaArrowLeft, FaRegCalendarAlt, FaClock, FaUserAlt, FaBriefcase } from 'react-icons/fa';
+import { FaVideo, FaPaperPlane, FaArrowLeft, FaRegCalendarAlt, FaClock, FaUserAlt, FaBriefcase, FaBars } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
@@ -17,6 +17,9 @@ const ExpertChat = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const [showSlotModal, setShowSlotModal] = useState(false);
+
+  // Mobile View Sidebar toggle state
+  const [showSidebar, setShowSidebar] = useState(true);
 
   useEffect(() => {
     fetchPaidUsers();
@@ -120,7 +123,6 @@ const ExpertChat = () => {
 
       if (res.data.success) {
         socket.emit("send_message", res.data.newMessage);
-
         setMessages([...messages, res.data.newMessage]);
         setInputText("");
       }
@@ -133,7 +135,8 @@ const ExpertChat = () => {
     <>
       <Navbar />
       <div className={styles.chatContainer}>
-        <div className={styles.sidebar}>
+        {/* Sidebar - Visible on Desktop, Toggleable on Mobile */}
+        <div className={`${styles.sidebar} ${!showSidebar ? styles.hideSidebar : ''}`}>
           <div className={styles.sidebarHeader}>
             <div className={styles.backAction} onClick={() => navigate('/expert-dashboard')}>
               <FaArrowLeft /> <span>Back</span>
@@ -146,7 +149,10 @@ const ExpertChat = () => {
                 <div
                   key={index}
                   className={`${styles.expertCard} ${selectedUser?._id === item._id ? styles.activeCard : ''}`}
-                  onClick={() => setSelectedUser(item)}
+                  onClick={() => {
+                    setSelectedUser(item);
+                    setShowSidebar(false); // Hide sidebar after selecting on mobile
+                  }}
                 >
                   <img src={item.userId?.image || 'https://via.placeholder.com/50'} alt="User" className={styles.sidebarProfilePic} />
                   <div className={styles.expertInfo}>
@@ -161,11 +167,14 @@ const ExpertChat = () => {
           </div>
         </div>
 
-        <div className={styles.mainChat}>
+        {/* Main Chat Area */}
+        <div className={`${styles.mainChat} ${showSidebar ? styles.hideMainChat : ''}`}>
           {selectedUser ? (
             <>
               <div className={styles.chatHeader}>
                 <div className={styles.headerLeft}>
+                  {/* Mobile Back Button */}
+                  <FaArrowLeft className={styles.mobileBack} onClick={() => setShowSidebar(true)} />
                   <img src={selectedUser.userId?.image} alt="Profile" className={styles.headerProfilePic} />
                   <div>
                     <h4>{selectedUser.userId?.name}</h4>
@@ -202,6 +211,7 @@ const ExpertChat = () => {
             </>
           ) : (
             <div className={styles.emptyState}>
+              <FaBars className={styles.mobileMenuIcon} onClick={() => setShowSidebar(true)} />
               <p>Select a User to start chat</p>
             </div>
           )}
