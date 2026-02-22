@@ -24,20 +24,15 @@ const Navbar = ({ onSearch }) => {
   };
 
   const handleProfileClick = () => {
-    if (role === 'expert') {
-      navigate('/expert/profile'); 
-    } else {
-      navigate('/profile'); 
-    }
+    if (role === 'expert') navigate('/expert/profile'); 
+    else if (role === 'admin') navigate('/admin');
+    else navigate('/profile'); 
     setShowDropdown(false);
   };
 
   const handleChatClick = () => {
-    if (role === 'expert') {
-      navigate('/expert/chat');
-    } else {
-      navigate('/chat');
-    }
+    if (role === 'expert') navigate('/expert/chat');
+    else navigate('/chat');
   };
 
   useEffect(() => {
@@ -68,32 +63,31 @@ const Navbar = ({ onSearch }) => {
       )}
 
       <div className={styles.navLinks}>
-        {role === 'admin' ? (
-          <div className={styles.adminNavActions}>
-            <button className={styles.navBtn} onClick={() => navigate('/admin-reports')}>Reports</button>
-            
-            <button className={styles.logoutBtn} onClick={handleLogout}>
-              Logout <FaSignOutAlt />
-            </button>
+        {role !== 'admin' && (
+          <div className={styles.iconItem} title="Chat">
+            <FaCommentDots size={22} onClick={handleChatClick} style={{cursor: 'pointer'}}/>
           </div>
-        ) : (
-          <>
-            <div className={styles.iconItem} title="Chat">
-              <FaCommentDots size={22} onClick={handleChatClick} style={{cursor: 'pointer'}}/>
-            </div>
-            
-            <div className={styles.profileSection} ref={dropdownRef} onClick={() => setShowDropdown(!showDropdown)}>
-              <FaUserCircle size={28} className={styles.profileIcon} />
-              
-              {showDropdown && (
-                <div className={styles.dropdown}>
+        )}
+        
+        <div className={styles.profileSection} ref={dropdownRef} onClick={() => setShowDropdown(!showDropdown)}>
+          <FaUserCircle size={28} className={styles.profileIcon} />
+          
+          {showDropdown && (
+            <div className={styles.dropdown}>
+              {role === 'admin' ? (
+                <>
+                  <span onClick={() => { navigate('/admin-reports'); setShowDropdown(false); }}>Reports</span>
+                  <span onClick={handleLogout} className={styles.logoutText}>Logout</span>
+                </>
+              ) : (
+                <>
                   <span onClick={handleProfileClick}>Profile</span>
                   <span onClick={handleLogout} className={styles.logoutText}>Logout</span>
-                </div>
+                </>
               )}
             </div>
-          </>
-        )}
+          )}
+        </div>
       </div>
     </nav>
   );

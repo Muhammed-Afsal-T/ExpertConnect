@@ -17,7 +17,10 @@ const AdminReports = () => {
     try {
       const res = await axios.get('http://localhost:5000/api/v1/booking/get-all-reports');
       if (res.data.success) {
-        setReports(res.data.data);
+        const sortedReports = res.data.data.sort((a, b) => 
+          new Date(b.report?.reportedAt) - new Date(a.report?.reportedAt)
+        );
+        setReports(sortedReports);
       }
     } catch (error) {
       console.log("Error fetching reports", error);
@@ -28,12 +31,11 @@ const AdminReports = () => {
     <>
       <Navbar />
       <div className={styles.container}>
-        {/* --- പുതിയ ബാക്ക് ബട്ടൺ --- */}
         <div className={styles.backBtn} onClick={() => navigate('/admin')}>
           <FaArrowLeft /> Back to Dashboard
         </div>
 
-        <h2 className={styles.heading}>User Reports & Complaints</h2>
+        <h2 className={styles.heading}>Reports & Complaints</h2>
         
         <div className={styles.tableContainer}>
           <table className={styles.table}>
@@ -50,20 +52,26 @@ const AdminReports = () => {
               {reports.length > 0 ? (
                 reports.map((report) => (
                   <tr key={report._id}>
-                    <td>
-                      <strong>{report.userId?.name}</strong><br />
-                      <span className={styles.subText}>{report.userId?.email}</span>
+                    <td data-label="User">
+                      <div className={styles.dataWrapper}>
+                        <strong>{report.userId?.name}</strong>
+                        <span className={styles.subText}>{report.userId?.email}</span>
+                      </div>
                     </td>
-                    <td>
-                      <strong>{report.expertId?.name}</strong><br />
-                      <span className={styles.subText}>{report.expertId?.specialization}</span>
+                    <td data-label="Expert">
+                      <div className={styles.dataWrapper}>
+                        <strong>{report.expertId?.name}</strong>
+                        <span className={styles.subText}>{report.expertId?.specialization}</span>
+                      </div>
                     </td>
-                    <td>
-                      {report.day}<br />
-                      <span className={styles.timeLabel}>{report.slot.startTime} - {report.slot.endTime}</span>
+                    <td data-label="Session">
+                      <div className={styles.dataWrapper}>
+                        <span>{report.day}</span>
+                        <span className={styles.timeLabel}>{report.slot.startTime} - {report.slot.endTime}</span>
+                      </div>
                     </td>
-                    <td>₹{report.amount}</td>
-                    <td className={styles.reportCell}>
+                    <td data-label="Amount">₹{report.amount}</td>
+                    <td data-label="Message" className={styles.reportCell}>
                       <div className={styles.reasonBox}>{report.report?.reason}</div>
                       {report.report?.reportedAt && (
                         <span className={styles.dateLabel}>
