@@ -18,6 +18,16 @@ const Navbar = ({ onSearch }) => {
     navigate('/login');
   };
 
+    useEffect(() => {
+    // Force sticky positioning
+    const navbar = document.querySelector(`.${styles.navbar}`);
+    if (navbar) {
+      navbar.style.position = 'sticky';
+      navbar.style.top = '0';
+      navbar.style.zIndex = '1000';
+    }
+  }, []);
+  
   const handleLogoClick = () => {
     if (role === 'admin') navigate('/admin');
     else if (role === 'expert') navigate('/expert-dashboard');

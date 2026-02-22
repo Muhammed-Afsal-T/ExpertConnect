@@ -240,3 +240,80 @@
 .skeletonAbout { width: 100%; height: 80px; margin-top: 20px; }
 .skeletonBookingTitle { width: 50%; height: 24px; margin-bottom: 20px; }
 .skeletonCalendar { width: 100%; height: 150px; }
+
+@media (max-width: 992px) {
+    .container { padding: 20px 5%; }
+    .mainGrid { grid-template-columns: 1fr; gap: 20px; }
+    .bookingSection { position: relative; top: 0; padding: 25px; }
+}
+
+/* --- Mobile Specific (768px and below) --- */
+@media (max-width: 768px) {
+    .container { padding: 15px 15px; }
+    
+    .infoSection { padding: 20px; }
+    
+    .profileHeader { 
+        flex-direction: column; 
+        text-align: center; 
+        gap: 15px; 
+        padding-bottom: 20px;
+    }
+    
+    .profilePic { 
+        width: 100px; 
+        height: 100px; 
+        border-radius: 12px; 
+    }
+
+    .detailRow { 
+        flex-direction: column; 
+        gap: 10px; 
+        font-size: 14px; 
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 10px;
+    }
+    
+    .detailRow span { display: block; }
+
+    .bookingSection { padding: 20px; }
+    
+    .daysGrid {
+        justify-content: center;
+    }
+
+    .dayBox {
+        flex: 1 1 80px;
+        text-align: center;
+        font-size: 12px;
+        padding: 8px 5px;
+    }
+
+    .slotGrid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .slotBox {
+        padding: 10px 5px;
+        font-size: 12px;
+    }
+
+    .statusHeader {
+        flex-direction: column;
+        gap: 5px;
+        align-items: flex-start;
+    }
+
+    .confirmBtn {
+        padding: 12px;
+        font-size: 15px;
+    }
+}
+
+/* --- Very Small Screens (480px) --- */
+@media (max-width: 480px) {
+    .slotGrid {
+        grid-template-columns: 1fr;
+    }
+}
