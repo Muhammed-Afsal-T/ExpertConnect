@@ -35,8 +35,8 @@ const ExpertDetails = () => {
 
       const bookingsRes = await axios.post('http://localhost:5000/api/v1/booking/get-expert-bookings', { expertId: id });
       if (bookingsRes.data.success) {
-        const accepted = bookingsRes.data.data.filter(b => b.status === 'accepted');
-        setBookedSlots(accepted);
+        const booked = bookingsRes.data.data.filter(b => ['accepted', 'paid'].includes(b.status));
+        setBookedSlots(booked);
       }
 
       const statusRes = await axios.post('http://localhost:5000/api/v1/booking/check-status', {

@@ -40,12 +40,26 @@ const autoCleanupBookings = async (filter) => {
 const bookExpertController = async (req, res) => {
   try {
     const { userId, expertId, day, slot, amount } = req.body;
+
+    const slotTaken = await Booking.findOne({
+      expertId,
+      day,
+      "slot.startTime": slot.startTime,
+      status: { $in: ['accepted', 'paid'] }
+    });
+
+    if (slotTaken) {
+      return res.status(200).send({ success: false, message: "This slot is already booked by another user." });
+    }
+
     const existingBooking = await Booking.findOne({ 
       userId, expertId, day, "slot.startTime": slot.startTime, status: 'pending' 
     });
+    
     if (existingBooking) {
       return res.status(200).send({ success: false, message: "Already requested for this slot." });
     }
+
     const newBooking = new Booking({ userId, expertId, day, slot, amount });
     await newBooking.save();
     res.status(201).send({ success: true, message: "Booking Request Sent!", data: newBooking });

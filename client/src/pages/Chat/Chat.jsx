@@ -22,37 +22,42 @@ const Chat = () => {
   
   // Mobile View Sidebar toggle state
   const [showSidebar, setShowSidebar] = useState(true);
+  const hasAlerted = useRef(false);
 
   useEffect(() => {
     fetchAcceptedExperts();
   }, []);
 
   useEffect(() => {
-    const checkExpiry = () => {
-      if (!selectedExpert || selectedExpert.status !== 'paid') return;
+  const checkExpiry = () => {
+    if (!selectedExpert || selectedExpert.status !== 'paid') return;
 
-      const now = new Date().toLocaleTimeString('en-GB', {
-        timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit'
-      });
-      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const now = new Date().toLocaleTimeString('en-GB', {
+      timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit'
+    });
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
-      if (selectedExpert.day === today) {
-        if (now >= selectedExpert.slot.startTime && now < selectedExpert.slot.endTime && !selectedExpert.isVideoActive) {
-          window.location.reload();
-        }
-
-        if (now >= selectedExpert.slot.endTime) {
-          alert("Session time expired! The consultation is now closed.");
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        }
+    if (selectedExpert.day === today) {
+      if (now >= selectedExpert.slot.startTime && now < selectedExpert.slot.endTime && !selectedExpert.isVideoActive) {
+        window.location.reload();
       }
-    };
 
-    const interval = setInterval(checkExpiry, 60000);
-    return () => clearInterval(interval);
-  }, [selectedExpert]);
+      if (now >= selectedExpert.slot.endTime && !hasAlerted.current) {
+        hasAlerted.current = true;
+        alert("Session time expired! The consultation is now closed.");
+        
+        window.location.reload();
+      }
+    }
+  };
+
+  const interval = setInterval(checkExpiry, 10000); 
+
+  return () => {
+    clearInterval(interval);
+    hasAlerted.current = false;
+  };
+}, [selectedExpert]);
 
   useEffect(() => {
     if (selectedExpert && selectedExpert.status === 'paid') {
