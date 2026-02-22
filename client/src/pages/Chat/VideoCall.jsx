@@ -50,6 +50,7 @@ const VideoCall = () => {
                 disableModeratorIndicator: true, 
                 enableWelcomePage: false,
                 enableClosePage: false,
+                disableDeepLinking: true,
             },
             interfaceConfigOverwrite: {
                 TILE_VIEW_MAX_COLUMNS: 2,
@@ -100,7 +101,7 @@ const VideoCall = () => {
     return (
         <div className={styles.videoPageContainer}>
             <div className={styles.videoHeader}>
-                <h4>ExpertConnect - Video Session</h4>
+                <h4>Video Session</h4>
                 <button onClick={handleExit} className={styles.leaveBtn}>Leave Session</button>
             </div>
             <div ref={jitsiContainerRef} className={styles.jitsiEmbed} />

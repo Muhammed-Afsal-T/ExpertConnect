@@ -129,8 +129,7 @@ const ExpertProfile = () => {
          
         <form onSubmit={handleSubmit} className={styles.formCard}> 
           <div className={styles.header}> 
-            <h2>Update Profile</h2> 
-            <p>Accuracy helps speed up admin verification.</p> 
+            <h2>Update Your Profile</h2> 
           </div> 
 
           <div className={styles.mainGrid}> 

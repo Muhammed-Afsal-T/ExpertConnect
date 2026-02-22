@@ -34,3 +34,66 @@
 .addSlotBtn { background: #e7f1ff; color: #0056b3; border: 1px dashed #0056b3; width: 100%; padding: 8px; border-radius: 5px; margin-top: 10px; cursor: pointer; font-size: 13px; font-weight: 600; }
 
 .submitBtn { width: 100%; padding: 16px; background: #0056b3; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 30px; } 
+
+/* --- Mobile Responsiveness for Expert Profile --- */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+
+    .formCard {
+        padding: 20px;
+    }
+
+    .header h2 {
+        font-size: 22px;
+    }
+
+    .mainGrid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .uploadSection {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 20px;
+    }
+
+    .row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .inputGroup {
+        margin-bottom: 15px;
+    }
+
+    .datePickerRow {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .addDateBtn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .availabilityGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .slotRow {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .slotRow input {
+        width: 42%;
+        font-size: 12px;
+    }
+
+    .submitBtn {
+        padding: 14px;
+        font-size: 16px;
+    }
+}

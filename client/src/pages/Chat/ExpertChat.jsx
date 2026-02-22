@@ -20,37 +20,41 @@ const ExpertChat = () => {
 
   // Mobile View Sidebar toggle state
   const [showSidebar, setShowSidebar] = useState(true);
-
+  const hasAlerted = useRef(false);
   useEffect(() => {
     fetchPaidUsers();
   }, []);
 
   useEffect(() => {
-    const checkSessionStatus = () => {
-      if (!selectedUser) return;
+  const checkSessionStatus = () => {
+    if (!selectedUser) return;
 
-      const now = new Date().toLocaleTimeString('en-GB', {
-        timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit'
-      });
-      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    const now = new Date().toLocaleTimeString('en-GB', {
+      timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit'
+    });
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
-      if (selectedUser.day === today) {
-        if (now >= selectedUser.slot.startTime && now < selectedUser.slot.endTime && !selectedUser.isVideoActive) {
-          window.location.reload();
-        }
-
-        if (now >= selectedUser.slot.endTime) {
-          alert("Session time expired! The consultation is now closed."); setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-        }
+    if (selectedUser.day === today) {
+      if (now >= selectedUser.slot.startTime && now < selectedUser.slot.endTime && !selectedUser.isVideoActive) {
+        window.location.reload();
       }
-    };
 
-    const interval = setInterval(checkSessionStatus, 60000);
+      if (now >= selectedUser.slot.endTime && !hasAlerted.current) {
+        hasAlerted.current = true;
+        alert("Session time expired! The consultation is now closed.");
+        
+        window.location.reload();
+      }
+    }
+  };
 
-    return () => clearInterval(interval);
-  }, [selectedUser]);
+  const interval = setInterval(checkSessionStatus, 10000); 
+
+  return () => {
+    clearInterval(interval);
+    hasAlerted.current = false;
+  };
+}, [selectedUser]);
 
   // --- Socket.io Logic Start ---
 
