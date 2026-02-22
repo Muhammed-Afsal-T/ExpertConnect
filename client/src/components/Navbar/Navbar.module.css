@@ -7,7 +7,7 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     position: sticky;
     top: 0;
-    z-index: 1000; 
+    z-index: 1000;
 }
 
 .logo {
@@ -15,11 +15,13 @@
     font-weight: bold;
     color: #0056b3;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .searchBar {
     position: relative;
     width: 40%;
+    transition: all 0.3s ease;
 }
 
 .searchBar input {
@@ -78,7 +80,7 @@
 .dropdown {
     position: absolute;
     right: 0;
-    top: 45px; 
+    top: 45px;
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -150,9 +152,66 @@
     font-size: 14px;
 }
 
-@media (max-width: 768px) {
-    .navbar { padding: 10px 15px; }
+/* Mobile Search Toggle Button - Only visible on mobile */
+.mobileSearchToggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    padding: 8px;
+}
 
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 10px 15px;
+        position: relative;
+    }
+
+    /* Show mobile search toggle */
+    .mobileSearchToggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: #5b5c5c solid 1px;
+        border-radius: 25px;
+        gap: 5px;
+    }
+
+    /* Hide default search bar on mobile */
+    .searchBar {
+        display: none;
+    }
+
+    /* When search is active - expanded state */
+    .searchActive .logo {
+        display: none; /* Hide logo when search is active */
+    }
+
+    .searchActive .mobileSearchToggle {
+        display: none; /* Hide search toggle when search is active */
+    }
+
+    .searchActive .searchBar {
+        display: block;
+        position: absolute;
+        left: 15px;
+        right: 15px;
+        width: auto;
+        z-index: 1001;
+    }
+
+    .searchActive .navLinks {
+        margin-left: auto;
+    }
+
+    /* Normal mobile view */
+    .navLinks {
+        gap: 15px;
+    }
+
+    /* Modal styles (keep your existing modal styles) */
     .modalOverlay {
         padding: 0;
         align-items: flex-start;

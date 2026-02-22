@@ -39,13 +39,21 @@
     .filterSidebar {
         position: fixed;
         left: -320px;
-        top: 0;
+        top: 60px;
         height: 100vh;
         z-index: 1001;
         transition: 0.3s ease;
     }
     .filterSidebar.show {
         left: 0;
+    }
+    .filterToggle {
+        position: fixed;
+        z-index: 1000;
+    }
+
+    .filterToggle span {
+        display: none;
     }
 }
 
@@ -118,8 +126,9 @@
 
 .expertImg {
     width: 100%;
-    height: 200px;
+    height: 260px;
     object-fit: cover;
+    object-position: top;
 }
 
 .cardInfo {

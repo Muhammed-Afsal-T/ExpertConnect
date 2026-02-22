@@ -97,7 +97,7 @@ const UserDashboard = () => {
       
       <div className={styles.container}>
         <button className={styles.filterToggle} onClick={() => setShowFilter(!showFilter)}>
-          <FaFilter /> Filters
+          <FaFilter /> <span>Filters</span>
         </button>
 
         <div className={styles.mainLayout}>

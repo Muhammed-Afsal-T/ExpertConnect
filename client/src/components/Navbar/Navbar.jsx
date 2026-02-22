@@ -6,7 +6,9 @@ import { FaUserCircle, FaSignOutAlt, FaSearch, FaCommentDots } from 'react-icons
 const Navbar = ({ onSearch }) => { 
   const navigate = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isSearchActive, setIsSearchActive] = useState(false);
   const dropdownRef = useRef(null); 
+  const searchInputRef = useRef(null);
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem('user'));
   const role = user?.role;
@@ -35,6 +37,23 @@ const Navbar = ({ onSearch }) => {
     else navigate('/chat');
   };
 
+  const handleSearchToggle = () => {
+    setIsSearchActive(true);
+    // Focus on input after state update
+    setTimeout(() => {
+      if (searchInputRef.current) {
+        searchInputRef.current.focus();
+      }
+    }, 100);
+  };
+
+  const handleSearchBlur = () => {
+    // Small delay to allow click events on suggestions
+    setTimeout(() => {
+      setIsSearchActive(false);
+    }, 200);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -46,17 +65,26 @@ const Navbar = ({ onSearch }) => {
   }, []);
 
   return (
-    <nav className={styles.navbar}>
+    <nav className={`${styles.navbar} ${isSearchActive ? styles.searchActive : ''}`}>
       <div className={styles.logo} onClick={handleLogoClick}>
         ExpertConnect
       </div>
 
+      {/* Mobile Search Toggle Button */}
+      {role === 'user' && location.pathname === '/user-dashboard' && !isSearchActive && (
+        <button className={styles.mobileSearchToggle} onClick={handleSearchToggle}>
+          <span>search</span> <FaSearch size={20} />
+        </button>
+      )}
+
       {role === 'user' && location.pathname === '/user-dashboard' && (
         <div className={styles.searchBar}>
           <input 
+            ref={searchInputRef}
             type="text" 
             placeholder="Search for experts..." 
-            onChange={(e) => onSearch && onSearch(e.target.value)} 
+            onChange={(e) => onSearch && onSearch(e.target.value)}
+            onBlur={handleSearchBlur}
           />
           <FaSearch className={styles.searchIcon} />
         </div>
