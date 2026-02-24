@@ -157,20 +157,22 @@ const forgotPasswordController = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(200).send({ success: false, message: "User not found" });
+    const secret = (process.env.JWT_SECRET || "expertconnect123") + user.password;
+    
+    const token = jwt.sign({ id: user._id }, secret, { expiresIn: '5m' }); 
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "expertconnect123", { expiresIn: '15m' });
     const resetLink = `${process.env.CLIENT_URL}/reset-password/${user._id}/${token}`;
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
       subject: 'Password Reset - ExpertConnect',
-      html: `<p>You requested a password reset. Click the link below to set a new password. This link expires in 15 minutes.</p>
+      html: `<p>You requested a password reset. Click the link below to set a new password. This link expires in 5 minutes.</p>
              <a href="${resetLink}">${resetLink}</a>`
     };
 
     await transporter.sendMail(mailOptions);
-    res.status(200).send({ success: true, message: "Reset link sent to your email" });
+    res.status(200).send({ success: true, message: "Reset link sent to your email (Valid for 5 mins)" });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error in forgot password", error });
   }
@@ -181,10 +183,20 @@ const resetPasswordController = async (req, res) => {
     const { id, token } = req.params;
     const { password } = req.body;
 
-    jwt.verify(token, process.env.JWT_SECRET || "expertconnect123", async (err, decode) => {
-      if (err) return res.status(401).send({ success: false, message: "Invalid or expired token" });
+    const user = await User.findById(id);
+    if (!user) return res.status(200).send({ success: false, message: "User not found" });
+
+    const secret = (process.env.JWT_SECRET || "expertconnect123") + user.password;
+
+    jwt.verify(token, secret, async (err, decode) => {
+      if (err) {
+        return res.status(401).send({ success: false, message: "Link is invalid or has expired." });
+      }
+      
       const hashedPassword = await hashPassword(password);
+      
       await User.findByIdAndUpdate(id, { password: hashedPassword });
+      
       res.status(200).send({ success: true, message: "Password updated successfully" });
     });
   } catch (error) {

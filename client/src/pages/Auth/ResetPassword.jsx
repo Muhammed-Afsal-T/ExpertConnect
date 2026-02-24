@@ -19,7 +19,6 @@ const ResetPassword = () => {
     e.preventDefault();
     setError("");
 
-    // വാലിഡേഷൻ
     if (password.length < 8 || password.length > 12) {
       setError("Password must be 8-12 characters");
       return;
