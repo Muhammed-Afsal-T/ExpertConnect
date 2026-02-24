@@ -90,3 +90,12 @@
 .historyCard.rejected { border-top: 4px solid #dc3545; }
 .historyCard.completed { border-top: 4px solid #28a745; }
 .historyCard.incomplete { border-top: 4px solid #6c757d; }
+.backBtn {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    color: #0056b3;
+    font-weight: 600;
+}

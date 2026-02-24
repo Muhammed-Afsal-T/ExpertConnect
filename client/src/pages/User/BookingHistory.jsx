@@ -3,7 +3,7 @@ import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './BookingHistory.module.css';
 import { useNavigate } from 'react-router-dom';
-import { FaStar, FaInfoCircle } from 'react-icons/fa';
+import { FaStar, FaInfoCircle, FaArrowLeft } from 'react-icons/fa';
 
 const BookingHistory = () => {
   const [history, setHistory] = useState([]);
@@ -72,6 +72,9 @@ const BookingHistory = () => {
     <>
       <Navbar />
       <div className={styles.historyContainer}>
+        <div className={styles.backBtn} onClick={() => navigate('/profile')}>
+          <FaArrowLeft /> Back
+          </div>
         <h2>Your Consultation History</h2>
         
         {history.length === 0 ? (

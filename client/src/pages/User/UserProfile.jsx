@@ -75,13 +75,17 @@ const UserProfile = () => {
                 <input type="file" onChange={handleFileChange} hidden />
               </label>
             </div>
-            <p className={styles.emailText}>{formData.email}</p>
           </div>
 
           <div className={styles.formGrid}>
             <div className={styles.inputGroup}>
               <label>Full Name</label>
               <input type="text" value={formData.name} readOnly className={styles.readOnly} />
+            </div>
+
+          <div className={styles.inputGroup}>
+              <label>Email Address</label>
+              <input type="email" value={formData.email} readOnly className={styles.readOnly} />
             </div>
 
             <div className={styles.row}>
