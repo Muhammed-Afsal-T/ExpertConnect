@@ -2,10 +2,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     background-image: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032&auto=format&fit=crop');
     background-size: cover;
     background-position: center;
+    padding: 20px;
 }
 
 .formBox {
@@ -123,4 +124,15 @@
     font-size: 13px;
     margin-bottom: 15px;
     font-weight: 500;
+}
+
+@media (max-width: 480px) {
+    .container {
+        background-position: left center; 
+    }
+
+    .formBox {
+        width: 100%;
+        padding: 30px 20px;
+    }
 }

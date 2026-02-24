@@ -6,6 +6,7 @@
     background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2084&auto=format&fit=crop');
     background-size: cover;
     background-position: center;
+    padding: 20px;
 }
 
 /* Glass Effect Box */
@@ -128,4 +129,14 @@
 .inputGroup {
     margin-bottom: 12px;
     text-align: left;
+}
+@media (max-width: 480px) {
+    .container {
+        background-position: left center; 
+    }
+
+    .formBox {
+        width: 100%;
+        padding: 30px 20px;
+    }
 }
