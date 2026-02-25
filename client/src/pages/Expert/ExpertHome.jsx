@@ -15,6 +15,9 @@ const ExpertHome = () => {
   const [rejectBookingId, setRejectBookingId] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
 
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const [selectedBookingForAccept, setSelectedBookingForAccept] = useState(null);
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
     setUser(userData);
@@ -86,6 +89,10 @@ const submitRejection = async () => {
     alert("Action failed.");
   }
 };
+  const openAcceptModal = (booking) => {
+    setSelectedBookingForAccept(booking);
+    setShowAcceptModal(true);
+  };
 
   return (
     <>
@@ -133,8 +140,9 @@ const submitRejection = async () => {
                       <div className={styles.userText}>
                         <h4>{booking.userId?.name} <span className={styles.viewLink}>(View Details)</span></h4>
                         <p className={styles.dateTime}>
-                          <FaRegCalendarAlt /> {booking.day} | <FaClock /> {booking.slot?.startTime} - {booking.slot?.endTime}
-                        </p>
+                        <span><FaRegCalendarAlt /> {booking.day}</span>
+                            <span><FaClock /> {booking.slot?.startTime} - {booking.slot?.endTime}</span>
+                            </p>
                       </div>
                     </div>
 
@@ -147,7 +155,7 @@ const submitRejection = async () => {
                           </div>
                         ) : (
                           <div className={styles.actionBtns}>
-                            <button onClick={() => handleStatus(booking._id, 'accepted')} className={styles.acceptBtn} title="Accept"><FaCheck /> Accept</button>
+                            <button onClick={() => openAcceptModal(booking)} className={styles.acceptBtn} title="Accept"><FaCheck /> Accept</button>
                             <button onClick={() => openRejectModal(booking._id)} className={styles.rejectBtn} title="Reject"><FaTimes /> Reject</button>
                           </div>
                         )
@@ -167,6 +175,32 @@ const submitRejection = async () => {
         </div>
       </div>
 
+    {showAcceptModal && selectedBookingForAccept && (
+    <div className={styles.modalOverlay}>
+    <div className={styles.modalContent}>
+      <div className={styles.modalHeader}>
+         <img src={selectedBookingForAccept.userId?.image} className={styles.modalImg} alt="User" />
+         <h3>Consultation Topic</h3>
+      </div>
+      <div className={styles.topicBox}>
+        <div className={styles.topicContent}>{selectedBookingForAccept.topic}</div>
+      </div>
+      <div className={styles.modalActions}>
+        <button 
+          className={styles.acceptBtn} 
+          onClick={() => {
+            handleStatus(selectedBookingForAccept._id, 'accepted');
+            setShowAcceptModal(false);
+          }}
+        >
+          Confirm Accept
+        </button>
+        <button className={styles.cancelBtn} onClick={() => setShowAcceptModal(false)}>Cancel</button>
+        </div>
+        </div>
+      </div>
+      )}
+      
       {/* --- User Details Modal --- */}
       {selectedUser && (
         <div className={styles.modalOverlay}>

@@ -45,7 +45,11 @@ const bookingSchema = new mongoose.Schema({
   isReported: { type: Boolean, default: false },
   rejectionReason: {
   type: String,
-  default: ""}
+  default: ""},
+  topic: {
+    type: String,
+    required: true,
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Booking', bookingSchema);

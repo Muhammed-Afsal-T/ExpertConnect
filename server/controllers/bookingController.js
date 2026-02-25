@@ -39,7 +39,7 @@ const autoCleanupBookings = async (filter) => {
 
 const bookExpertController = async (req, res) => {
   try {
-    const { userId, expertId, day, slot, amount } = req.body;
+    const { userId, expertId, day, slot, amount, topic } = req.body;
 
     const slotTaken = await Booking.findOne({
       expertId,
@@ -60,8 +60,9 @@ const bookExpertController = async (req, res) => {
       return res.status(200).send({ success: false, message: "Already requested for this slot." });
     }
 
-    const newBooking = new Booking({ userId, expertId, day, slot, amount });
+    const newBooking = new Booking({ userId, expertId, day, slot, amount, topic });
     await newBooking.save();
+    
     res.status(201).send({ success: true, message: "Booking Request Sent!", data: newBooking });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error in booking", error });

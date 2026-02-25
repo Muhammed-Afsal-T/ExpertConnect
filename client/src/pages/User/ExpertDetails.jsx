@@ -22,6 +22,9 @@ const ExpertDetails = () => {
   const [reviews, setReviews] = useState([]);
   const [showReviews, setShowReviews] = useState(false);
 
+  const [showTopicModal, setShowTopicModal] = useState(false);
+  const [topic, setTopic] = useState("");
+
   useEffect(() => {
     fetchExpertAndBookings();
   }, [id, user._id]);
@@ -82,24 +85,29 @@ const ExpertDetails = () => {
     navigate('/profile');
     return;
     }
-    
-    try {
-      setLoading(true);
-      const res = await axios.post('http://localhost:5000/api/v1/booking/book-expert', {
-        userId: user._id, expertId: id, day: selectedDateObj.date, slot: selectedSlot, amount: expert.fees
-      });
-      if (res.data.success) {
-        alert(res.data.message);
-        setShowCalendarOverride(false); 
-        fetchExpertAndBookings();
-      } else {
-        alert(res.data.message);
-      }
-    } catch (error) {
-      alert("Booking failed.");
-    } finally {
-      setLoading(false);
+    setShowTopicModal(true);
+  };
+
+  const submitBookingWithTopic = async () => {
+  if (!topic.trim()) return alert("Please enter your topic of consultation.");
+  try {
+    setLoading(true);
+    const res = await axios.post('http://localhost:5000/api/v1/booking/book-expert', {
+      userId: user._id, expertId: id, day: selectedDateObj.date, slot: selectedSlot, 
+      amount: expert.fees, topic: topic
+    });
+    if (res.data.success) {
+      alert(res.data.message);
+      setShowTopicModal(false);
+      setTopic("");
+      setShowCalendarOverride(false); 
+      fetchExpertAndBookings();
     }
+  } catch (error) {
+    alert("Booking failed.");
+  } finally {
+    setLoading(false);
+  }
   };
 
   const handleCancel = async (bookingId) => {
@@ -126,6 +134,26 @@ const ExpertDetails = () => {
         <div className={styles.backBtn} onClick={() => navigate('/user-dashboard')}>
           <FaArrowLeft /> Back
         </div>
+        {showTopicModal && (
+          <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+          <h3>What do you want to discuss?</h3>
+         <p className={styles.modalSubText}>Briefly explain your topic to the expert.</p>
+         <textarea 
+        className={styles.topicInput}
+        placeholder="Type your topic here..."
+        value={topic}
+        onChange={(e) => setTopic(e.target.value)}
+         />
+      <div className={styles.modalActions}>
+        <button className={styles.confirmBtn} onClick={submitBookingWithTopic} disabled={loading}>
+          {loading ? "Sending..." : "Send Request"}
+        </button>
+        <button className={styles.cancelBtn} onClick={() => setShowTopicModal(false)}>Cancel</button>
+            </div>
+          </div>
+         </div>
+        )}
 
         {/* --- Skeleton Logic --- */}
         {loading ? (

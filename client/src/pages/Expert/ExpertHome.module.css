@@ -18,7 +18,8 @@
     padding: 20px 0; 
     display: flex; 
     justify-content: space-between; 
-    align-items: center; 
+    align-items: center;
+    gap: 15px;
 }
 
 .userInfo { display: flex; align-items: center; gap: 18px; }
@@ -26,12 +27,13 @@
 .userText h4 { margin: 0; font-size: 18px; color: #333; }
 
 .dateTime { 
-    margin: 5px 0 0; 
-    font-size: 14px; 
+    margin: 8px 0 0; 
+    font-size: 13px; 
     color: #666; 
     display: flex; 
     align-items: center; 
-    gap: 8px; 
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 /* Action Buttons */
@@ -181,6 +183,7 @@
     .actionBtns { width: 100%; justify-content: space-between; }
     .acceptBtn, .rejectBtn { flex: 1; justify-content: center; }
     .blockedAction {width: 100%; justify-content: space-between; margin-top: 10px;}
+    .modalContent { width: 90%;}
 }
 
 /* Rejection Modal Specific Styles */
@@ -242,4 +245,91 @@
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
+}
+
+.topicInput {
+    width: 100%;
+    height: 100px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin: 15px 0;
+    font-family: inherit;
+    resize: none;
+}
+
+.topicBox {
+    text-align: left;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 4px solid #0056b3;
+}
+
+.topicContent {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+@media (max-width: 768px) {
+    .container { padding: 20px 15px; }
+    
+    .header h1 { font-size: 22px; }
+    .statsGrid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .statCard { padding: 15px; gap: 10px; }
+    .statInfo h3 { font-size: 18px; }
+    .statInfo p { font-size: 11px; }
+
+    .requestCard {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+        background: #fff;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    }
+
+    .userInfo { width: 100%; }
+    
+    .rightSection {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+        border-top: 1px dashed #eee;
+        padding-top: 10px;
+    }
+
+    .actionBtns {
+        width: 100%;
+        gap: 10px;
+    }
+
+    .acceptBtn, .rejectBtn {
+        flex: 1;
+        justify-content: center;
+        padding: 10px 5px;
+        font-size: 13px;
+    }
+
+    .topicContent { font-size: 14px; }
+}
+
+/* --- Very Small Screens (480px) --- */
+@media (max-width: 480px) {
+    .statsGrid { grid-template-columns: 1fr; }
+    
+    .modalContent { padding: 20px; }
+    
+    .modalHeader h3 { font-size: 18px; }
+
+    .detailRow { font-size: 13px; gap: 8px; }
 }
