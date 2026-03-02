@@ -1,15 +1,26 @@
 const User = require('../models/userModel');
 
 // 1. Get All Experts (Verfied & Not Verified)
+
 const getAllExpertsController = async (req, res) => {
   try {
-    // role = 'expert' ആയ എല്ലാവരെയും വിളിക്കുന്നു
-    const experts = await User.find({ role: 'expert' });
-    
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const experts = await User.find({ role: 'expert' })
+      .sort({ isVerified: 1, createdAt: -1 }) 
+      .skip(skip)
+      .limit(limit);
+
+    const totalExperts = await User.countDocuments({ role: 'expert' });
+
     res.status(200).send({
       success: true,
       message: 'Experts Data Fetched Successfully',
       data: experts,
+      totalPages: Math.ceil(totalExperts / limit),
+      currentPage: page
     });
   } catch (error) {
     console.log(error);
@@ -21,13 +32,11 @@ const getAllExpertsController = async (req, res) => {
   }
 };
 
-// 2. Verify Expert (Account status മാറ്റാൻ)
+// 2. Verify Expert (Account status )
 const changeAccountStatusController = async (req, res) => {
   try {
     const { expertId, status } = req.body;
     
-    // Expert-നെ കണ്ടുപിടിച്ച് isVerified മാറ്റുന്നു
-    // status എന്നത് 'approved' ആണെങ്കിൽ isVerified = true ആക്കും
     const expert = await User.findById(expertId);
     expert.isVerified = (status === 'approved');
     await expert.save();

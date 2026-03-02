@@ -127,26 +127,72 @@ const getUserDataController = async (req, res) => {
 // --- GET ALL VERIFIED EXPERTS ---
 const getAllExpertsController = async (req, res) => {
   try {
-    const experts = await User.find({ role: 'expert', isVerified: true });
+    // Query parameters (Default: page 1, limit 20)
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const { search, category, priceRange } = req.query;
+    let query = { role: 'expert', isVerified: true };
+
+    // 1. Search Logic (Name or Specialization)
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { specialization: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    // 2. Category Filter
+    if (category) {
+      const categories = category.split(',');
+      if (categories.includes('others')) {
+        const mainCats = ['doctor', 'lawyer', 'engineer'];
+        query.specialization = { $nin: mainCats.map(c => new RegExp(c, 'i')) };
+      } else {
+        query.specialization = { $in: categories.map(c => new RegExp(c, 'i')) };
+      }
+    }
+
+    // 3. Price Filter
+    if (priceRange) {
+      if (priceRange === "0-1000") query.fees = { $lte: 1000 };
+      else if (priceRange === "1000-5000") query.fees = { $gt: 1000, $lte: 5000 };
+      else if (priceRange === "5000+") query.fees = { $gt: 5000 };
+    }
+
+    const experts = await User.find(query)
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const totalExperts = await User.countDocuments(query);
+
     const today = getTodayIST();
     const now = getCurrentTimeIST();
 
-    const filteredExperts = experts.map(expert => {
-      if (expert.availability) {
-        expert.availability = expert.availability.filter(dayObj => {
+    const formattedExperts = experts.map(expert => {
+      const expertObj = expert.toObject();
+      if (expertObj.availability) {
+        expertObj.availability = expertObj.availability.filter(dayObj => {
           if (dayObj.date > today) return true;
           if (dayObj.date === today) {
-            const validSlots = dayObj.slots.filter(slot => slot.endTime > now);
-            dayObj.slots = validSlots;
-            return validSlots.length > 0;
+            dayObj.slots = dayObj.slots.filter(slot => slot.endTime > now);
+            return dayObj.slots.length > 0;
           }
           return false;
         });
       }
-      return expert;
+      return expertObj;
     });
 
-    res.status(200).send({ success: true, data: filteredExperts });
+    res.status(200).send({ 
+      success: true, 
+      data: formattedExperts, 
+      totalExperts, 
+      totalPages: Math.ceil(totalExperts / limit),
+      currentPage: page
+    });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error fetching experts", error });
   }

@@ -69,17 +69,88 @@ const bookExpertController = async (req, res) => {
   }
 };
 
+const mongoose = require('mongoose');
+
 const getExpertBookingsController = async (req, res) => {
   try {
     const { expertId } = req.body;
-    
-    await autoCleanupBookings({ expertId });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
 
-    const bookings = await Booking.find({ expertId })
-      .populate('userId', 'name email image age gender specialization'); 
-      
-    res.status(200).send({ success: true, data: bookings });
+    await autoCleanupBookings({ expertId });
+    
+    const expertObjectId = new mongoose.Types.ObjectId(expertId);
+
+    const statsData = await Booking.aggregate([
+      { $match: { expertId: expertObjectId } },
+      {
+        $group: {
+          _id: null,
+          totalBookings: { 
+            $sum: { $cond: [{ $in: ["$status", ["accepted", "paid"]] }, 1, 0] } 
+          },
+          totalEarnings: { 
+            $sum: { $cond: [{ $eq: ["$status", "completed"] }, "$amount", 0] } 
+          },
+          pendingRequests: { 
+            $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] } 
+          }
+        }
+      }
+    ]);
+
+    const stats = statsData[0] || { totalBookings: 0, totalEarnings: 0, pendingRequests: 0 };
+    
+    const bookings = await Booking.aggregate([
+      { $match: { expertId: new mongoose.Types.ObjectId(expertId) } },
+      {
+        $addFields: {
+          statusPriority: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$status", "pending"] }, then: 1 },
+                { case: { $eq: ["$status", "accepted"] }, then: 2 },
+                { case: { $eq: ["$status", "paid"] }, then: 3 },
+                { case: { $eq: ["$status", "completed"] }, then: 4 },
+                { case: { $eq: ["$status", "incomplete"] }, then: 5 },
+                { case: { $eq: ["$status", "rejected"] }, then: 6 }
+              ],
+              default: 7
+            }
+          }
+        }
+      },
+      { $sort: { statusPriority: 1, createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userId'
+        }
+      },
+      { $unwind: '$userId' },
+      {
+        $project: {
+          "userId.password": 0,
+          statusPriority: 0
+        }
+      }
+    ]);
+
+    const total = await Booking.countDocuments({ expertId });
+
+    res.status(200).send({
+      success: true,
+      data: bookings,stats,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page
+    });
   } catch (error) {
+    console.log(error);
     res.status(500).send({ success: false, message: "Error fetching bookings", error });
   }
 };
@@ -240,15 +311,33 @@ const getBookingByIdController = async (req, res) => {
   }
 };
 
+
 const getUserBookingHistoryController = async (req, res) => {
   try {
     const { userId } = req.params;
-    const history = await Booking.find({ 
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 21;
+    const skip = (page - 1) * limit;
+
+    const query = { 
       userId, 
       status: { $in: ['completed', 'rejected', 'incomplete'] }
-    }).populate('expertId', 'name image specialization');
+    };
+
+    const history = await Booking.find(query)
+      .populate('expertId', 'name image specialization')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
     
-    res.status(200).send({ success: true, data: history });
+    const total = await Booking.countDocuments(query);
+
+    res.status(200).send({ 
+      success: true, 
+      data: history,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page
+    });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error fetching history", error });
   }
@@ -270,11 +359,27 @@ const reportExpertController = async (req, res) => {
 
 const getAllReportsController = async (req, res) => {
   try {
-    const reports = await Booking.find({ "report.reason": { $exists: true, $ne: "" } })
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const query = { "report.reason": { $exists: true, $ne: "" } };
+
+    const reports = await Booking.find(query)
       .populate('userId', 'name email')
-      .populate('expertId', 'name specialization');
-    
-    res.status(200).send({ success: true, data: reports });
+      .populate('expertId', 'name specialization')
+      .sort({ "report.reportedAt": -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalReports = await Booking.countDocuments(query);
+
+    res.status(200).send({ 
+      success: true, 
+      data: reports,
+      totalPages: Math.ceil(totalReports / limit),
+      currentPage: page
+    });
   } catch (error) {
     res.status(500).send({ success: false, message: "Error fetching reports", error });
   }

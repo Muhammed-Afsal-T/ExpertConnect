@@ -7,23 +7,32 @@ import { FaArrowLeft } from 'react-icons/fa';
 
 const AdminReports = () => {
   const [reports, setReports] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchReports();
   }, []);
 
-  const fetchReports = async () => {
+  useEffect(() => {
+    fetchReports(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [page]);
+
+  const fetchReports = async (currentPage = 1) => {
     try {
-      const res = await axios.get('http://localhost:5000/api/v1/booking/get-all-reports');
+      setLoading(true);
+      const res = await axios.get(`http://localhost:5000/api/v1/booking/get-all-reports?page=${currentPage}&limit=20`);
       if (res.data.success) {
-        const sortedReports = res.data.data.sort((a, b) => 
-          new Date(b.report?.reportedAt) - new Date(a.report?.reportedAt)
-        );
-        setReports(sortedReports);
+        setReports(res.data.data);
+        setTotalPages(res.data.totalPages || 1);
       }
     } catch (error) {
       console.log("Error fetching reports", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -88,6 +97,14 @@ const AdminReports = () => {
               )}
             </tbody>
           </table>
+          {/* Pagination Buttons */}
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className={styles.pageBtn}>Prev</button>
+              <span className={styles.pageInfo}>Page <strong>{page}</strong> of {totalPages}</span>
+              <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)} className={styles.pageBtn}>Next</button>
+            </div>
+          )}
         </div>
       </div>
     </>

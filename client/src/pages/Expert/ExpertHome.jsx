@@ -15,30 +15,56 @@ const ExpertHome = () => {
   const [rejectBookingId, setRejectBookingId] = useState(null);
   const [rejectionReason, setRejectionReason] = useState("");
 
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [selectedBookingForAccept, setSelectedBookingForAccept] = useState(null);
+  const [allStats, setAllStats] = useState({ totalBookings: 0, totalEarnings: 0, pendingRequests: 0 });
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user'));
     setUser(userData);
-    if (userData?._id) fetchBookings(userData._id);
+    if (userData?._id) fetchBookings(userData._id, 1);
   }, []);
 
-  const fetchBookings = async (expertId) => {
+  const fetchBookings = async (expertId, currentPage = 1) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/booking/get-expert-bookings', { expertId });
+      setLoading(true);
+      const res = await axios.post(`http://localhost:5000/api/v1/booking/get-expert-bookings?page=${currentPage}&limit=20`, { expertId });
+      
       if (res.data.success) {
-        const sortedData = res.data.data.sort((a, b) => {
-          if (a.status === 'pending' && b.status !== 'pending') return -1;
-          if (a.status !== 'pending' && b.status === 'pending') return 1;
-          return 0;
+        setAllStats(res.data.stats);
+        const statusPriority = { 
+          'pending': 1, 
+          'accepted': 2, 
+          'paid': 3 
+        };
+
+        // ഡാറ്റ സോർട്ട് ചെയ്യുന്നു
+        const sortedData = [...res.data.data].sort((a, b) => {
+          const priorityA = statusPriority[a.status] || 4; // മറ്റുള്ളവ (completed, rejected) അവസാനം വരും
+          const priorityB = statusPriority[b.status] || 4;
+          return priorityA - priorityB;
         });
+
         setBookings(sortedData);
+        setTotalPages(res.data.totalPages || 1);
       }
     } catch (error) {
       console.log("Error fetching bookings", error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user?._id && page > 0) {
+      fetchBookings(user._id, page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [page]);
 
   const handleStatus = async (bookingId, status) => {
     try {
@@ -114,15 +140,15 @@ const submitRejection = async () => {
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
             <div className={styles.iconBox}><FaCalendarCheck /></div>
-            <div className={styles.statInfo}><h3>{stats.totalBookings}</h3><p>Confirmed Bookings</p></div>
+            <div className={styles.statInfo}><h3>{allStats.totalBookings}</h3><p>Confirmed Bookings</p></div>
           </div>
           <div className={styles.statCard}>
             <div className={styles.iconBox}><FaWallet /></div>
-            <div className={styles.statInfo}><h3>₹{stats.totalEarnings}</h3><p>Total Earnings</p></div>
+            <div className={styles.statInfo}><h3>₹{allStats.totalEarnings}</h3><p>Total Earnings</p></div>
           </div>
           <div className={styles.statCard}>
             <div className={styles.iconBox}><FaClock /></div>
-            <div className={styles.statInfo}><h3>{stats.pendingRequests}</h3><p>New Requests</p></div>
+            <div className={styles.statInfo}><h3>{allStats.pendingRequests}</h3><p>New Requests</p></div>
           </div>
         </div>
 
@@ -172,6 +198,13 @@ const submitRejection = async () => {
               <p className={styles.noDataText}>No requests at the moment.</p>
             )}
           </div>
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className={styles.pageBtn}>Prev</button>
+              <span className={styles.pageInfo}>Page <strong>{page}</strong> of {totalPages}</span>
+              <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)} className={styles.pageBtn}>Next</button>
+            </div>
+          )}
         </div>
       </div>
 

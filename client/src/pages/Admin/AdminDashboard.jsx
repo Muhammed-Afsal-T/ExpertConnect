@@ -6,10 +6,12 @@ import styles from './AdminDashboard.module.css';
 const AdminDashboard = () => {
   const [experts, setExperts] = useState([]);
   const [selectedExpert, setSelectedExpert] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const getAllExperts = async () => {
+  const getAllExperts = async (currentPage = 1) => {
     try {
-      const res = await axios.get('http://localhost:5000/api/v1/admin/getAllExperts', {
+      const res = await axios.get(`http://localhost:5000/api/v1/admin/getAllExperts?page=${currentPage}&limit=20`, {
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       });
       if (res.data.success) {
@@ -18,16 +20,22 @@ const AdminDashboard = () => {
           return a.isVerified ? 1 : -1;
         });
         setExperts(sortedData);
+        setTotalPages(res.data.totalPages || 1);
       }
     } catch (error) { console.log(error); }
   };
+
+  useEffect(() => {
+    getAllExperts(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [page]);
 
   const handleStatus = async (expertId, status) => {
     try {
       const res = await axios.post('http://localhost:5000/api/v1/admin/changeStatus', { expertId, status });
       if (res.data.success) {
         alert(`Expert ${status} successfully`);
-        getAllExperts();
+        getAllExperts(page);
         setSelectedExpert(null); 
       }
     } catch (error) { alert("Something went wrong"); }
@@ -75,6 +83,13 @@ const AdminDashboard = () => {
               )}
             </tbody>
           </table>
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className={styles.pageBtn}>Prev</button>
+              <span className={styles.pageInfo}>Page <strong>{page}</strong> of {totalPages}</span>
+              <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)} className={styles.pageBtn}>Next</button>
+            </div>
+          )}
         </div>
       </div>
 

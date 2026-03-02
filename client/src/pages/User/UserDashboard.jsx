@@ -8,16 +8,16 @@ import { useNavigate } from 'react-router-dom';
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [experts, setExperts] = useState([]);
-  const [filteredExperts, setFilteredExperts] = useState([]);
-  const [showFilter, setShowFilter] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  
-  const [showProfilePrompt, setShowProfilePrompt] = useState(false);
-  const user = JSON.parse(localStorage.getItem('user'));
-  
-  // new filter stores
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [priceRange, setPriceRange] = useState("");
+  const [showFilter, setShowFilter] = useState(false);
+  const [filteredExperts, setFilteredExperts] = useState([]);
+  const [showProfilePrompt, setShowProfilePrompt] = useState(false);
+  const user = JSON.parse(localStorage.getItem('userInfo'));
 
   useEffect(() => {
     if (user && (!user.age || !user.gender || !user.specialization)) {
@@ -26,19 +26,44 @@ const UserDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const fetchExperts = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/v1/user/getAllExperts');
-        if (res.data.success) {
-          setExperts(res.data.data);
-          setFilteredExperts(res.data.data);
+    setPage(1);
+    fetchExperts(1);
+  }, [searchQuery, selectedCategories, priceRange]);
+
+  useEffect(() => {
+    fetchExperts(page);
+  }, [page]);
+
+  useEffect(() => {
+  if (page > 1) {
+    fetchExperts(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); //
+  }
+  }, [page]);
+
+  const fetchExperts = async (currentPage = 1) => {
+    try {
+      setLoading(true);
+      const categoryParam = selectedCategories.join(',');
+      const res = await axios.get(`http://localhost:5000/api/v1/user/getAllExperts`, {
+        params: {
+          page: currentPage,
+          limit: 21,
+          search: searchQuery,
+          category: categoryParam,
+          priceRange: priceRange
         }
-      } catch (error) {
-        console.log(error);
+      });
+      if (res.data.success) {
+        setExperts(res.data.data);
+        setTotalPages(res.data.totalPages);
       }
-    };
-    fetchExperts();
-  }, []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // --- Combined Filtering Logic ---
   useEffect(() => {
@@ -170,6 +195,14 @@ const UserDashboard = () => {
             ) : (
               <div className={styles.noDataSection}>
                  <p className={styles.noData}>No experts found matching your criteria.</p>
+              </div>
+            )}
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className={styles.pagination}>
+                <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className={styles.pageBtn}>Prev</button>
+                <span className={styles.pageInfo}>Page <strong>{page}</strong> of {totalPages}</span>
+                <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)} className={styles.pageBtn}>Next</button>
               </div>
             )}
           </div>

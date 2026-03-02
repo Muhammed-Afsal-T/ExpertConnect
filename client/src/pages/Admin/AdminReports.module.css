@@ -58,3 +58,48 @@
     .reasonBox { width: 100%; text-align: left; margin-top: 5px; }
     .reportCell { flex-direction: column; align-items: flex-start; }
 }
+
+/* Pagination Styling */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.pageBtn {
+    padding: 8px 16px;
+    background-color: white;
+    border: 1px solid #0056b3;
+    color: #0056b3;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.pageBtn:hover:not(:disabled) {
+    background-color: #0056b3;
+    color: white;
+}
+
+.pageBtn:disabled {
+    border-color: #ccc;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.pageInfo {
+    font-size: 14px;
+    color: #555;
+}
+
+.loadingText {
+    text-align: center;
+    padding: 30px;
+    font-size: 16px;
+    color: #666;
+}

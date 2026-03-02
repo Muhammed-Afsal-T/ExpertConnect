@@ -15,22 +15,39 @@ const BookingHistory = () => {
   const [reportData, setReportData] = useState({ bookingId: '', expertId: '', reason: '' });
   const [reviewData, setReviewData] = useState({ bookingId: '', expertId: '', rating: 0, message: '' });
   
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchHistory();
   }, []);
 
-  const fetchHistory = async () => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/v1/booking/user-history/${user._id}`);
-      if (res.data.success) {
-        setHistory(res.data.data);
-      }
-    } catch (error) {
-      console.log("Error fetching history:", error);
+  useEffect(() => {
+    if (page > 1) {
+      fetchHistory(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' }); //
     }
-  };
+    }, [page]);
+
+  const fetchHistory = async (currentPage = 1) => {
+  try {
+    const res = await axios.get(`http://localhost:5000/api/v1/booking/user-history/${user._id}`, {
+      params: { page: currentPage, limit: 21 }
+    });
+    if (res.data.success) {
+      setHistory(res.data.data);
+      setTotalPages(res.data.totalPages);
+    }
+  } catch (error) {
+    console.log("Error fetching history:", error);
+  }
+};
+
+  useEffect(() => {
+  fetchHistory(page);
+  }, [page]);
 
   const handleReportSubmit = async () => {
     if (!reportData.reason.trim()) return;
@@ -228,6 +245,13 @@ const BookingHistory = () => {
           </div>
         </div>
       )}
+      {totalPages > 1 && (
+  <div className={styles.pagination}>
+    <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className={styles.pageBtn}>Prev</button>
+    <span className={styles.pageInfo}>Page <strong>{page}</strong> of {totalPages}</span>
+    <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)} className={styles.pageBtn}>Next</button>
+  </div>
+   )}
     </>
   );
 };
