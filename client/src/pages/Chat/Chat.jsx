@@ -6,7 +6,7 @@ import { FaVideo, FaPaperPlane, FaCheckCircle, FaArrowLeft, FaCalendarPlus, FaCh
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("https://expertconnect-backend-3hhu.onrender.com");
 
 const Chat = () => {
   const navigate = useNavigate();
@@ -82,7 +82,7 @@ const Chat = () => {
 
   const fetchAcceptedExperts = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/booking/get-user-active-bookings', { userId: user._id });
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/get-user-active-bookings', { userId: user._id });
       if (res.data.success) {
         setExperts(res.data.bookings);
       }
@@ -93,7 +93,7 @@ const Chat = () => {
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/v1/message/get-messages/${selectedExpert._id}`);
+      const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/message/get-messages/${selectedExpert._id}`);
       if (res.data.success) {
         setMessages(res.data.messages);
       }
@@ -105,7 +105,7 @@ const Chat = () => {
   const handleMockPayment = async () => {
     try {
       setLoading(true);
-      const res = await axios.post('http://localhost:5000/api/v1/booking/update-payment-status', {
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/update-payment-status', {
         bookingId: selectedExpert._id
       });
 
@@ -150,7 +150,7 @@ const Chat = () => {
         message: inputText
       };
 
-      const res = await axios.post('http://localhost:5000/api/v1/message/send-message', messageData);
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/message/send-message', messageData);
 
       if (res.data.success) {
         socket.emit("send_message", res.data.newMessage);

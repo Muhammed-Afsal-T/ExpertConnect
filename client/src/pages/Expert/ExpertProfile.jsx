@@ -102,7 +102,7 @@ const ExpertProfile = () => {
     if (files.idProof) data.append('idProof', files.idProof); 
 
     try { 
-      const res = await axios.post('http://localhost:5000/api/v1/user/updateProfile', data); 
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/user/updateProfile', data); 
       if (res.data.success) { 
         alert("Profile Updated Successfully!"); 
          

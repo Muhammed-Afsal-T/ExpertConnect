@@ -32,7 +32,7 @@ const ExpertHome = () => {
   const fetchBookings = async (expertId, currentPage = 1) => {
     try {
       setLoading(true);
-      const res = await axios.post(`http://localhost:5000/api/v1/booking/get-expert-bookings?page=${currentPage}&limit=20`, { expertId });
+      const res = await axios.post(`https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/get-expert-bookings?page=${currentPage}&limit=20`, { expertId });
       
       if (res.data.success) {
         setAllStats(res.data.stats);
@@ -68,7 +68,7 @@ const ExpertHome = () => {
 
   const handleStatus = async (bookingId, status) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/booking/update-status', { bookingId, status });
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/update-status', { bookingId, status });
       if (res.data.success) {
         alert(`Booking ${status}`);
         fetchBookings(user._id);
@@ -99,7 +99,7 @@ const submitRejection = async () => {
   if (!rejectionReason.trim()) return alert("Please provide a reason.");
 
   try {
-    const res = await axios.post('http://localhost:5000/api/v1/booking/update-status', {
+    const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/update-status', {
       bookingId: rejectBookingId,
       status: 'rejected',
       rejectionReason: rejectionReason

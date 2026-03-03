@@ -31,18 +31,18 @@ const ExpertDetails = () => {
 
   const fetchExpertAndBookings = async () => {
     try {
-      const expertRes = await axios.post('http://localhost:5000/api/v1/user/getUserData', { userId: id });
+      const expertRes = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/user/getUserData', { userId: id });
       if (expertRes.data.success) {
         setExpert(expertRes.data.data);
       }
 
-      const bookingsRes = await axios.post('http://localhost:5000/api/v1/booking/get-expert-bookings', { expertId: id });
+      const bookingsRes = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/get-expert-bookings', { expertId: id });
       if (bookingsRes.data.success) {
         const booked = bookingsRes.data.data.filter(b => ['accepted', 'paid'].includes(b.status));
         setBookedSlots(booked);
       }
 
-      const statusRes = await axios.post('http://localhost:5000/api/v1/booking/check-status', {
+      const statusRes = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/check-status', {
         userId: user._id, expertId: id
       });
       if (statusRes.data.success) {
@@ -57,7 +57,7 @@ const ExpertDetails = () => {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/v1/review/get-reviews/${id}`);
+      const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/review/get-reviews/${id}`);
       if (res.data.success) {
         setReviews(res.data.data);
       }
@@ -92,7 +92,7 @@ const ExpertDetails = () => {
   if (!topic.trim()) return alert("Please enter your topic of consultation.");
   try {
     setLoading(true);
-    const res = await axios.post('http://localhost:5000/api/v1/booking/book-expert', {
+    const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/book-expert', {
       userId: user._id, expertId: id, day: selectedDateObj.date, slot: selectedSlot, 
       amount: expert.fees, topic: topic
     });
@@ -113,7 +113,7 @@ const ExpertDetails = () => {
   const handleCancel = async (bookingId) => {
     try {
       setLoading(true);
-      await axios.post('http://localhost:5000/api/v1/booking/cancel-booking', { userId: user._id, expertId: id });
+      await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/cancel-booking', { userId: user._id, expertId: id });
       alert("Request Cancelled");
       fetchExpertAndBookings();
     } catch (error) {

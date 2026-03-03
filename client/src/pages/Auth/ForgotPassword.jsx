@@ -33,7 +33,7 @@ const ForgotPassword = () => {
     setMessage("");
 
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/user/forgot-password', { email });
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/user/forgot-password', { email });
       
       if (res.data.success) {
         setMessage("Success! Please check your email for the reset link.");

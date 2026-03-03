@@ -45,7 +45,7 @@ const UserDashboard = () => {
     try {
       setLoading(true);
       const categoryParam = selectedCategories.join(',');
-      const res = await axios.get(`http://localhost:5000/api/v1/user/getAllExperts`, {
+      const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/user/getAllExperts`, {
         params: {
           page: currentPage,
           limit: 21,

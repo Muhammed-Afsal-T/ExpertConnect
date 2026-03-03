@@ -56,7 +56,7 @@ const Register = () => {
     if (!validateForm()) return; 
 
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/user/register', {
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/user/register', {
         name: formData.name,
         email: formData.email,
         password: formData.password,

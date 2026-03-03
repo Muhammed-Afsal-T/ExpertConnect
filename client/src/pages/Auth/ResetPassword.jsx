@@ -30,7 +30,7 @@ const ResetPassword = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post(`http://localhost:5000/api/v1/user/reset-password/${id}/${token}`, { password });
+      const res = await axios.post(`https://expertconnect-backend-3hhu.onrender.com/api/v1/user/reset-password/${id}/${token}`, { password });
       
       if (res.data.success) {
         alert("Password updated successfully! Please login.");

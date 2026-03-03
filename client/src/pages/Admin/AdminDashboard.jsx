@@ -11,7 +11,7 @@ const AdminDashboard = () => {
 
   const getAllExperts = async (currentPage = 1) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/v1/admin/getAllExperts?page=${currentPage}&limit=20`, {
+      const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/admin/getAllExperts?page=${currentPage}&limit=20`, {
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       });
       if (res.data.success) {
@@ -32,7 +32,7 @@ const AdminDashboard = () => {
 
   const handleStatus = async (expertId, status) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/admin/changeStatus', { expertId, status });
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/admin/changeStatus', { expertId, status });
       if (res.data.success) {
         alert(`Expert ${status} successfully`);
         getAllExperts(page);

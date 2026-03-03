@@ -26,7 +26,7 @@ const VideoCall = () => {
 
     const fetchBookingDetails = async () => {
         try {
-            const res = await axios.get(`http://localhost:5000/api/v1/booking/get-booking-by-id/${bookingId}`);
+            const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/get-booking-by-id/${bookingId}`);
             if (res.data.success) {
                 setBooking(res.data.booking);
             }

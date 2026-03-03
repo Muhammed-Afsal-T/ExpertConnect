@@ -24,7 +24,7 @@ const AdminReports = () => {
   const fetchReports = async (currentPage = 1) => {
     try {
       setLoading(true);
-      const res = await axios.get(`http://localhost:5000/api/v1/booking/get-all-reports?page=${currentPage}&limit=20`);
+      const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/get-all-reports?page=${currentPage}&limit=20`);
       if (res.data.success) {
         setReports(res.data.data);
         setTotalPages(res.data.totalPages || 1);

@@ -33,7 +33,7 @@ const BookingHistory = () => {
 
   const fetchHistory = async (currentPage = 1) => {
   try {
-    const res = await axios.get(`http://localhost:5000/api/v1/booking/user-history/${user._id}`, {
+    const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/user-history/${user._id}`, {
       params: { page: currentPage, limit: 21 }
     });
     if (res.data.success) {
@@ -52,7 +52,7 @@ const BookingHistory = () => {
   const handleReportSubmit = async () => {
     if (!reportData.reason.trim()) return;
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/booking/report-expert', {
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/report-expert', {
         ...reportData, 
         userId: user._id
       });
@@ -69,7 +69,7 @@ const BookingHistory = () => {
 
   const handleReviewSubmit = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/review/post-review', {
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/review/post-review', {
         ...reviewData,
         userId: user._id,
         userName: user.name

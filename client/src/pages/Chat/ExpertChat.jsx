@@ -6,7 +6,7 @@ import { FaVideo, FaPaperPlane, FaArrowLeft, FaRegCalendarAlt, FaClock, FaUserAl
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 
-const socket = io.connect("http://localhost:5000");
+const socket = io.connect("https://expertconnect-backend-3hhu.onrender.com");
 
 const ExpertChat = () => {
   const navigate = useNavigate();
@@ -83,7 +83,7 @@ const ExpertChat = () => {
 
   const fetchPaidUsers = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/api/v1/booking/get-expert-chat-users', { expertId: expert._id });
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/get-expert-chat-users', { expertId: expert._id });
       if (res.data.success) {
         setPaidUsers(res.data.bookings);
       }
@@ -94,7 +94,7 @@ const ExpertChat = () => {
 
   const fetchMessages = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/v1/message/get-messages/${selectedUser._id}`);
+      const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/message/get-messages/${selectedUser._id}`);
       if (res.data.success) {
         setMessages(res.data.messages);
       }
@@ -123,7 +123,7 @@ const ExpertChat = () => {
         message: inputText
       };
 
-      const res = await axios.post('http://localhost:5000/api/v1/message/send-message', messageData);
+      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/message/send-message', messageData);
 
       if (res.data.success) {
         socket.emit("send_message", res.data.newMessage);
