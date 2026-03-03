@@ -47,7 +47,7 @@ const VideoCall = () => {
                 startWithAudioMuted: false,
                 startWithVideoMuted: false,
                 prejoinPageEnabled: false,
-                disableModeratorIndicator: true, 
+                disableModeratorIndicator: true,
                 enableWelcomePage: false,
                 enableClosePage: false,
                 disableDeepLinking: true,
@@ -80,14 +80,11 @@ const VideoCall = () => {
     useEffect(() => {
         const checkSessionExpiry = () => {
             if (booking && booking.slot && booking.slot.endTime) {
-                const now = new Date().toLocaleTimeString('en-GB', { 
-                    timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' 
+                const now = new Date().toLocaleTimeString('en-GB', {
+                    timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit'
                 });
 
-                console.log(`Current Time: ${now}, End Time: ${booking.slot.endTime}`);
-
                 if (now >= booking.slot.endTime) {
-                    console.log("Session Ended. Redirecting...");
                     handleExit();
                 }
             }

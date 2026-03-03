@@ -38,8 +38,6 @@ const initCronJobs = () => {
             console.error("Cron Job Error:", error);
         }
     });
-
-    console.log("Cron Job initialized");
 };
 
 module.exports = initCronJobs;
