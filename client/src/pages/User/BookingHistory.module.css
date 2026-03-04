@@ -143,3 +143,11 @@
     font-size: 15px;
     color: #555;
 }
+
+@media (max-width: 600px) {
+  .modalContent {
+    width: 90%;
+    max-width: 500px;
+    margin: auto;
+  }
+}

@@ -71,12 +71,14 @@ const LandingPage = () => {
           <p>Get professional mentorship and consultation in real-time. Connect with top industry experts for personalized guidance.</p>
           <div className={styles.heroActions}>
             <button onClick={() => navigate('/register')} className={styles.mainBtn}>Get Started</button>
-            <button onClick={() => navigate('/login')} className={styles.outlineBtn}>Explore Experts</button>
+            <button onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })} className={styles.outlineBtn}>
+              Explore Features
+            </button>
           </div>
         </div>
       </header>
 
-      <section className={styles.features}>
+      <section className={styles.features} id="features">
         <h2>Our Key Features</h2>
         <div className={styles.featureGrid}>
           {features.map((f, i) => (
