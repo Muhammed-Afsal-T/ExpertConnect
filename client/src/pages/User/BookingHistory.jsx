@@ -4,6 +4,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import styles from './BookingHistory.module.css';
 import { useNavigate } from 'react-router-dom';
 import { FaStar, FaInfoCircle, FaArrowLeft } from 'react-icons/fa';
+import { toastError, toastSuccess} from '../../utils/alert';
 
 const BookingHistory = () => {
   const [history, setHistory] = useState([]);
@@ -57,13 +58,13 @@ const BookingHistory = () => {
         userId: user._id
       });
       if (res.data.success) {
-        alert("Report Sent to Admin!");
+        toastSuccess("Report Sent to Admin!");
         setShowReportModal(false);
         setReportData({ bookingId: '', expertId: '', reason: '' });
         fetchHistory();
       }
     } catch (error) {
-      alert("Reporting failed.");
+      toastError("Reporting failed.");
     }
   };
 
@@ -75,13 +76,13 @@ const BookingHistory = () => {
         userName: user.name
       });
       if (res.data.success) {
-        alert("Your review has been recorded!");
+        toastSuccess("Your review has been recorded!");
         setShowReviewModal(false);
         setReviewData({ bookingId: '', expertId: '', rating: 0, message: '' });
         fetchHistory();
       }
     } catch (error) {
-      alert("Could not submit the review.");
+      toastError("Could not submit the review.");
     }
   };
 

@@ -4,6 +4,8 @@ import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './UserProfile.module.css';
 import { FaArrowLeft, FaCamera, FaHistory } from 'react-icons/fa';
+import { toastError, toastSuccess } from '../../utils/alert';
+
 const UserProfile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
@@ -41,14 +43,14 @@ const UserProfile = () => {
     try {
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/user/updateProfile', data);
       if (res.data.success) {
-        alert("Profile Updated Successfully!");
+        toastSuccess("Profile Updated Successfully!");
         localStorage.setItem('user', JSON.stringify(res.data.data));
         setUser(res.data.data);
         navigate('/user-dashboard');
       }
     } catch (error) {
       console.log(error);
-      alert("Update failed");
+      toastError("Update failed");
     } finally {
       setLoading(false);
     }

@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './ExpertDetails.module.css';
 import { FaArrowLeft, FaCheckCircle, FaStar, FaRegClock, FaCalendarAlt, FaComments, FaCheck } from 'react-icons/fa';
+import { toastInfo, toastSuccess, toastError } from '../../utils/alert';
 
 const ExpertDetails = () => {
   const { id } = useParams();
@@ -78,10 +79,10 @@ const ExpertDetails = () => {
   };
 
   const handleBooking = async () => {
-    if (!selectedDateObj || !selectedSlot) return alert("Select Date and Slot!");
+    if (!selectedDateObj || !selectedSlot) return toastInfo("Select Date and Slot!");
    
     if (!user?.age || !user?.gender || !user?.specialization) {
-    alert("Please complete your profile details (Age, Gender, Profession) before sending a request.");
+    toastError("Please complete your profile details (Age, Gender, Profession) before sending a request.");
     navigate('/profile');
     return;
     }
@@ -89,7 +90,7 @@ const ExpertDetails = () => {
   };
 
   const submitBookingWithTopic = async () => {
-  if (!topic.trim()) return alert("Please enter your topic of consultation.");
+  if (!topic.trim()) return toastInfo("Please enter your topic of consultation.");
   try {
     setLoading(true);
     const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/book-expert', {
@@ -97,14 +98,14 @@ const ExpertDetails = () => {
       amount: expert.fees, topic: topic
     });
     if (res.data.success) {
-      alert(res.data.message);
+      toastSuccess(res.data.message);
       setShowTopicModal(false);
       setTopic("");
       setShowCalendarOverride(false); 
       fetchExpertAndBookings();
     }
   } catch (error) {
-    alert("Booking failed.");
+    toastError("Booking failed.");
   } finally {
     setLoading(false);
   }
@@ -114,10 +115,10 @@ const ExpertDetails = () => {
     try {
       setLoading(true);
       await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/cancel-booking', { userId: user._id, expertId: id });
-      alert("Request Cancelled");
+      toastSuccess("Request Cancelled");
       fetchExpertAndBookings();
     } catch (error) {
-      alert("Cancellation failed.");
+      toastError("Cancellation failed.");
     } finally {
       setLoading(false);
     }

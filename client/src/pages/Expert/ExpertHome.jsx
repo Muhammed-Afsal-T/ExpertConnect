@@ -4,6 +4,7 @@ import axios from 'axios';
 import styles from './ExpertHome.module.css';
 import { FaCalendarCheck, FaWallet, FaClock, FaExclamationTriangle, FaCheck, FaTimes, FaRegCalendarAlt, FaBan, FaUserAlt, FaEnvelope, FaBriefcase, FaVenusMars, FaInfoCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { toastSuccess, toastError, toastInfo } from '../../utils/alert';
 
 const ExpertHome = () => {
   const navigate = useNavigate();
@@ -70,13 +71,13 @@ const ExpertHome = () => {
     try {
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/update-status', { bookingId, status });
       if (res.data.success) {
-        alert(`Booking ${status}`);
+        toastSuccess(`Booking ${status}`);
         fetchBookings(user._id);
       } else {
-        alert(res.data.message);
+        toastError(res.data.message);
       }
     } catch (error) {
-      alert("Error updating status");
+      toastError("Error updating status");
     }
   };
 
@@ -96,7 +97,7 @@ const ExpertHome = () => {
 };
 
 const submitRejection = async () => {
-  if (!rejectionReason.trim()) return alert("Please provide a reason.");
+  if (!rejectionReason.trim()) return toastInfo("Please provide a reason.");
 
   try {
     const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/update-status', {
@@ -106,13 +107,13 @@ const submitRejection = async () => {
     });
     
     if (res.data.success) {
-      alert("Booking Rejected.");
+      toastSuccess("Booking Rejected.");
       setShowRejectModal(false);
       setRejectionReason("");
       fetchBookings(user._id);
     }
   } catch (error) {
-    alert("Action failed.");
+    toastError("Action failed.");
   }
 };
   const openAcceptModal = (booking) => {

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Register.module.css'; 
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { toastSuccess, toastError } from '../../utils/alert';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -64,14 +65,14 @@ const Register = () => {
       });
       
       if (res.data.success) {
-        alert("Registration Successful!");
+        toastSuccess("Registration Successful!");
         navigate('/login');
       } else {
-        alert(res.data.message);
+        toastError(res.data.message);
       }
     } catch (error) {
       console.log(error);
-      alert("Something went wrong");
+      toastError("Something went wrong");
     }
   };
 

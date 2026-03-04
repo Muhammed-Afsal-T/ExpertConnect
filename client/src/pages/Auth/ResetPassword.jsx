@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from '../Login/Login.module.css';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { toastSuccess,toastInfo } from '../../utils/alert';
 
 const ResetPassword = () => {
   const { id, token } = useParams();
@@ -33,13 +34,13 @@ const ResetPassword = () => {
       const res = await axios.post(`https://expertconnect-backend-3hhu.onrender.com/api/v1/user/reset-password/${id}/${token}`, { password });
       
       if (res.data.success) {
-        alert("Password updated successfully! Please login.");
+        toastSuccess("Password updated successfully! Please login.");
         navigate('/login');
       } else {
         setError(res.data.message);
       }
     } catch (err) {
-      setError("Invalid or expired link. Please request a new one.");
+      toastInfo("Invalid or expired link. Please request a new one.");
     } finally {
       setLoading(false);
     }

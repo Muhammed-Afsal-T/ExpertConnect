@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Login.module.css';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { toastError } from '../../utils/alert';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -25,19 +26,17 @@ const Login = () => {
       if (res.data.success) {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
-        
-        alert("Login Successful!");
-        
+                
         if(res.data.user.role === 'admin') navigate('/admin');
         else if(res.data.user.role === 'expert') navigate('/expert-dashboard');
         else navigate('/user-dashboard'); 
         
       } else {
-        alert(res.data.message);
+        toastError(res.data.message);
       }
     } catch (error) {
       console.log(error);
-      alert("Something went wrong");
+      toastError("Something went wrong");
     }
   };
 

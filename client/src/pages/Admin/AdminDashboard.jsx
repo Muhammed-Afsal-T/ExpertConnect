@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar';
 import styles from './AdminDashboard.module.css';
+import { toastSuccess, toastError } from '../../utils/alert';
 
 const AdminDashboard = () => {
   const [experts, setExperts] = useState([]);
@@ -34,11 +35,11 @@ const AdminDashboard = () => {
     try {
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/admin/changeStatus', { expertId, status });
       if (res.data.success) {
-        alert(`Expert ${status} successfully`);
+        toastSuccess(`Expert ${status} successfully`);
         getAllExperts(page);
         setSelectedExpert(null); 
       }
-    } catch (error) { alert("Something went wrong"); }
+    } catch (error) { toastError("Something went wrong"); }
   };
 
   useEffect(() => { getAllExperts(); }, []);

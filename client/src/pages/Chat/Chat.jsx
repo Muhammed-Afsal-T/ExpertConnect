@@ -5,6 +5,7 @@ import styles from './Chat.module.css';
 import { FaVideo, FaPaperPlane, FaCheckCircle, FaArrowLeft, FaCalendarPlus, FaCheck, FaBars } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
+import { toastError, toastInfo } from '../../utils/alert';
 
 const socket = io.connect("https://expertconnect-backend-3hhu.onrender.com");
 
@@ -44,7 +45,7 @@ const Chat = () => {
 
       if (now >= selectedExpert.slot.endTime && !hasAlerted.current) {
         hasAlerted.current = true;
-        alert("Session time expired! The consultation is now closed.");
+        toastInfo("Session time expired! The consultation is now closed.");
         
         window.location.reload();
       }
@@ -115,7 +116,7 @@ const Chat = () => {
         setSelectedExpert({ ...selectedExpert, status: 'paid' });
       }
     } catch (error) {
-      alert("Payment simulation failed.");
+      toastError("Payment simulation failed.");
     } finally {
       setLoading(false);
     }
@@ -134,7 +135,7 @@ const Chat = () => {
     if (selectedExpert.isVideoActive) {
       navigate(`/video-call/${selectedExpert._id}`);
     } else {
-      alert(`Session Not Active!\nYour video session will be active on ${selectedExpert.day} from ${selectedExpert.slot.startTime} to ${selectedExpert.slot.endTime}`);
+      toastInfo(`Session Not Active!\nYour video session will be active on ${selectedExpert.day} from ${selectedExpert.slot.startTime} to ${selectedExpert.slot.endTime}`);
     }
   };
 

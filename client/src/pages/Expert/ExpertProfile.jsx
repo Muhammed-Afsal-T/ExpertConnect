@@ -4,6 +4,7 @@ import axios from 'axios';
 import Navbar from '../../components/Navbar/Navbar'; 
 import styles from './ExpertProfile.module.css'; 
 import { FaArrowLeft, FaCamera, FaPlus, FaTrash, FaRegCalendarAlt, FaClock, FaTimes } from 'react-icons/fa'; 
+import { toastSuccess, toastError, toastInfo } from '../../utils/alert';
 
 const ExpertProfile = () => { 
   const navigate = useNavigate(); 
@@ -47,13 +48,13 @@ const ExpertProfile = () => {
     setFiles({ ...files, [e.target.name]: file }); 
     setPreviews({ ...previews, [e.target.name]: URL.createObjectURL(file) }); 
   }; 
-
+  
   // --- Slot Logic Functions --- 
   const addDate = (e) => { 
     e.preventDefault(); 
-    if (!tempDate) return alert("Please select a date"); 
+    if (!tempDate) return toastInfo("Please select a date"); 
      
-    if (availability.find(a => a.date === tempDate)) return alert("This date is already added"); 
+    if (availability.find(a => a.date === tempDate)) return toastError("This date is already added"); 
      
     setAvailability([...availability, { date: tempDate, slots: [{ startTime: "", endTime: "" }] }]); 
     setTempDate(""); 
@@ -67,7 +68,7 @@ const ExpertProfile = () => {
 
   const addSlot = (e, dateIndex) => { 
     e.preventDefault(); 
-    if (availability[dateIndex].slots.length >= 3) return alert("Maximum 3 slots per day"); 
+    if (availability[dateIndex].slots.length >= 3) return toastInfo("Maximum 3 slots per day"); 
     const updated = [...availability]; 
     updated[dateIndex].slots.push({ startTime: "", endTime: "" }); 
     setAvailability(updated); 
@@ -104,7 +105,7 @@ const ExpertProfile = () => {
     try { 
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/user/updateProfile', data); 
       if (res.data.success) { 
-        alert("Profile Updated Successfully!"); 
+        toastSuccess("Profile Updated Successfully!"); 
          
         localStorage.setItem('user', JSON.stringify(res.data.data)); 
         setUser(res.data.data); 
@@ -113,7 +114,7 @@ const ExpertProfile = () => {
       } 
     } catch (error) { 
       console.log(error); 
-      alert("Update failed. Please try again."); 
+      toastError("Update failed. Please try again."); 
     } finally { 
       setLoading(false); 
     } 
