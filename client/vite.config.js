@@ -13,7 +13,7 @@ export default defineConfig({
         short_name: 'ExpertConnect',
         description: 'Connect with industry experts for professional consultation.',
         theme_color: '#121212',
-        background_color: '#121212',
+        background_color: '#ffffff',
         display: 'standalone',
         start_url: '/',
         icons: [
