@@ -103,24 +103,66 @@ const Chat = () => {
     }
   };
 
-  const handleMockPayment = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/update-payment-status', {
-        bookingId: selectedExpert._id
-      });
+  const handleRazorpayPayment = async () => {
+  try {
+    setLoading(true);
 
-      if (res.data.success) {
-        setPaymentSuccess(true);
-        fetchAcceptedExperts();
-        setSelectedExpert({ ...selectedExpert, status: 'paid' });
-      }
-    } catch (error) {
-      toastError("Payment simulation failed.");
-    } finally {
+    const orderRes = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/payment/create-order', {
+      amount: selectedExpert.amount
+    });
+
+    if (!orderRes.data.success) {
+      toastError("Order creation failed!");
       setLoading(false);
+      return;
     }
-  };
+
+    const { amount, id: order_id, currency } = orderRes.data.order;
+
+    const options = {
+      key: "rzp_test_SNatgnR7mUaHQN",
+      amount: amount,
+      currency: currency,
+      name: "ExpertConnect",
+      description: `Consultation with ${selectedExpert.expertId?.name}`,
+      order_id: order_id,
+      handler: async function (response) {
+        const verifyRes = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/payment/verify-payment', {
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        });
+
+        if (verifyRes.data.success) {
+          await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/update-payment-status', {
+            bookingId: selectedExpert._id
+          });
+          
+          setPaymentSuccess(true);
+          fetchAcceptedExperts();
+          setSelectedExpert({ ...selectedExpert, status: 'paid' });
+        } else {
+          toastError("Payment verification failed!");
+        }
+      },
+      prefill: {
+        name: user.name,
+        email: user.email,
+      },
+      theme: {
+        color: "#004a8d",
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  } catch (error) {
+    console.error("Payment error:", error);
+    toastError("Something went wrong with Razorpay.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const getGoogleCalendarLink = (item) => {
     const title = encodeURIComponent(`Consultation with ${item.expertId?.name}`);
@@ -281,7 +323,7 @@ const Chat = () => {
                   <p>Expert: <strong>{selectedExpert?.expertId?.name}</strong></p>
                   <p className={styles.amountText}>Amount: ₹{selectedExpert?.amount}</p>
                 </div>
-                <button className={styles.finalPayBtn} disabled={loading} onClick={handleMockPayment}>
+                <button className={styles.finalPayBtn} disabled={loading} onClick={handleRazorpayPayment}>
                   {loading ? "Processing..." : "Pay Now"}
                 </button>
                 <button className={styles.closeBtn} onClick={() => setShowPaymentModal(false)}>Cancel</button>
