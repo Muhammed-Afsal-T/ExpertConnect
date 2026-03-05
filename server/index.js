@@ -14,6 +14,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 // Configuration
 const app = express();
@@ -32,6 +33,8 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/booking', bookingRoutes);
 app.use('/api/v1/message', messageRoutes);
 app.use('/api/v1/review', reviewRoutes);
+app.use('/api/payment', paymentRoutes);
+
 // Test Route
 app.get('/', (req, res) => {
   res.send('ExpertConnect Server is Running Successfully!');
