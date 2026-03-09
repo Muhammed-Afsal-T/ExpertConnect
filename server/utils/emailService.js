@@ -1,6 +1,6 @@
 const transporter = require('../config/emailConfig');
 
-// 1. Session start email
+// Session start reminder sent when a paid slot reaches its start time.
 const sendStartEmail = async (userEmail, userName, expertName, slotTime) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -13,7 +13,7 @@ const sendStartEmail = async (userEmail, userName, expertName, slotTime) => {
   await transporter.sendMail(mailOptions);
 };
 
-// 2. Session end & rating email
+// Session completion email that nudges users to leave feedback.
 const sendEndEmail = async (userEmail, userName, expertName) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -27,7 +27,7 @@ const sendEndEmail = async (userEmail, userName, expertName) => {
   await transporter.sendMail(mailOptions);
 };
 
-// 3. New: Send Accept Email
+// Booking acceptance notification with payment/join CTA.
 const sendAcceptEmail = async (userEmail, userName, expertName, date, slot) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -44,7 +44,7 @@ const sendAcceptEmail = async (userEmail, userName, expertName, date, slot) => {
   await transporter.sendMail(mailOptions);
 };
 
-// 4. New: Send Reject Email
+// Booking rejection notification including optional expert reason.
 const sendRejectEmail = async (userEmail, userName, expertName, date, slot, reason) => {
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -60,4 +60,5 @@ const sendRejectEmail = async (userEmail, userName, expertName, date, slot, reas
   await transporter.sendMail(mailOptions);
 };
 
+// Shared mail helpers used by booking and scheduler workflows.
 module.exports = { sendStartEmail, sendEndEmail, sendAcceptEmail, sendRejectEmail };

@@ -4,11 +4,13 @@ const jwt = require('jsonwebtoken');
 const cloudinary = require('../config/cloudinary');
 const transporter = require('../config/emailConfig');
 
+// Centralized password hashing helper used by register/reset flows.
 const hashPassword = async (password) => {
     const salt = await bcrypt.genSalt(10);
     return await bcrypt.hash(password, salt);
 };
 
+// Keep date/time comparisons in IST to match booking/availability business rules.
 const getTodayIST = () => new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 const getCurrentTimeIST = () => new Date().toLocaleTimeString('en-GB', { 
     timeZone: 'Asia/Kolkata', hour12: false, hour: '2-digit', minute: '2-digit' 
@@ -57,10 +59,12 @@ const updateProfileController = async (req, res) => {
     const updateData = { name, age, gender, specialization, experience, fees, about };
 
     if (availability) {
+      // Accept JSON string (multipart/form-data) or already parsed array payloads.
       const parsedAvailability = typeof availability === 'string' ? JSON.parse(availability) : availability;
       const today = getTodayIST();
       const now = getCurrentTimeIST();
 
+      // Drop past dates and expired same-day slots before persisting availability.
       updateData.availability = parsedAvailability.filter(dayObj => {
         if (dayObj.date > today) return true;
         if (dayObj.date === today) {
@@ -72,6 +76,7 @@ const updateProfileController = async (req, res) => {
     }
 
     if (req.files) {
+      // Upload binary buffers directly to Cloudinary without temporary disk writes.
       const uploadToCloudinary = async (fileBuffer) => {
         return new Promise((resolve, reject) => {
           cloudinary.uploader.upload_stream({ resource_type: 'auto' }, (error, result) => {
@@ -103,6 +108,7 @@ const getUserDataController = async (req, res) => {
     if (user.role === 'expert' && user.availability && user.availability.length > 0) {
       const initialLength = user.availability.length;
       
+      // Lazy-clean stale availability on profile fetch to keep data fresh.
       user.availability = user.availability.filter(dayObj => {
         if (dayObj.date > today) return true;
         if (dayObj.date === today) {
@@ -147,6 +153,7 @@ const getAllExpertsController = async (req, res) => {
     if (category) {
       const categories = category.split(',');
       if (categories.includes('others')) {
+        // "Others" means anything outside predefined top categories.
         const mainCats = ['doctor', 'lawyer', 'engineer'];
         query.specialization = { $nin: mainCats.map(c => new RegExp(c, 'i')) };
       } else {
@@ -174,6 +181,7 @@ const getAllExpertsController = async (req, res) => {
     const formattedExperts = experts.map(expert => {
       const expertObj = expert.toObject();
       if (expertObj.availability) {
+        // Return only currently bookable/future slots to clients.
         expertObj.availability = expertObj.availability.filter(dayObj => {
           if (dayObj.date > today) return true;
           if (dayObj.date === today) {
@@ -203,6 +211,7 @@ const forgotPasswordController = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(200).send({ success: false, message: "User not found" });
+    // Include current password hash in secret so old reset links become invalid after password change.
     const secret = (process.env.JWT_SECRET || "expertconnect123") + user.password;
     
     const token = jwt.sign({ id: user._id }, secret, { expiresIn: '5m' }); 
@@ -234,6 +243,7 @@ const resetPasswordController = async (req, res) => {
 
     const secret = (process.env.JWT_SECRET || "expertconnect123") + user.password;
 
+    // Verify short-lived token before accepting new password.
     jwt.verify(token, secret, async (err, decode) => {
       if (err) {
         return res.status(401).send({ success: false, message: "Link is invalid or has expired." });

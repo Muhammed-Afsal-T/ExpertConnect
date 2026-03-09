@@ -1,6 +1,7 @@
 const Booking = require('../models/bookingModel');
 const { sendAcceptEmail, sendRejectEmail } = require('../utils/emailService');
 
+// Use IST consistently so booking lifecycle decisions match the product's schedule timezone.
 const getTodayIST = () => {
   return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 };
@@ -15,9 +16,11 @@ const getCurrentTimeIST = () => {
 };
 
 const autoCleanupBookings = async (filter) => {
+  // Normalize outdated bookings whenever related data is fetched.
   const today = getTodayIST();
   const now = getCurrentTimeIST();
 
+  // Past dates: paid -> completed, pending/accepted -> incomplete.
   await Booking.updateMany(
     { ...filter, day: { $lt: today }, status: 'paid' },
     { $set: { status: 'completed' } }
@@ -27,6 +30,7 @@ const autoCleanupBookings = async (filter) => {
     { $set: { status: 'incomplete' } }
   );
 
+  // Same-day expired slots follow the same transition rules.
   await Booking.updateMany(
     { ...filter, day: today, "slot.endTime": { $lt: now }, status: 'paid' },
     { $set: { status: 'completed' } }
@@ -41,6 +45,7 @@ const bookExpertController = async (req, res) => {
   try {
     const { userId, expertId, day, slot, amount, topic } = req.body;
 
+    // Prevent double-booking the same expert slot once accepted or paid.
     const slotTaken = await Booking.findOne({
       expertId,
       day,
@@ -52,6 +57,7 @@ const bookExpertController = async (req, res) => {
       return res.status(200).send({ success: false, message: "This slot is already booked by another user." });
     }
 
+    // Prevent duplicate pending requests for the same slot by the same user.
     const existingBooking = await Booking.findOne({ 
       userId, expertId, day, "slot.startTime": slot.startTime, status: 'pending' 
     });
@@ -85,6 +91,7 @@ const getExpertBookingsController = async (req, res) => {
     const statsData = await Booking.aggregate([
       { $match: { expertId: expertObjectId } },
       {
+        // Build expert dashboard counters in a single aggregation pass.
         $group: {
           _id: null,
           totalBookings: { 
@@ -106,6 +113,7 @@ const getExpertBookingsController = async (req, res) => {
       { $match: { expertId: new mongoose.Types.ObjectId(expertId) } },
       {
         $addFields: {
+          // Custom status ordering for admin/expert workflow visibility.
           statusPriority: {
             $switch: {
               branches: [
@@ -173,6 +181,7 @@ const getUserActiveBookingsController = async (req, res) => {
       const isWithinTime = now >= b.slot.startTime && now <= b.slot.endTime;
       return {
         ...b.toObject(),
+        // Video session opens only during booked slot and only after payment.
         isVideoActive: b.status === 'paid' && isToday && isWithinTime
       };
     });
@@ -188,6 +197,7 @@ const updateStatusController = async (req, res) => {
     const { bookingId, status, rejectionReason } = req.body;
     
     if (status === 'accepted') {
+      // Re-check availability at acceptance time to avoid race conditions.
       const currentBooking = await Booking.findById(bookingId);
       const slotTaken = await Booking.findOne({
         expertId: currentBooking.expertId,
@@ -210,6 +220,7 @@ const updateStatusController = async (req, res) => {
       const slotString = `${booking.slot.startTime} - ${booking.slot.endTime}`;
       
       if (status === 'accepted') {
+        // Fire-and-forget emails; status update should not fail on mail issues.
         sendAcceptEmail(
           booking.userId.email, 
           booking.userId.name, 
@@ -239,6 +250,7 @@ const updateStatusController = async (req, res) => {
 const updatePaymentStatusController = async (req, res) => {
   try {
     const { bookingId } = req.body;
+    // Payment confirmation transitions booking to `paid`.
     const booking = await Booking.findByIdAndUpdate(bookingId, { status: 'paid' }, { new: true });
     res.status(200).send({ success: true, message: "Payment Successful!", data: booking });
   } catch (error) {
@@ -288,6 +300,7 @@ const getExpertChatUsersController = async (req, res) => {
       const isWithinTime = now >= b.slot.startTime && now <= b.slot.endTime;
       return {
         ...b.toObject(),
+        // Expert can start chat/video only within active paid slot window.
         isVideoActive: isToday && isWithinTime
       };
     });
@@ -346,6 +359,7 @@ const getUserBookingHistoryController = async (req, res) => {
 const reportExpertController = async (req, res) => {
   try {
     const { bookingId, userId, expertId, reason } = req.body;
+    // Store report on the booking document for moderator review/audit trail.
     const booking = await Booking.findByIdAndUpdate(bookingId, { 
       report: { reason, reportedAt: new Date() },
       isReported: true
@@ -363,6 +377,7 @@ const getAllReportsController = async (req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
 
+    // Only fetch bookings that contain a non-empty report reason.
     const query = { "report.reason": { $exists: true, $ne: "" } };
 
     const reports = await Booking.find(query)

@@ -2,8 +2,10 @@ const Message = require('../models/messageModel');
 
 const sendMessageController = async (req, res) => {
     try {
+        // bookingId links chat history to a specific consultation session.
         const { bookingId, sender, receiver, message } = req.body;
 
+        // Persist each chat message for later retrieval/audit.
         const newMessage = new Message({
             bookingId,
             sender,
@@ -32,6 +34,7 @@ const getMessagesController = async (req, res) => {
     try {
         const { bookingId } = req.params;
 
+        // Return messages in chronological order for correct chat rendering.
         const messages = await Message.find({ bookingId }).sort({ createdAt: 1 });
 
         res.status(200).send({

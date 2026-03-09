@@ -3,10 +3,10 @@ const { getAllExpertsController, changeAccountStatusController } = require('../c
 
 const router = express.Router();
 
-// GET ALL EXPERTS || GET
+// Admin list view for expert verification queue and history.
 router.get('/getAllExperts', getAllExpertsController);
 
-// ACCOUNT STATUS CHANGE || POST
+// Approve/reject expert verification status.
 router.post('/changeStatus', changeAccountStatusController);
 
 module.exports = router;

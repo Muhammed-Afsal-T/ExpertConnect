@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 
+// Load environment variables before importing modules that depend on them.
 dotenv.config();
 
 const cors = require('cors');
@@ -20,14 +21,17 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const app = express();
 const server = http.createServer(app);
 
-// Connect to Database
+// Initialize core infrastructure at startup.
 connectDB();
 initCronJobs();
 
 // Middleware
+// Parse JSON request bodies before route handlers run.
 app.use(express.json());
+// Allow frontend app to call backend APIs across origins.
 app.use(cors());
 
+// API route groups.
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/booking', bookingRoutes);
@@ -42,16 +46,19 @@ app.get('/', (req, res) => {
 
 const io = new Server(server, {
   cors: {
+    // Restrict socket connections to frontend origin.
     origin: process.env.CLIENT_URL || "http://localhost:5173",
     methods: ["GET", "POST"]
   }
 });
 
 io.on("connection", (socket) => {
+  // Join a room scoped to a booking so messages stay session-specific.
   socket.on("join_chat", (bookingId) => {
     socket.join(bookingId);
   });
 
+  // Broadcast incoming message to all other clients in the same booking room.
   socket.on("send_message", (data) => {
     socket.to(data.bookingId).emit("receive_message", data);
   });
