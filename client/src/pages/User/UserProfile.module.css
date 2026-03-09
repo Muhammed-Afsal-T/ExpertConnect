@@ -15,6 +15,7 @@
 }
 
 .profileCard {
+    /* Centered profile form card for user personal details. */
     background: white;
     max-width: 600px;
     margin: 0 auto;
@@ -117,6 +118,7 @@
 }
 
 .historyBtn {
+    /* Shortcut CTA to jump to booking history page. */
     width: 100%;
     padding: 12px;
     background-color: #f8f9fa;
@@ -145,6 +147,7 @@
 }
 
 @media (max-width: 768px) {
+    /* Collapse two-column row inputs into single-column mobile layout. */
     .container {
         padding: 20px 15px;
     }

@@ -20,12 +20,14 @@ const UserDashboard = () => {
   const user = JSON.parse(localStorage.getItem('userInfo'));
 
   useEffect(() => {
+    // Prompt users to complete profile fields required before booking.
     if (user && (!user.age || !user.gender || !user.specialization)) {
       setShowProfilePrompt(true);
     }
   }, []);
 
   useEffect(() => {
+    // Reset pagination and refetch when any filter/search changes.
     setPage(1);
     fetchExperts(1);
   }, [searchQuery, selectedCategories, priceRange]);
@@ -44,6 +46,7 @@ const UserDashboard = () => {
   const fetchExperts = async (currentPage = 1) => {
     try {
       setLoading(true);
+      // Server-side search/filter/pagination query.
       const categoryParam = selectedCategories.join(',');
       const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/user/getAllExperts`, {
         params: {
@@ -65,11 +68,11 @@ const UserDashboard = () => {
     }
   };
 
-  // --- Combined Filtering Logic ---
+  // Client-side filter pass for immediate UI refinement.
   useEffect(() => {
     let result = experts;
 
-    // 1. Search Filter (Name or Profession)
+    // 1) Search by name/specialization.
     if (searchQuery) {
       result = result.filter(expert =>
         expert.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -77,7 +80,7 @@ const UserDashboard = () => {
       );
     }
 
-    // 2. Category Filter
+    // 2) Category grouping with explicit "others" bucket.
     if (selectedCategories.length > 0) {
       result = result.filter(expert => {
         const prof = expert.specialization?.toLowerCase();
@@ -92,7 +95,7 @@ const UserDashboard = () => {
       });
     }
 
-    // 3. Price Range Filter
+    // 3) Price bracket filter.
     if (priceRange) {
       result = result.filter(expert => {
         const fees = expert.fees;
@@ -106,7 +109,7 @@ const UserDashboard = () => {
     setFilteredExperts(result);
   }, [searchQuery, selectedCategories, priceRange, experts]);
 
-  // Handle Category Selection
+  // Toggle category chips in multiselect state.
   const handleCategoryChange = (category) => {
     const lowerCat = category.toLowerCase();
     setSelectedCategories(prev => 

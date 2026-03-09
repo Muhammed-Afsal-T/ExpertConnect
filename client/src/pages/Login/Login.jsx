@@ -21,12 +21,15 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Authenticate user and receive token + role-specific profile payload.
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/user/login', formData);
       
       if (res.data.success) {
+        // Persist auth/session data for protected routes and API calls.
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
                 
+        // Redirect user to the correct dashboard based on account role.
         if(res.data.user.role === 'admin') navigate('/admin');
         else if(res.data.user.role === 'expert') navigate('/expert-dashboard');
         else navigate('/user-dashboard'); 

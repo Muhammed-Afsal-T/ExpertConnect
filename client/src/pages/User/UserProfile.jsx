@@ -28,6 +28,7 @@ const UserProfile = () => {
   };
 
   const handleFileChange = (e) => {
+    // Preview selected avatar locally before uploading.
     const file = e.target.files[0];
     setImage(file);
     setPreview(URL.createObjectURL(file));
@@ -36,6 +37,7 @@ const UserProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    // Submit profile updates as multipart data (text + optional image file).
     const data = new FormData();
     Object.keys(formData).forEach(key => data.append(key, formData[key]));
     if (image) data.append('image', image);

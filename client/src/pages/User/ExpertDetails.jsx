@@ -27,6 +27,7 @@ const ExpertDetails = () => {
   const [topic, setTopic] = useState("");
 
   useEffect(() => {
+    // Fetch expert profile, booked slots, and current user's active requests.
     fetchExpertAndBookings();
   }, [id, user._id]);
 
@@ -68,6 +69,7 @@ const ExpertDetails = () => {
   };
 
   const handleToggleReviews = () => {
+    // Lazy-load reviews only when section is opened.
     if (!showReviews) {
       fetchReviews();
     }
@@ -75,12 +77,14 @@ const ExpertDetails = () => {
   };
 
   const isSlotBooked = (date, startTime) => {
+    // Disable slots already accepted/paid by any user.
     return bookedSlots.some(b => b.day === date && b.slot.startTime === startTime);
   };
 
   const handleBooking = async () => {
     if (!selectedDateObj || !selectedSlot) return toastInfo("Select Date and Slot!");
    
+    // Require minimum profile fields before creating consultation request.
     if (!user?.age || !user?.gender || !user?.specialization) {
     toastError("Please complete your profile details (Age, Gender, Profession) before sending a request.");
     navigate('/profile');
@@ -90,6 +94,7 @@ const ExpertDetails = () => {
   };
 
   const submitBookingWithTopic = async () => {
+  // Topic is mandatory so experts can evaluate request intent.
   if (!topic.trim()) return toastInfo("Please enter your topic of consultation.");
   try {
     setLoading(true);
@@ -156,7 +161,7 @@ const ExpertDetails = () => {
          </div>
         )}
 
-        {/* --- Skeleton Logic --- */}
+        {/* Skeleton placeholders shown while loading expert details. */}
         {loading ? (
           <div className={styles.mainGrid}>
             <div className={styles.infoSection}>

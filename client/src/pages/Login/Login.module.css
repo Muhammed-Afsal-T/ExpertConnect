@@ -1,4 +1,5 @@
 .container {
+    /* Full-screen auth backdrop shared by login/forgot/reset pages. */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -77,6 +78,7 @@
 }
 
 .passwordWrapper {
+    /* Wraps password field to place visibility toggle icon inside input. */
     position: relative;
     display: flex;
     align-items: center;
@@ -127,6 +129,7 @@
 }
 
 @media (max-width: 480px) {
+    /* Tighten spacing and keep background composition readable on phones. */
     .container {
         background-position: left center; 
     }

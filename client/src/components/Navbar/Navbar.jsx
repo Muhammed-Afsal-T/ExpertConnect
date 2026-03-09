@@ -14,12 +14,13 @@ const Navbar = ({ onSearch }) => {
   const role = user?.role;
 
   const handleLogout = () => {
+    // Clear persisted auth/session state before redirecting to login.
     localStorage.clear();
     navigate('/login');
   };
 
     useEffect(() => {
-    // Force sticky positioning
+    // Defensive fallback: ensure navbar stays sticky even if class styles are overridden.
     const navbar = document.querySelector(`.${styles.navbar}`);
     if (navbar) {
       navbar.style.position = 'sticky';
@@ -29,6 +30,7 @@ const Navbar = ({ onSearch }) => {
   }, []);
   
   const handleLogoClick = () => {
+    // Route users to their role-specific landing page.
     if (role === 'admin') navigate('/admin');
     else if (role === 'expert') navigate('/expert-dashboard');
     else if (role === 'user') navigate('/user-dashboard');
@@ -43,13 +45,14 @@ const Navbar = ({ onSearch }) => {
   };
 
   const handleChatClick = () => {
+    // Admin has no chat route in current flow.
     if (role === 'expert') navigate('/expert/chat');
     else navigate('/chat');
   };
 
   const handleSearchToggle = () => {
     setIsSearchActive(true);
-    // Focus on input after state update
+    // Focus input after UI expands on mobile.
     setTimeout(() => {
       if (searchInputRef.current) {
         searchInputRef.current.focus();
@@ -58,13 +61,14 @@ const Navbar = ({ onSearch }) => {
   };
 
   const handleSearchBlur = () => {
-    // Small delay to allow click events on suggestions
+    // Delay collapse so click events inside search UI can complete.
     setTimeout(() => {
       setIsSearchActive(false);
     }, 200);
   };
 
   useEffect(() => {
+    // Close profile dropdown when clicking outside.
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
@@ -80,7 +84,7 @@ const Navbar = ({ onSearch }) => {
         ExpertConnect
       </div>
 
-      {/* Mobile Search Toggle Button */}
+      {/* Mobile-only entry point that expands inline search UI. */}
       {role === 'user' && location.pathname === '/user-dashboard' && !isSearchActive && (
         <button className={styles.mobileSearchToggle} onClick={handleSearchToggle}>
           <span>search</span> <FaSearch size={20} />

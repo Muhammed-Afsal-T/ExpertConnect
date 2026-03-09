@@ -11,9 +11,10 @@
     padding: 15px 50px;
     background-color: white;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    position: sticky !important; /* Force sticky */
-    top: 0 !important; /* Force top position */
-    z-index: 1000 !important; /* Force z-index */
+    /* Keep navbar pinned during scroll; !important guards against page-level overrides. */
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 1000 !important;
     width: 100%;
     transition: all 0.3s ease;
 }
@@ -192,7 +193,7 @@
         display: none;
     }
 
-    /* When search is active - expanded state */
+    /* Expanded search mode: hide logo/toggle and stretch input across navbar. */
     .searchActive .logo {
         display: none; /* Hide logo when search is active */
     }

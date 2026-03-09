@@ -12,6 +12,7 @@ const ForgotPassword = () => {
   useEffect(() => {
     let interval;
     if (timer > 0) {
+      // Countdown used to throttle reset-link re-requests.
       interval = setInterval(() => {
         setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
@@ -33,10 +34,12 @@ const ForgotPassword = () => {
     setMessage("");
 
     try {
+      // Triggers backend mail flow for password reset link.
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/user/forgot-password', { email });
       
       if (res.data.success) {
         setMessage("Success! Please check your email for the reset link.");
+        // 5-minute cooldown to prevent repeated email spam requests.
         setTimer(300);
       } else {
         setMessage(res.data.message || "Something went wrong.");

@@ -22,9 +22,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Public-only pages: authenticated users are redirected by PublicRoute. */}
         <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+
+        {/* Password recovery flow remains accessible without login. */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
 
@@ -63,6 +66,8 @@ function App() {
         <Route path="/booking-history" element={
           <ProtectedRoute allowedRoles={['user']}><BookingHistory /></ProtectedRoute>
         } />
+
+        {/* Shared live session route for both participants. */}
         <Route path="/video-call/:bookingId" element={
           <ProtectedRoute allowedRoles={['user', 'expert']}><VideoCall /></ProtectedRoute>
         } />

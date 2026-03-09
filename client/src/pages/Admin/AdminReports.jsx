@@ -13,10 +13,12 @@ const AdminReports = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Initial reports fetch on first render.
     fetchReports();
   }, []);
 
   useEffect(() => {
+    // Refetch when pagination changes.
     fetchReports(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [page]);
@@ -24,6 +26,7 @@ const AdminReports = () => {
   const fetchReports = async (currentPage = 1) => {
     try {
       setLoading(true);
+      // Pull paginated moderation reports from booking endpoints.
       const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/get-all-reports?page=${currentPage}&limit=20`);
       if (res.data.success) {
         setReports(res.data.data);
@@ -97,7 +100,7 @@ const AdminReports = () => {
               )}
             </tbody>
           </table>
-          {/* Pagination Buttons */}
+          {/* Simple prev/next pagination controls. */}
           {totalPages > 1 && (
             <div className={styles.pagination}>
               <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className={styles.pageBtn}>Prev</button>

@@ -1,4 +1,5 @@
 .container {
+    /* Full-screen auth backdrop for the registration form. */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,7 +10,7 @@
     padding: 20px;
 }
 
-/* Glass Effect Box */
+/* Card-like form container over background image. */
 .formBox {
     background: rgba(255, 255, 255, 0.95);
     padding: 40px;
@@ -24,7 +25,7 @@
     color: #333;
 }
 
-/* Toggle Switch Styles */
+/* Role toggle (User/Professional) used to set signup account type. */
 .toggleContainer {
     display: flex;
     background: #e0e0e0;
@@ -48,7 +49,7 @@
     color: white;
 }
 
-/* Input Fields */
+/* Input field and button styling for register form controls. */
 .inputGroup {
     margin-bottom: 15px;
     text-align: left;
@@ -131,6 +132,7 @@
     text-align: left;
 }
 @media (max-width: 480px) {
+    /* Mobile spacing/layout adjustments. */
     .container {
         background-position: left center; 
     }

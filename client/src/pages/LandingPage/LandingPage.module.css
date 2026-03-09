@@ -4,7 +4,7 @@
   overflow-x: hidden;
 }
 
-/* Navbar */
+/* Top navigation for unauthenticated landing visitors. */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -44,7 +44,7 @@
   color: #fff;
 }
 
-/* Hero Section */
+/* Hero area with CTA content layered over 3D canvas background. */
 .hero {
   position: relative;
   height: 90vh;
@@ -101,7 +101,7 @@
   color: #2c3e50;
 }
 
-/* Features */
+/* Feature-card section highlighting platform value props. */
 .features {
   padding: 80px 8%;
   background: #fff;
@@ -154,6 +154,7 @@
 }
 
 .canvasContainer {
+  /* Full-bleed background canvas behind hero copy/buttons. */
   position: absolute;
   top: 0;
   left: 0;
@@ -163,6 +164,7 @@
   pointer-events: none;
 }
 
+/* Tablet/mobile adjustments for hero and feature layout. */
 @media (max-width: 768px) {
   .navbar { padding: 15px 5%; }
   .logo { font-size: 20px; }
@@ -187,6 +189,7 @@
   }
 }
 
+/* Additional mobile refinements for navbar/button spacing and hero sizing. */
 @media (max-width: 768px) {
     /* Navbar Buttons Side-by-Side */
     .navLinks {

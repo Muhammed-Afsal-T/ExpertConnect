@@ -6,6 +6,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { toastSuccess,toastInfo } from '../../utils/alert';
 
 const ResetPassword = () => {
+  // Params come from reset link: `/reset-password/:id/:token`.
   const { id, token } = useParams();
   const navigate = useNavigate();
 
@@ -20,6 +21,7 @@ const ResetPassword = () => {
     e.preventDefault();
     setError("");
 
+    // Client-side guard to reduce invalid API requests.
     if (password.length < 8 || password.length > 12) {
       setError("Password must be 8-12 characters");
       return;
@@ -31,6 +33,7 @@ const ResetPassword = () => {
 
     setLoading(true);
     try {
+      // Submits new password with tokenized URL context.
       const res = await axios.post(`https://expertconnect-backend-3hhu.onrender.com/api/v1/user/reset-password/${id}/${token}`, { password });
       
       if (res.data.success) {

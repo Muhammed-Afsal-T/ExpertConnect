@@ -27,10 +27,12 @@ const Register = () => {
   };
 
   const handleRoleChange = (role) => {
+    // Select account type at signup (learner or professional/expert).
     setFormData({ ...formData, role: role });
   };
 
   const validateForm = () => {
+    // Frontend validation to reduce avoidable API round-trips.
     let newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -57,6 +59,7 @@ const Register = () => {
     if (!validateForm()) return; 
 
     try {
+      // Send normalized registration payload to backend.
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/user/register', {
         name: formData.name,
         email: formData.email,
@@ -66,6 +69,7 @@ const Register = () => {
       
       if (res.data.success) {
         toastSuccess("Registration Successful!");
+        // Redirect to login after successful account creation.
         navigate('/login');
       } else {
         toastError(res.data.message);

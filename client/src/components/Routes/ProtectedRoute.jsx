@@ -6,15 +6,16 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
   if (!token) {
-    // If not logged in, it will take you to the login page.
+    // Block unauthenticated access to protected pages.
     return <Navigate to="/login" />;
   }
 
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    // If the role does not match, it will be sent to the home page.
+    // Block authenticated users who do not have one of the allowed roles.
     return <Navigate to="/" />;
   }
 
+  // Authorized access: render target route content.
   return children;
 };
 

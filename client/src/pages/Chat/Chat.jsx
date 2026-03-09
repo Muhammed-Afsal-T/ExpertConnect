@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { toastError, toastInfo } from '../../utils/alert';
 
+// Shared socket connection for booking-room chat events.
 const socket = io.connect("https://expertconnect-backend-3hhu.onrender.com");
 
 const Chat = () => {
@@ -26,10 +27,12 @@ const Chat = () => {
   const hasAlerted = useRef(false);
 
   useEffect(() => {
+    // Load active/accepted bookings available for chat list.
     fetchAcceptedExperts();
   }, []);
 
   useEffect(() => {
+  // Poll session window to auto-refresh state around slot start/end.
   const checkExpiry = () => {
     if (!selectedExpert || selectedExpert.status !== 'paid') return;
 
@@ -62,12 +65,14 @@ const Chat = () => {
 
   useEffect(() => {
     if (selectedExpert && selectedExpert.status === 'paid') {
+      // Paid sessions can join socket room and fetch persisted history.
       socket.emit("join_chat", selectedExpert._id);
       fetchMessages();
     }
   }, [selectedExpert]);
 
   useEffect(() => {
+    // Receive real-time messages for currently selected booking only.
     socket.on("receive_message", (data) => {
       if (selectedExpert && data.bookingId === selectedExpert._id) {
         setMessages((prev) => [...prev, data]);
@@ -127,6 +132,7 @@ const Chat = () => {
       description: `Consultation with ${selectedExpert.expertId?.name}`,
       order_id: order_id,
       handler: async function (response) {
+        // Verify Razorpay signature server-side before unlocking chat/video.
         const verifyRes = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/payment/verify-payment', {
           razorpay_order_id: response.razorpay_order_id,
           razorpay_payment_id: response.razorpay_payment_id,
@@ -165,6 +171,7 @@ const Chat = () => {
 };
 
   const getGoogleCalendarLink = (item) => {
+    // Build Google Calendar URL from booking date and slot times.
     const title = encodeURIComponent(`Consultation with ${item.expertId?.name}`);
     const details = encodeURIComponent(`ExpertConnect Session - Please be on time!`);
     const dateStr = item.day.replace(/-/g, "");
@@ -187,6 +194,7 @@ const Chat = () => {
 
     try {
       const messageData = {
+        // Sender is logged-in user; receiver is selected expert account.
         bookingId: selectedExpert._id,
         sender: user._id,
         receiver: selectedExpert.expertId._id,

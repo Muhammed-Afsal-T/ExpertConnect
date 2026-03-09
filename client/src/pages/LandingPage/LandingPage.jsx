@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import styles from './LandingPage.module.css';
 import { FaUserMd, FaChalkboardTeacher, FaComments, FaVideo, FaShieldAlt, FaFilter, FaStar } from 'react-icons/fa';
 
+// Decorative 3D hero object rendered behind main CTA content.
 const InteractiveShape = () => {
   const [hovered, setHover] = useState(false);
 
  useEffect(() => {
+    // Swap cursor only while hovering the 3D object.
     const customCursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="%230056b3" fill-opacity="0.2" stroke="%230056b3" stroke-width="2"/><circle cx="16" cy="16" r="3" fill="%230056b3"/></svg>') 16 16, auto`;
     document.body.style.cursor = hovered ? customCursor : 'auto';
   }, [hovered]);
@@ -35,6 +37,7 @@ const InteractiveShape = () => {
 const LandingPage = () => {
   const navigate = useNavigate();
 
+  // Static marketing feature list rendered as cards.
   const features = [
     { icon: <FaChalkboardTeacher />, title: "Expert Mentorship", desc: "One-on-one sessions with industry leaders." },
     { icon: <FaVideo />, title: "Video Calls", desc: "Secure in-platform video consultations." },
@@ -58,6 +61,7 @@ const LandingPage = () => {
         <div className={styles.canvasContainer}>
           <Canvas camera={{ position: [0, 0, 5] }}>
             <Suspense fallback={null}>
+              {/* Lightweight scene setup for ambient landing-page motion. */}
               <ambientLight intensity={1} />
               <pointLight position={[10, 10, 10]} />
               <InteractiveShape />

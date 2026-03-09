@@ -12,10 +12,12 @@ const AdminDashboard = () => {
 
   const getAllExperts = async (currentPage = 1) => {
     try {
+      // Fetch paginated expert list for verification management.
       const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/admin/getAllExperts?page=${currentPage}&limit=20`, {
         headers: { Authorization: "Bearer " + localStorage.getItem("token") },
       });
       if (res.data.success) {
+        // Keep unverified experts at the top to prioritize pending decisions.
         const sortedData = res.data.data.sort((a, b) => {
           if (a.isVerified === b.isVerified) return 0;
           return a.isVerified ? 1 : -1;
@@ -28,11 +30,13 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     getAllExperts(page);
+    // Reset scroll when changing pages for better table UX.
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [page]);
 
   const handleStatus = async (expertId, status) => {
     try {
+      // Approve/reject selected expert from dashboard or modal actions.
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/admin/changeStatus', { expertId, status });
       if (res.data.success) {
         toastSuccess(`Expert ${status} successfully`);

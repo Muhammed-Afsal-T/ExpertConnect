@@ -25,6 +25,7 @@ const ExpertHome = () => {
   const [allStats, setAllStats] = useState({ totalBookings: 0, totalEarnings: 0, pendingRequests: 0 });
 
   useEffect(() => {
+    // Bootstrap expert context from local storage and load first page.
     const userData = JSON.parse(localStorage.getItem('user'));
     setUser(userData);
     if (userData?._id) fetchBookings(userData._id, 1);
@@ -33,6 +34,7 @@ const ExpertHome = () => {
   const fetchBookings = async (expertId, currentPage = 1) => {
     try {
       setLoading(true);
+      // Fetch paginated booking requests and summary stats for dashboard cards.
       const res = await axios.post(`https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/get-expert-bookings?page=${currentPage}&limit=20`, { expertId });
       
       if (res.data.success) {
@@ -43,9 +45,9 @@ const ExpertHome = () => {
           'paid': 3 
         };
 
-        // ഡാറ്റ സോർട്ട് ചെയ്യുന്നു
+        // Keep actionable states first in UI (pending -> accepted -> paid).
         const sortedData = [...res.data.data].sort((a, b) => {
-          const priorityA = statusPriority[a.status] || 4; // മറ്റുള്ളവ (completed, rejected) അവസാനം വരും
+          const priorityA = statusPriority[a.status] || 4; // completed/rejected go to the bottom
           const priorityB = statusPriority[b.status] || 4;
           return priorityA - priorityB;
         });
@@ -62,6 +64,7 @@ const ExpertHome = () => {
 
   useEffect(() => {
     if (user?._id && page > 0) {
+      // Refresh list when pagination changes.
       fetchBookings(user._id, page);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -82,6 +85,7 @@ const ExpertHome = () => {
   };
 
   const isSlotTaken = (day, startTime) => {
+    // Prevent accepting overlapping pending requests for already accepted slots.
     return bookings.some(b => b.status === 'accepted' && b.day === day && b.slot?.startTime === startTime);
   };
 
@@ -97,6 +101,7 @@ const ExpertHome = () => {
 };
 
 const submitRejection = async () => {
+  // Enforce meaningful rejection reason before submitting.
   if (!rejectionReason.trim()) return toastInfo("Please provide a reason.");
 
   try {

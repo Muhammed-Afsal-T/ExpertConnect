@@ -11,6 +11,7 @@ const VideoCall = () => {
     const [user] = useState(JSON.parse(localStorage.getItem('user')));
     const [booking, setBooking] = useState(null);
 
+    // Return participants to their role-specific chat screen after call exit.
     const redirectPath = user.role === 'expert' ? '/expert/chat' : '/chat';
 
     const handleExit = useCallback(() => {
@@ -21,6 +22,7 @@ const VideoCall = () => {
     }, [navigate, redirectPath]);
 
     useEffect(() => {
+        // Load booking slot details for session-expiry checks.
         fetchBookingDetails();
     }, [bookingId]);
 
@@ -36,6 +38,7 @@ const VideoCall = () => {
     };
 
     useEffect(() => {
+        // Initialize embedded Jitsi meeting for this booking room.
         const domain = "meet.jit.si";
         const options = {
             roomName: `ExpertConnect_${bookingId}`,
@@ -63,6 +66,7 @@ const VideoCall = () => {
 
         api.addEventListeners({
             toolbarButtonClicked: (data) => {
+                // Keep in-app flow consistent when user taps Jitsi hangup.
                 if (data.name === 'hangup') {
                     handleExit();
                 }
@@ -78,6 +82,7 @@ const VideoCall = () => {
     }, [bookingId, user.name, handleExit]);
 
     useEffect(() => {
+        // Auto-close call once booking end time is reached (IST).
         const checkSessionExpiry = () => {
             if (booking && booking.slot && booking.slot.endTime) {
                 const now = new Date().toLocaleTimeString('en-GB', {

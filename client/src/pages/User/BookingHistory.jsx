@@ -22,6 +22,7 @@ const BookingHistory = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Initial history fetch on first render.
     fetchHistory();
   }, []);
 
@@ -34,6 +35,7 @@ const BookingHistory = () => {
 
   const fetchHistory = async (currentPage = 1) => {
   try {
+    // Pull paginated history limited to closed/completed booking states.
     const res = await axios.get(`https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/user-history/${user._id}`, {
       params: { page: currentPage, limit: 21 }
     });
@@ -51,6 +53,7 @@ const BookingHistory = () => {
   }, [page]);
 
   const handleReportSubmit = async () => {
+    // Report is stored against booking for admin moderation.
     if (!reportData.reason.trim()) return;
     try {
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/booking/report-expert', {
@@ -69,6 +72,7 @@ const BookingHistory = () => {
   };
 
   const handleReviewSubmit = async () => {
+    // Submit post-session rating/feedback for selected expert.
     try {
       const res = await axios.post('https://expertconnect-backend-3hhu.onrender.com/api/v1/review/post-review', {
         ...reviewData,
@@ -142,7 +146,7 @@ const BookingHistory = () => {
                     View Profile
                   </button>
 
-                  {/* Only shown if completed. */}
+                  {/* Review/report actions are available only after completion. */}
                   {item.status === 'completed' && (
                     <>
                       {!item.isReviewed && (

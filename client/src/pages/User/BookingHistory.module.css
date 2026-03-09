@@ -1,4 +1,5 @@
 .historyContainer { padding: 40px 8%; background: #f4f7f6; min-height: 90vh; }
+/* Card grid for completed/rejected/incomplete consultations. */
 .historyGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
 .historyCard { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 .expertInfo { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
@@ -8,7 +9,7 @@
 .profileBtn { flex: 1; background: #3498db; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
 .reportBtn { background: #d31e0a; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }
 
-/* Modal Styles */
+/* Shared modal shell used by rate and report dialogs. */
 .modalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 2000; }
 .modalContent { background: white; padding: 30px; border-radius: 10px; width: 400px; text-align: center; }
 .submitBtn { background: #d31e0a; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
@@ -17,7 +18,7 @@
 .rateBtn { background-color: #f39c12; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 600; transition: 0.3s; }
 .rateBtn:hover { background-color: #e67e22; }
 
-/* Star Rating inside Modal */
+/* Interactive star-picker for review submission. */
 .starRating {
   display: flex;
   justify-content: center;
@@ -40,7 +41,7 @@
   cursor: not-allowed;
 }
 
-/* Modal TextArea */
+/* Shared textarea style for review/report inputs. */
 .modalContent textarea {
   width: 100%;
   height: 100px;
@@ -106,6 +107,7 @@
     gap: 30px;
 }
 
+/* Prev/next pagination row under history cards. */
 .pagination {
     display: flex;
     justify-content: center;

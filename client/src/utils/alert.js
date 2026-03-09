@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 
+// Standard success toast used for short non-blocking confirmations.
 export const toastSuccess = (message) => {
     Swal.fire({
         icon: 'success',
@@ -10,6 +11,7 @@ export const toastSuccess = (message) => {
     });
 };
 
+// Standard error modal/toast for failed actions.
 export const toastError = (message) => {
     Swal.fire({
         icon: 'error',
@@ -18,6 +20,7 @@ export const toastError = (message) => {
     });
 };
 
+// Informational toast for neutral updates.
 export const toastInfo = (message) => {
     Swal.fire({
         icon: 'info',
@@ -28,6 +31,7 @@ export const toastInfo = (message) => {
     });
 };
 
+// Reusable confirmation dialog; returns true only when user confirms.
 export const confirmAction = async (title, text) => {
     const result = await Swal.fire({
         title: title,

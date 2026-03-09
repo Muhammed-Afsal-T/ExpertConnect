@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { toastInfo } from '../../utils/alert'; 
 
+// Shared socket connection for booking-room chat events.
 const socket = io.connect("https://expertconnect-backend-3hhu.onrender.com");
 
 const ExpertChat = () => {
@@ -23,10 +24,12 @@ const ExpertChat = () => {
   const [showSidebar, setShowSidebar] = useState(true);
   const hasAlerted = useRef(false);
   useEffect(() => {
+    // Load paid/active consultations assigned to this expert.
     fetchPaidUsers();
   }, []);
 
   useEffect(() => {
+  // Poll session window to auto-refresh state around slot start/end.
   const checkSessionStatus = () => {
     if (!selectedUser) return;
 
@@ -57,16 +60,16 @@ const ExpertChat = () => {
   };
 }, [selectedUser]);
 
-  // --- Socket.io Logic Start ---
-
   useEffect(() => {
     if (selectedUser) {
+      // Join booking room and load persisted chat history.
       socket.emit("join_chat", selectedUser._id);
       fetchMessages();
     }
   }, [selectedUser]);
 
   useEffect(() => {
+    // Receive live messages only for the active booking.
     socket.on("receive_message", (data) => {
       if (selectedUser && data.bookingId === selectedUser._id) {
         setMessages((prev) => [...prev, data]);
@@ -75,8 +78,6 @@ const ExpertChat = () => {
 
     return () => socket.off("receive_message");
   }, [selectedUser]);
-
-  // --- Socket.io Logic End ---
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -118,6 +119,7 @@ const ExpertChat = () => {
 
     try {
       const messageData = {
+        // Sender is expert; receiver is selected user account.
         bookingId: selectedUser._id,
         sender: expert._id,
         receiver: selectedUser.userId._id,

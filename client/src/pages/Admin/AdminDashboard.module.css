@@ -11,7 +11,7 @@
 .verifiedBadge { color: #28a745; font-weight: 700; background: #e8f5e9; padding: 4px 12px; border-radius: 20px; font-size: 13px; }
 .actionGroup { display: flex; gap: 8px; }
 
-/* MODAL STYLES */
+/* Expert-details modal overlay/content shown from "View Details". */
 .modalOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); display: flex; justify-content: center; align-items: center; z-index: 2000; padding: 15px; }
 .modalContent { background: white; padding: 30px; border-radius: 16px; width: 100%; max-width: 550px; position: relative; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
 .closeBtn { position: absolute; top: 15px; right: 15px; background: #f8f9fa; border: none; font-size: 18px; font-weight: bold; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #666; }
@@ -31,7 +31,7 @@
 .docImage { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; border: 2px solid #f0f0f0; transition: 0.3s; }
 .modalActions { margin-top: 25px; display: flex; justify-content: flex-end; }
 
-/* --- RESPONSIVE QUERIES --- */
+/* Mobile table pattern: hide headers and use `data-label` pseudo labels per row. */
 @media (max-width: 768px) {
     .table thead { display: none; }
     .table tr { 
@@ -119,7 +119,7 @@
     }
 }
 
-/* Pagination Styles */
+/* Shared previous/next pagination row below table. */
 .pagination {
     display: flex;
     justify-content: center;

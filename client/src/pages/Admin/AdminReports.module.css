@@ -15,6 +15,7 @@
     flex-direction: column;
 }
 
+/* Responsive table-card layout for narrow screens. */
 @media (max-width: 768px) {
     .container { padding: 15px; }
     .table thead { display: none; }
@@ -59,7 +60,7 @@
     .reportCell { flex-direction: column; align-items: flex-start; }
 }
 
-/* Pagination Styling */
+/* Shared previous/next pagination row below reports table. */
 .pagination {
     display: flex;
     justify-content: center;

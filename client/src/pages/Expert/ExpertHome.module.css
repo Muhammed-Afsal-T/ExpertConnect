@@ -91,7 +91,7 @@
     font-weight: normal;
 }
 
-/* Modal Styles */
+/* Reusable modal shell for accept/topic, user-details, and reject-reason dialogs. */
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -186,7 +186,7 @@
     .modalContent { width: 90%;}
 }
 
-/* Rejection Modal Specific Styles */
+/* Styles specific to rejection-reason form content. */
 .modalSubText {
     font-size: 13px;
     color: #666;
@@ -334,6 +334,7 @@
     .detailRow { font-size: 13px; gap: 8px; }
 }
 
+/* Prev/next pagination row for consultation request list. */
 .pagination {
     display: flex;
     justify-content: center;

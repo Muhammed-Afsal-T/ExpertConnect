@@ -11,7 +11,7 @@ const ExpertProfile = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('user'))); 
   const [loading, setLoading] = useState(false); 
 
-  // Gets today's date in IST (to filter out past dates)
+  // Use IST for availability filtering to match backend slot comparisons.
   const todayIST = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
 
   const [formData, setFormData] = useState({ 
@@ -25,7 +25,7 @@ const ExpertProfile = () => {
     about: user?.about || '', 
   }); 
 
-  // Filtering out past dates while loading
+  // Load only today/future availability entries into the editor.
   const [availability, setAvailability] = useState(
     (user?.availability || []).filter(a => a.date >= todayIST)
   ); 
@@ -44,12 +44,13 @@ const ExpertProfile = () => {
   }; 
 
   const handleFileChange = (e) => { 
+    // Keep local preview in sync with chosen file before upload.
     const file = e.target.files[0]; 
     setFiles({ ...files, [e.target.name]: file }); 
     setPreviews({ ...previews, [e.target.name]: URL.createObjectURL(file) }); 
   }; 
   
-  // --- Slot Logic Functions --- 
+  // Slot management helpers for date cards and time ranges.
   const addDate = (e) => { 
     e.preventDefault(); 
     if (!tempDate) return toastInfo("Please select a date"); 
@@ -67,6 +68,7 @@ const ExpertProfile = () => {
   }; 
 
   const addSlot = (e, dateIndex) => { 
+    // Limit each date to 3 slots to keep schedule manageable in UI.
     e.preventDefault(); 
     if (availability[dateIndex].slots.length >= 3) return toastInfo("Maximum 3 slots per day"); 
     const updated = [...availability]; 
@@ -94,7 +96,7 @@ const ExpertProfile = () => {
 
     Object.keys(formData).forEach(key => data.append(key, formData[key])); 
      
-    // Filtering once more before sending
+    // Re-filter as a final guard before sending payload.
     const cleanAvailability = availability.filter(a => a.date >= todayIST);
     data.append('availability', JSON.stringify(cleanAvailability)); 
 
