@@ -1,4 +1,4 @@
-# ExpertConnect 🚀
+# ExpertConnect 
 
 ExpertConnect is a Modern and Feature-rich **Progressive Web Application (PWA)** built on the **MERN stack**. It is designed to bridge the gap between students/learners and industry experts through structured consultation, real-time communication, and secure payments.
 
